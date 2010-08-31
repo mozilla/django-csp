@@ -39,9 +39,9 @@ class CSPMiddleware(object):
             policy.append('frame-ancestors %s' %
                           ' '.join(settings.CSP_FRAME_ANCESTORS))
         if hasattr(settings, 'CSP_REPORT_URI'):
-            policy.append('report-uri %s' % settings.CSP_REPORT_URI))
+            policy.append('report-uri %s' % settings.CSP_REPORT_URI)
         if hasattr(settings, 'CSP_POLICY_URI'):
-            policy.append('policy-uri %s' % settings.CSP_POLICY_URI))
+            policy.append('policy-uri %s' % settings.CSP_POLICY_URI)
 
         response['X-Content-Security-Policy'] = '; '.join(policy)
         return response
