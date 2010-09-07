@@ -37,3 +37,30 @@ The following settings take only a URI, not a tuple.
 
     CSP_REPORT_URI
     CSP_POLICY_URI
+
+This setting is a boolean. Set it to ``False`` to completely disable
+violation reports. The default value is ``True``.
+
+    CSP_ACCEPT_REPORTS
+
+These people get notified when a violation report is filed. (Defaults to
+``ADMINS``.)
+
+    CSP_NOTIFY = (('name', 'email@address'),)
+
+
+Report URI
+----------
+
+Content Security Policy allows you to specify a URI that accepts violation
+reports. Django-CSP includes a view that accepts these reports and forwards
+them via email to the list of people specified in the ``CSP_NOTIFY`` setting.
+
+To accept violation reports, you need only add the following to your site's
+``urls.py``::
+
+    (r'^csp', include('csp.urls')),
+
+Then set the ``CSP_REPORT_URI`` in ``settings.py`` accordingly::
+
+    CSP_REPORT_URI = '/csp/report'
