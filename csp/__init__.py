@@ -7,6 +7,8 @@ def build_policy():
     policy = ['allow %s' % (' '.join(settings.CSP_ALLOW) if
                             hasattr(settings, 'CSP_ALLOW') else
                             "'self'")]
+    if hasattr(settings, 'CSP_OPTIONS'):
+        policy.append('options %s' % ' '.join(settings.CSP_OPTIONS))
     if hasattr(settings, 'CSP_IMG_SRC'):
         policy.append('img-src %s' % ' '.join(settings.CSP_IMG_SRC))
     if hasattr(settings, 'CSP_SCRIPT_SRC'):

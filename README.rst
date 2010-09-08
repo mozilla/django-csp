@@ -59,6 +59,20 @@ The following settings take only a URI, not a tuple::
     CSP_POLICY_URI
 
 
+The Options Directive
+^^^^^^^^^^^^^^^^^^^^^
+
+Content Security Policy defines an ``options`` directive that allows you
+to re-enable inline scripts and ``eval()``, both disabled by default when CSP
+is active.
+
+To re-enable both, for example, use the ``CSP_OPTIONS`` setting, a tuple::
+
+    CSP_OPTIONS = ('inline-script', 'eval-script')
+
+Or either ``inline-script`` or ``eval-script`` can be enabled separately.
+
+
 Report URI
 ----------
 
