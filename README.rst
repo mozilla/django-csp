@@ -16,12 +16,24 @@ directive has a default value (``'self'``). All others are ignored unless
 specified.
 
 
+Turning on CSP
+--------------
+
+The simplest step is just turning on the middleware::
+
+    MIDDLEWARE_CLASSES = (
+        # ...
+        'csp.middleware.CSPMiddleware',
+        # ....
+    )
+
+
 The Settings
 ------------
 
 These settings take a tuple of values. For simplicity, the special values
 ``'self'`` and ``'none'`` must contain the single quotes. See the spec for
-allowed use of the ``*`` wildcard.
+allowed use of the ``*`` wildcard::
 
     CSP_ALLOW
     CSP_IMG_SRC
@@ -33,7 +45,7 @@ allowed use of the ``*`` wildcard.
     CSP_FONT_SRC
     CSP_FRAME_ANCESTORS
 
-The following settings take only a URI, not a tuple.
+The following settings take only a URI, not a tuple::
 
     CSP_REPORT_URI
     CSP_POLICY_URI
