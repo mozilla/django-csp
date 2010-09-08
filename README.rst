@@ -76,6 +76,21 @@ Then set the ``CSP_REPORT_URI`` in ``settings.py`` accordingly::
     CSP_REPORT_URI = '/csp/report'
 
 
+Policy URI
+----------
+
+Content Security Policy headers can be long. If you have a complicated
+policy, you might find it more effective to specify only a policy URI in the
+header. The browser can make a second request for the policy and potentially
+take advantage of client-side caching to reduce the amount of data per
+request.
+
+To use a policy URI, just set the ``CSP_POLICY_URI`` setting, and include
+the CSP URLs as above::
+
+    CSP_POLICY_URI = '/csp/policy'
+
+
 Report-Only Mode
 ----------------
 

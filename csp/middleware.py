@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from csp import build_policy
+
 
 class CSPMiddleware(object):
     """
@@ -20,32 +22,9 @@ class CSPMiddleware(object):
             # Don't overwrite existing headers.
             return response
 
-        policy = ['allow %s' % (' '.join(settings.CSP_ALLOW) if
-                                hasattr(settings, 'CSP_ALLOW') else
-                                "'self'")]
-        if hasattr(settings, 'CSP_IMG_SRC'):
-            policy.append('img-src %s' % ' '.join(settings.CSP_IMG_SRC))
-        if hasattr(settings, 'CSP_SCRIPT_SRC'):
-            policy.append('script-src %s' % ' '.join(settings.CSP_SCRIPT_SRC))
-        if hasattr(settings, 'CSP_OBJECT_SRC'):
-            policy.append('object-src %s' % ' '.join(settings.CSP_OBJECT_SRC))
-        if hasattr(settings, 'CSP_MEDIA_SRC'):
-            policy.append('media-src %s' % ' '.join(settings.CSP_MEDIA_SRC))
-        if hasattr(settings, 'CSP_FRAME_SRC'):
-            policy.append('frame-src %s' % ' '.join(settings.CSP_FRAME_SRC))
-        if hasattr(settings, 'CSP_FONT_SRC'):
-            policy.append('font-src %s' % ' '.join(settings.CSP_FONT_SRC))
-        if hasattr(settings, 'CSP_XHR_SRC'):
-            policy.append('xhr-src %s' % ' '.join(settings.CSP_XHR_SRC))
-        if hasattr(settings, 'CSP_STYLE_SRC'):
-            policy.append('style-src %s' % ' '.join(settings.CSP_STYLE_SRC))
-        if hasattr(settings, 'CSP_FRAME_ANCESTORS'):
-            policy.append('frame-ancestors %s' %
-                          ' '.join(settings.CSP_FRAME_ANCESTORS))
-        if hasattr(settings, 'CSP_REPORT_URI'):
-            policy.append('report-uri %s' % settings.CSP_REPORT_URI)
-        if hasattr(settings, 'CSP_POLICY_URI'):
-            policy.append('policy-uri %s' % settings.CSP_POLICY_URI)
-
-        response[header] = '; '.join(policy)
+        if getattr(settings, 'CSP_POLICY_URI', False):
+            policy = 'policy-uri ' + settings.CSP_POLICY_URI
+        else:
+            policy = build_policy()
+        response['X-Content-Security-Policy'] = policy
         return response

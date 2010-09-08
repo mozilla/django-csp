@@ -6,6 +6,8 @@ from django.template import loader, Context
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
+from csp import build_policy
+
 
 @csrf_exempt
 @require_POST
@@ -31,3 +33,15 @@ def report(request):
 
     mail_admins('CSP Violation', body)
     return HttpResponse()
+
+
+def policy(request):
+    """
+    Returns a valid policy-uri, as an alternative to putting the whole
+    policy in the header.
+
+    """
+
+    policy = build_policy()
+
+    return HttpResponse(policy, mimetype='text/x-content-security-policy')
