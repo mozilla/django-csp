@@ -38,16 +38,6 @@ The following settings take only a URI, not a tuple.
     CSP_REPORT_URI
     CSP_POLICY_URI
 
-This setting is a boolean. Set it to ``False`` to completely disable
-violation reports. The default value is ``True``.
-
-    CSP_ACCEPT_REPORTS
-
-These people get notified when a violation report is filed. (Defaults to
-``ADMINS``.)
-
-    CSP_NOTIFY = (('name', 'email@address'),)
-
 
 Report URI
 ----------

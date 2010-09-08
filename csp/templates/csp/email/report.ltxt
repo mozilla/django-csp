@@ -1,3 +1,8 @@
 Content Security Policy Violation Report
 
-{{ csp-report.report-uri }}
+Request: {{ request }}
+Blocked URI: {{ blocked_uri }}
+Violation: {{ violated_directive }}
+Request Headers:
+
+{{ request_headers }}
