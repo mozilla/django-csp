@@ -24,7 +24,15 @@ The simplest step is just turning on the middleware::
     MIDDLEWARE_CLASSES = (
         # ...
         'csp.middleware.CSPMiddleware',
-        # ....
+        # ...
+    )
+
+and adding ``csp`` to your installed apps [#]_ ::
+
+    INSTALLED_APPS = (
+        # ...
+        'csp',
+        # ...
     )
 
 
@@ -66,3 +74,21 @@ To accept violation reports, you need only add the following to your site's
 Then set the ``CSP_REPORT_URI`` in ``settings.py`` accordingly::
 
     CSP_REPORT_URI = '/csp/report'
+
+
+Report-Only Mode
+----------------
+
+Content Security Policy supports a *report-only* mode that will send
+violation reports but not enforce the policy in the browser. This allows you
+to test a site for compliance without potentially breaking anything for your
+users.
+
+To activate report-only mode, simply turn on ``CSP_REPORT_ONLY`` in
+settings::
+
+    CSP_REPORT_ONLY = True
+
+
+.. [#] Strictly speaking, ``csp`` only needs to be in your installed apps
+   if you plan to use the report feature.

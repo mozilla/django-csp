@@ -12,7 +12,11 @@ class CSPMiddleware(object):
     """
 
     def process_response(self, request, response):
-        if 'x-content-security-policy' in response:
+        header = 'X-Content-Security-Policy'
+        if getattr(settings, 'CSP_REPORT_ONLY', False):
+            header = 'X-Content-Security-Policy-Report-Only'
+
+        if header in response:
             # Don't overwrite existing headers.
             return response
 
@@ -43,5 +47,5 @@ class CSPMiddleware(object):
         if hasattr(settings, 'CSP_POLICY_URI'):
             policy.append('policy-uri %s' % settings.CSP_POLICY_URI)
 
-        response['X-Content-Security-Policy'] = '; '.join(policy)
+        response[header] = '; '.join(policy)
         return response
