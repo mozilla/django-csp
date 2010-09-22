@@ -31,7 +31,9 @@ def report(request):
     t = loader.get_template('csp/email/report.ltxt')
     body = t.render(c)
 
-    mail_admins('CSP Violation', body)
+    subject = 'CSP Violation: %s: %s' % (data['blocked_uri'],
+                                         data['violated_directive'])
+    mail_admins(subject, body)
     return HttpResponse()
 
 

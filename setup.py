@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='django_csp',
-    version='1.0',
+    version='1.0.1',
     description='Django Content Security Policy support.',
     author='James Socol',
     author_email='james@mozilla.com',
