@@ -26,5 +26,5 @@ class CSPMiddleware(object):
             policy = 'policy-uri ' + settings.CSP_POLICY_URI
         else:
             policy = build_policy()
-        response['X-Content-Security-Policy'] = policy
+        response[header] = policy
         return response
