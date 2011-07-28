@@ -119,5 +119,29 @@ settings::
     CSP_REPORT_ONLY = True
 
 
+Modifying the Policy
+====================
+
+Right now, the only way to modify the policy is with the ``@csp_exempt``
+decorator::
+
+    from csp.decorators import csp_exempt
+
+    @csp_exempt
+    def myview(request):
+        return HttpResponse()
+
+This will prevent the ``CSPMiddleware`` from sending any CSP headers from this
+view.
+
+
+TODO
+====
+
+* ``@csp_patch`` decorator that will allow you to patch a policy for a specific
+  view. Will be... complicated.
+* ``@csp_override`` decorator that allows you to replace a policy for a
+  specific view.
+
 .. [#] Strictly speaking, ``csp`` only needs to be in your installed apps
    if you plan to use the report feature.

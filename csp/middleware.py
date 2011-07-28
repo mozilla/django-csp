@@ -14,6 +14,9 @@ class CSPMiddleware(object):
     """
 
     def process_response(self, request, response):
+        if getattr(response, '_csp_exempt', False):
+            return response
+
         header = 'X-Content-Security-Policy'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
             header = 'X-Content-Security-Policy-Report-Only'
