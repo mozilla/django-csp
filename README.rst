@@ -68,9 +68,9 @@ You can disable CSP for specific url prefixes with the
 The Options Directive
 ^^^^^^^^^^^^^^^^^^^^^
 
-Content Security Policy defines an ``options`` directive that allows you
-to re-enable inline scripts and ``eval()``, both disabled by default when CSP
-is active.
+Content Security Policy defines an ``options`` directive that allows you to
+re-enable inline scripts, ``javascript:`` URIs and ``eval()``, all disabled
+by default when CSP is active.
 
 To re-enable both, for example, use the ``CSP_OPTIONS`` setting, a tuple::
 
