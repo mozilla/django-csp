@@ -68,9 +68,9 @@ by default when CSP is active.
 
 To re-enable both, for example, use the ``CSP_OPTIONS`` setting, a tuple::
 
-    CSP_OPTIONS = ('inline-script', 'eval-script')
+    CSP_OPTIONS = ('disable-xss-protection', 'eval-script')
 
-Or either ``inline-script`` or ``eval-script`` can be enabled separately.
+Or either ``disable-xss-protection`` or ``eval-script`` can be enabled separately.
 
 
 Report URI
