@@ -11,9 +11,9 @@ Using Django-CSP
 ================
 
 Django-CSP is configured entirely in Django's settings. Almost all the
-arguments take a tuple of possible values (cf the spec). Only the ``allow``
-directive has a default value (``'self'``). All others are ignored unless
-specified.
+arguments take a tuple of possible values (cf the spec). Only the
+``default-src`` directive has a default value (``'self'``). All others are
+ignored unless specified.
 
 
 Turning on CSP
@@ -43,7 +43,7 @@ These settings take a tuple of values. For simplicity, the special values
 ``'self'`` and ``'none'`` must contain the single quotes. See the spec for
 allowed use of the ``*`` wildcard::
 
-    CSP_ALLOW
+    CSP_DEFAULT_SRC
     CSP_IMG_SRC
     CSP_SCRIPT_SRC
     CSP_STYLE_SRC
