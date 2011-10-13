@@ -51,6 +51,7 @@ allowed use of the ``*`` wildcard::
     CSP_MEDIA_SRC
     CSP_FRAME_SRC
     CSP_FONT_SRC
+    CSP_XHR_SRC
     CSP_FRAME_ANCESTORS
 
 The following settings take only a URI, not a tuple::
