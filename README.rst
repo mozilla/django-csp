@@ -58,6 +58,12 @@ The following settings take only a URI, not a tuple::
     CSP_REPORT_URI
     CSP_POLICY_URI
 
+You can disable CSP for specific url prefixes with the
+``CSP_EXCLUDE_URL_PREFIXES`` setting. For example, to exclude the django admin
+(which uses inline Javascript) with the standard urlconf::
+
+    CSP_EXCLUDE_URL_PREFIXES = ('/admin',)
+
 
 The Options Directive
 ^^^^^^^^^^^^^^^^^^^^^
