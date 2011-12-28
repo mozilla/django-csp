@@ -1,6 +1,7 @@
 import json
 
-from django.core.mail import mail_admins
+from django.conf import settings
+from django.core.mail import mail_admins, send_mail
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.template import loader, Context
 from django.views.decorators.http import require_POST
@@ -33,7 +34,10 @@ def report(request):
 
     subject = 'CSP Violation: %s: %s' % (data['blocked_uri'],
                                          data['violated_directive'])
-    mail_admins(subject, body)
+    if hasattr(settings, 'CSP_NOTIFY'):
+        send_mail(subject, body, settings.SERVER_EMAIL, settings.CSP_NOTIFY)
+    else:
+        mail_admins(subject, body)
     return HttpResponse()
 
 

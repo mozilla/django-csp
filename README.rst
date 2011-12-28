@@ -76,9 +76,11 @@ Or either ``inline-script`` or ``eval-script`` can be enabled separately.
 Report URI
 ----------
 
-Content Security Policy allows you to specify a URI that accepts violation
-reports. Django-CSP includes a view that accepts these reports and forwards
-them via email to the list of people specified in the ``CSP_NOTIFY`` setting.
+Content Security Policy allows you to specify a URI that accepts
+violation reports. Django-CSP includes a view that accepts these
+reports and forwards them via email to the list of people specified in
+the ``CSP_NOTIFY`` setting (or the project admins if ``CSP_NOTIFY`` is
+not set).
 
 To accept violation reports, you need only add the following to your site's
 ``urls.py``::
