@@ -17,6 +17,11 @@ class CSPMiddleware(object):
         if getattr(response, '_csp_exempt', False):
             return response
 
+        # Check for ignored path prefix.
+        for prefix in getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', []):
+            if request.path_info.startswith(prefix):
+                return response
+
         header = 'X-Content-Security-Policy'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
             header = 'X-Content-Security-Policy-Report-Only'
