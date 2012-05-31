@@ -4,8 +4,8 @@ from django.conf import settings
 def build_policy():
     """Builds the policy as a string from the settings."""
 
-    policy = ['allow %s' % (' '.join(settings.CSP_ALLOW) if
-                            hasattr(settings, 'CSP_ALLOW') else
+    policy = ['default-src %s' % (' '.join(settings.CSP_DEFAULT_SRC) if
+                            hasattr(settings, 'CSP_DEFAULT_SRC') else
                             "'self'")]
     if hasattr(settings, 'CSP_OPTIONS'):
         policy.append('options %s' % ' '.join(settings.CSP_OPTIONS))

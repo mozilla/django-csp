@@ -3,7 +3,7 @@ Django-CSP
 ==========
 
 Django-CSP is a `Content Security Policy
-<https://wiki.mozilla.org/Security/CSP/Specification>`_ implementation
+<http://www.w3.org/Security/wiki/Content_Security_Policy>`_ implementation
 for Django. It is implemented as middleware.
 
 
@@ -11,9 +11,9 @@ Using Django-CSP
 ================
 
 Django-CSP is configured entirely in Django's settings. Almost all the
-arguments take a tuple of possible values (cf the spec). Only the ``allow``
-directive has a default value (``'self'``). All others are ignored unless
-specified.
+arguments take a tuple of possible values (cf the spec). Only the
+``default-src`` directive has a default value (``'self'``). All others are
+ignored unless specified.
 
 
 Turning on CSP
@@ -43,7 +43,7 @@ These settings take a tuple of values. For simplicity, the special values
 ``'self'`` and ``'none'`` must contain the single quotes. See the spec for
 allowed use of the ``*`` wildcard::
 
-    CSP_ALLOW
+    CSP_DEFAULT_SRC
     CSP_IMG_SRC
     CSP_SCRIPT_SRC
     CSP_STYLE_SRC
@@ -69,15 +69,15 @@ You can disable CSP for specific url prefixes with the
 The Options Directive
 ^^^^^^^^^^^^^^^^^^^^^
 
-Content Security Policy defines an ``options`` directive that allows you
-to re-enable inline scripts and ``eval()``, both disabled by default when CSP
-is active.
+Content Security Policy defines an ``options`` directive that allows you to
+re-enable inline scripts, ``javascript:`` URIs and ``eval()``, all disabled
+by default when CSP is active.
 
 To re-enable both, for example, use the ``CSP_OPTIONS`` setting, a tuple::
 
-    CSP_OPTIONS = ('inline-script', 'eval-script')
+    CSP_OPTIONS = ('disable-xss-protection', 'eval-script')
 
-Or either ``inline-script`` or ``eval-script`` can be enabled separately.
+Or either ``disable-xss-protection`` or ``eval-script`` can be enabled separately.
 
 
 Report URI
