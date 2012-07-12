@@ -85,9 +85,10 @@ Report URI
 
 Content Security Policy allows you to specify a URI that accepts
 violation reports. Django-CSP includes a view that accepts these
-reports and forwards them via email to the list of people specified in
-the ``CSP_NOTIFY`` setting (or the project admins if ``CSP_NOTIFY`` is
-not set).
+reports, processes, and stores them. Reports are grouped according to a
+herusitic combination, and if a new Group is recognized, Django-CSP will notify
+by email, either by mailing the ``ADMINS`` list, or the list in the
+``CSP_NOTIFY`` setting.
 
 To accept violation reports, you need only add the following to your site's
 ``urls.py``::
