@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from csp import build_policy
+from csp.utils import build_policy
 
 
 class CSPMiddleware(object):

@@ -1,14 +1,16 @@
-from setuptools import setup
+from setuptools import setup, find_packages
+
+import csp
 
 setup(
     name='django_csp',
-    version='1.0.2',
+    version=csp.__version__,
     description='Django Content Security Policy support.',
     author='James Socol',
     author_email='james@mozilla.com',
     url='http://github.com/mozilla/django-csp',
     license='BSD',
-    packages=['csp'],
+    packages=find_packages(exclude=['example']),
     include_package_data=True,
     classifiers=[
         'Development Status :: 4 - Beta',

@@ -7,7 +7,8 @@ from django.template import loader, Context
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
-from csp import build_policy
+from csp.utils import build_policy
+from csp.models import Group, Report
 
 
 @csrf_exempt
