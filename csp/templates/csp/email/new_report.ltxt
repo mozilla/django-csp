@@ -1,0 +1,13 @@
+New CSP Violation!
+
+Group:
+    {{ name }}
+    ({{ identifier }})
+    {{ url }}
+
+Document URI: {{ document_uri }}
+Blocked URI: {{ blocked_uri }}
+Referrer: {{ referrer }}
+Violation: {{ violated_directive }}
+Original Policy:
+    {{ original_policy|safe }}

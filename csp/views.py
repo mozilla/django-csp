@@ -1,14 +1,10 @@
-import json
-
-from django.conf import settings
-from django.core.mail import mail_admins, send_mail
+from django.contrib.sites.models import RequestSite
 from django.http import HttpResponse, HttpResponseBadRequest
-from django.template import loader, Context
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
 from csp.utils import build_policy
-from csp.models import Group, Report
+from csp.models import Report
 
 
 @csrf_exempt
@@ -21,24 +17,11 @@ def report(request):
     """
 
     try:
-        violation = json.loads(request.raw_post_data)['csp-report']
+        violation = request.raw_post_data
+        Report.create(violation).save(RequestSite(request))
     except Exception:
         return HttpResponseBadRequest()
 
-    data = {}
-    for key in violation:
-        data[key.replace('-', '_')] = violation[key]
-
-    c = Context(data)
-    t = loader.get_template('csp/email/report.ltxt')
-    body = t.render(c)
-
-    subject = 'CSP Violation: %s: %s' % (data['blocked_uri'],
-                                         data['violated_directive'])
-    if hasattr(settings, 'CSP_NOTIFY'):
-        send_mail(subject, body, settings.SERVER_EMAIL, settings.CSP_NOTIFY)
-    else:
-        mail_admins(subject, body)
     return HttpResponse()
 
 

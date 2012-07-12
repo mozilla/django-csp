@@ -7,11 +7,13 @@ path = lambda *a: os.path.join(ROOT, *a)
 DEBUG = True
 TEMPLATE_DEBUG = True
 
-JINJA_CONFIG = {}
-
 SITE_ID = 1
 
 TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
+
+ADMINS = (
+    ('Joe Admin', 'admin@example.com'),
+)
 
 DATABASES = {
     'default': {
@@ -35,6 +37,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'csp.middleware.CSPMiddleware',
 )
 
 ROOT_URLCONF = 'csp-project.urls'
@@ -44,7 +47,4 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
 )
 
-WAFFLE_FLAG_DEFAULT = False
-WAFFLE_SWITCH_DEFAULT = False
-WAFFLE_SAMPLE_DEFAULT = False
-WAFFLE_OVERRIDE = False
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

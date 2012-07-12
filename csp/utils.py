@@ -1,4 +1,7 @@
+from django.core.mail import send_mail, mail_admins
+from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.template import loader, Context
 
 
 def build_policy():
@@ -32,3 +35,22 @@ def build_policy():
         policy.append('report-uri %s' % settings.CSP_REPORT_URI)
 
     return '; '.join(policy)
+
+
+def send_new_mail(sender, report, site=None, **kw):
+    subject = 'New CSP Violation: %s' % sender.name
+    url = reverse('admin:csp_report_change', args=(report.id,))
+    if site is not None:
+        url = ''.join(('http://', site.domain, url))
+    data = report.__dict__
+    data.update({'name': sender.name,
+                 'identifier': sender.identifier,
+                 'url': url})
+    c = Context(data)
+    t = loader.get_template('csp/email/new_report.ltxt')
+    body = t.render(c)
+
+    if hasattr(settings, 'CSP_NOTIFY'):
+        send_mail(subject, body, settings.SERVER_EMAIL, settings.CSP_NOTIFY)
+    else:
+        mail_admins(subject, body)

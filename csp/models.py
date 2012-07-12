@@ -4,6 +4,9 @@ import json
 
 from django.db import models
 
+from csp.signals import group_created
+from csp.utils import send_new_mail
+
 
 __all__ = ['Group', 'Report']
 
@@ -24,15 +27,14 @@ class Group(models.Model):
         """Given a CSP report, find an existing group or create a new one."""
         ident = report.get_identifier()
         try:
-            return cls.objects.get(identifier=ident)
+            return (cls.objects.get(identifier=ident), False)
         except cls.DoesNotExist as e:
             # We're going to have to create a new group.
             pass
         name = u'%s - %s' % (report.document_uri, report.violated_directive)
         group = cls(name=name, identifier=ident)
-        # TODO: Either use a signal or send a notice here.
         group.save()
-        return group
+        return (group, True)
 
     def count(self):
         if not hasattr(self, '_count'):
@@ -52,12 +54,11 @@ class Report(models.Model):
     original_policy = models.TextField(null=True, blank=True)
     reported = models.DateTimeField(default=datetime.now, db_index=True)
 
-
     @classmethod
     def create(cls, report):
         """If passed a JSON blob in the report kwarg, use it."""
         report = json.loads(report)['csp-report']
-        kw.update((k.replace('-', '_'), v) for k, v in report.items())
+        kw = dict((k.replace('-', '_'), v) for k, v in report.items())
         return cls(**kw)
 
     def __unicode__(self):
@@ -70,7 +71,13 @@ class Report(models.Model):
             self._ident = hashlib.sha1(ident).hexdigest()
         return self._ident
 
-    def save(self, *a, **kw):
+    def save(self, site=None, *a, **kw):
         if not self.group:
-            self.group = Group.get_or_create(self)
+            self.group, created = Group.get_or_create(self)
         super(Report, self).save(*a, **kw)
+        if created:
+            ret = group_created.send_robust(sender=self.group, report=self,
+                                            site=site)
+
+
+group_created.connect(send_new_mail, dispatch_uid='group-created-email')
