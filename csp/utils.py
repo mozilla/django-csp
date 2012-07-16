@@ -10,8 +10,6 @@ def build_policy():
     policy = ['default-src %s' % (' '.join(settings.CSP_DEFAULT_SRC) if
                             hasattr(settings, 'CSP_DEFAULT_SRC') else
                             "'self'")]
-    if hasattr(settings, 'CSP_OPTIONS'):
-        policy.append('options %s' % ' '.join(settings.CSP_OPTIONS))
     if hasattr(settings, 'CSP_IMG_SRC'):
         policy.append('img-src %s' % ' '.join(settings.CSP_IMG_SRC))
     if hasattr(settings, 'CSP_SCRIPT_SRC'):
@@ -24,13 +22,12 @@ def build_policy():
         policy.append('frame-src %s' % ' '.join(settings.CSP_FRAME_SRC))
     if hasattr(settings, 'CSP_FONT_SRC'):
         policy.append('font-src %s' % ' '.join(settings.CSP_FONT_SRC))
-    if hasattr(settings, 'CSP_XHR_SRC'):
-        policy.append('xhr-src %s' % ' '.join(settings.CSP_XHR_SRC))
+    if hasattr(settings, 'CSP_CONNECT_SRC'):
+        policy.append('connect-src %s' % ' '.join(settings.CSP_CONNECT_SRC))
     if hasattr(settings, 'CSP_STYLE_SRC'):
         policy.append('style-src %s' % ' '.join(settings.CSP_STYLE_SRC))
-    if hasattr(settings, 'CSP_FRAME_ANCESTORS'):
-        policy.append('frame-ancestors %s' %
-                      ' '.join(settings.CSP_FRAME_ANCESTORS))
+    if hasattr(settings, 'CSP_SANDBOX'):
+        policy.append('sandbox %s' % ' '.join(settings.CSP_SANDBOX))
     if hasattr(settings, 'CSP_REPORT_URI'):
         policy.append('report-uri %s' % settings.CSP_REPORT_URI)
 
