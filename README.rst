@@ -40,8 +40,8 @@ The Settings
 ------------
 
 These settings take a tuple of values. For simplicity, the special values
-``'self'`` and ``'none'`` must contain the single quotes. See the spec for
-allowed use of the ``*`` wildcard::
+``'self'``, ``'unsafe-inline'``, and ``'unsafe-eval'`` must contain
+the single quotes. See the spec for allowed use of the ``*`` wildcard::
 
     CSP_DEFAULT_SRC
     CSP_IMG_SRC
@@ -51,8 +51,8 @@ allowed use of the ``*`` wildcard::
     CSP_MEDIA_SRC
     CSP_FRAME_SRC
     CSP_FONT_SRC
-    CSP_XHR_SRC
-    CSP_FRAME_ANCESTORS
+    CSP_CONNECT_SRC
+    CSP_SANDBOX
 
 The following settings take only a URI, not a tuple::
 
@@ -63,20 +63,6 @@ You can disable CSP for specific url prefixes with the
 (which uses inline Javascript) with the standard urlconf::
 
     CSP_EXCLUDE_URL_PREFIXES = ('/admin',)
-
-
-The Options Directive
-^^^^^^^^^^^^^^^^^^^^^
-
-Content Security Policy defines an ``options`` directive that allows you to
-re-enable inline scripts, ``javascript:`` URIs and ``eval()``, all disabled
-by default when CSP is active.
-
-To re-enable both, for example, use the ``CSP_OPTIONS`` setting, a tuple::
-
-    CSP_OPTIONS = ('disable-xss-protection', 'eval-script')
-
-Or either ``disable-xss-protection`` or ``eval-script`` can be enabled separately.
 
 
 Report URI
