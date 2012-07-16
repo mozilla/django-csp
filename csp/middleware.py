@@ -30,9 +30,5 @@ class CSPMiddleware(object):
             # Don't overwrite existing headers.
             return response
 
-        if getattr(settings, 'CSP_POLICY_URI', False):
-            policy = 'policy-uri ' + settings.CSP_POLICY_URI
-        else:
-            policy = build_policy()
-        response[header] = policy
+        response[header] = build_policy()
         return response
