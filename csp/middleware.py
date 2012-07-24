@@ -29,6 +29,6 @@ class CSPMiddleware(object):
             if getattr(settings, 'CSP_REPORT_ONLY', False):
                 header = header + '-Report-Only'
             
-            response[header] = response.get(header, policy)
+            response.setdefault(header,policy)
 
         return response
