@@ -21,14 +21,14 @@ class CSPMiddleware(object):
         for prefix in getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', []):
             if request.path_info.startswith(prefix):
                 return response
+        
+        policy = build_policy()
+        
+        for header in getattr(settings, 'CSP_HEADERS', set(('X-Content-Security-Policy',))):
+            
+            if getattr(settings, 'CSP_REPORT_ONLY', False):
+                header = header + '-Report-Only'
+            
+            response[header] = response.get(header, policy)
 
-        header = 'X-Content-Security-Policy'
-        if getattr(settings, 'CSP_REPORT_ONLY', False):
-            header = 'X-Content-Security-Policy-Report-Only'
-
-        if header in response:
-            # Don't overwrite existing headers.
-            return response
-
-        response[header] = build_policy()
         return response
