@@ -19,10 +19,7 @@ def report(request):
 
     """
 
-    try:
-        violation = request.raw_post_data
-        Report.create(violation).save(RequestSite(request))
-    except Exception:
-        return HttpResponseBadRequest()
+    violation = request.raw_post_data
+    Report.create(violation).save(RequestSite(request))
 
     return HttpResponse()
