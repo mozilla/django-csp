@@ -26,7 +26,7 @@ def shell():
 
 
 def test():
-    """Run the Waffle test suite."""
+    """Run the test suite."""
     _local('django-admin.py test')
 
 
@@ -42,7 +42,7 @@ def syncdb():
 
 def schema():
     """Create a schema migration for any changes."""
-    _local('django-admin.py schemamigration waffle --auto')
+    _local('django-admin.py schemamigration csp --auto')
 
 
 def migrate():
