@@ -26,9 +26,6 @@ class CSPMiddleware(object):
         if getattr(settings, 'CSP_REPORT_ONLY', False):
             header = 'X-Content-Security-Policy-Report-Only'
 
-        if header in response:
-            # Don't overwrite existing headers.
-            return response
-
-        response[header] = build_policy()
+        # Don't overwrite existing headers.
+        response.setdefault(header,build_policy())
         return response
