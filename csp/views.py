@@ -3,8 +3,9 @@ from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 
-from csp.utils import build_policy
+from csp.exceptions import BadReportError
 from csp.models import Report
+from csp.utils import build_policy
 
 
 @csrf_exempt
@@ -20,9 +21,12 @@ def report(request):
     """
 
     try:
-        violation = request.raw_post_data
+        if hasattr(request, 'raw_post_data'):  # Django < 1.4
+            violation = request.raw_post_data
+        elif hasattr(request, 'body'):  # Django >= 1.4
+            violation = request.body
         Report.create(violation).save(RequestSite(request))
-    except Exception:
+    except BadReportError:
         return HttpResponseBadRequest()
 
     return HttpResponse()

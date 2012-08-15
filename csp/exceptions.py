@@ -1,0 +1,2 @@
+class BadReportError(ValueError):
+    pass

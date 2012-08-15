@@ -4,6 +4,7 @@ import json
 
 from django.db import models
 
+from csp.exceptions import BadReportError
 from csp.signals import group_created
 from csp.utils import send_new_mail
 
@@ -57,7 +58,10 @@ class Report(models.Model):
     @classmethod
     def create(cls, report):
         """If passed a JSON blob in the report kwarg, use it."""
-        report = json.loads(report)['csp-report']
+        try:
+            report = json.loads(report)['csp-report']
+        except ValueError:
+            raise BadReportError()
         kw = dict((k.replace('-', '_'), v) for k, v in report.items())
         return cls(**kw)
 
