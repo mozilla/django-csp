@@ -12,6 +12,10 @@ setup(
     license='BSD',
     packages=find_packages(exclude=['example']),
     include_package_data=True,
+    package_data={
+        'csp': ['templates/csp/email/*'],
+    },
+    zip_safe=False,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
