@@ -47,7 +47,7 @@ class Report(models.Model):
     """A representation of one report."""
     group = models.ForeignKey(Group, null=True, blank=True)
     document_uri = models.URLField(max_length=400, db_index=True)
-    blocked_uri = models.URLField(max_length=400, null=True, blank=True,
+    blocked_uri = models.CharField(max_length=400, null=True, blank=True,
                                   db_index=True)
     referrer = models.URLField(max_length=400, null=True, blank=True)
     violated_directive = models.CharField(max_length=1000, null=True,
