@@ -53,6 +53,9 @@ class Report(models.Model):
     violated_directive = models.CharField(max_length=1000, null=True,
                                           blank=True, db_index=True)
     original_policy = models.TextField(null=True, blank=True)
+    source_file = models.CharField(max_length=400, null=True, blank=True)
+    line_number = models.IntegerField(null=True, blank=True)
+    script_sample = models.TextField(null=True, blank=True)
     reported = models.DateTimeField(default=datetime.now, db_index=True)
 
     @classmethod
@@ -63,6 +66,11 @@ class Report(models.Model):
         except ValueError:
             raise BadReportError()
         kw = dict((k.replace('-', '_'), v) for k, v in report.items())
+        fields = cls._meta.get_all_field_names()
+        for key in kw.keys():
+            if key not in fields:
+                del kw[key]
+        print kw
         return cls(**kw)
 
     def __unicode__(self):
