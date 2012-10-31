@@ -2,9 +2,16 @@
 Django-CSP
 ==========
 
-Django-CSP is a `Content Security Policy
-<http://www.w3.org/Security/wiki/Content_Security_Policy>`_ implementation
-for Django. It is implemented as middleware.
+Django-CSP adds Content-Security-Policy_ headers and a CSP report
+processing facility to Django.
+
+The code lives on GitHub_, where you can report Issues_. The full
+documentation is available on ReadTheDocs_.
+
+.. _Content-Security-Policy: http://www.w3.org/TR/CSP/
+.. _GitHub: https://github.com/mozilla/django-csp
+.. _Issues: https://github.com/mozilla/django-csp/issues
+.. _ReadTheDocs: http://django-csp.readthedocs.org/
 
 
 Using Django-CSP
@@ -16,24 +23,6 @@ arguments take a tuple of possible values (cf the spec). Only the
 ignored unless specified.
 
 
-Turning on CSP
---------------
-
-The simplest step is just turning on the middleware::
-
-    MIDDLEWARE_CLASSES = (
-        # ...
-        'csp.middleware.CSPMiddleware',
-        # ...
-    )
-
-and adding ``csp`` to your installed apps [#]_ ::
-
-    INSTALLED_APPS = (
-        # ...
-        'csp',
-        # ...
-    )
 
 
 The Settings
@@ -65,24 +54,6 @@ You can disable CSP for specific url prefixes with the
     CSP_EXCLUDE_URL_PREFIXES = ('/admin',)
 
 
-Report URI
-----------
-
-Content Security Policy allows you to specify a URI that accepts
-violation reports. Django-CSP includes a view that accepts these
-reports, processes, and stores them. Reports are grouped according to a
-herusitic combination, and if a new Group is recognized, Django-CSP will notify
-by email, either by mailing the ``ADMINS`` list, or the list in the
-``CSP_NOTIFY`` setting.
-
-To accept violation reports, you need only add the following to your site's
-``urls.py``::
-
-    (r'^csp', include('csp.urls')),
-
-Then set the ``CSP_REPORT_URI`` in ``settings.py`` accordingly::
-
-    CSP_REPORT_URI = '/csp/report'
 
 
 Report-Only Mode
