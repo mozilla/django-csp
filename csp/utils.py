@@ -7,9 +7,9 @@ from django.template import loader, Context
 def build_policy():
     """Builds the policy as a string from the settings."""
 
-    policy = ['default-src %s' % (' '.join(settings.CSP_DEFAULT_SRC) if
-                            hasattr(settings, 'CSP_DEFAULT_SRC') else
-                            "'self'")]
+    policy = ['default-src %s' % (' '.join(getattr(settings,
+                                                   'CSP_DEFAULT_SRC',
+                                                   ("'self'",))))]
     if hasattr(settings, 'CSP_IMG_SRC'):
         policy.append('img-src %s' % ' '.join(settings.CSP_IMG_SRC))
     if hasattr(settings, 'CSP_SCRIPT_SRC'):

@@ -19,9 +19,9 @@ class CSPMiddleware(object):
             return response
 
         # Check for ignored path prefix.
-        for prefix in getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', []):
-            if request.path_info.startswith(prefix):
-                return response
+        prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', ('/admin',))
+        if request.path_info.startswith(prefixes):
+            return response
 
         ua = request.META.get('HTTP_USER_AGENT', '')
         webkit = 'webkit' in ua.lower()
