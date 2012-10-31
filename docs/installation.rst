@@ -40,7 +40,13 @@ And finally include the urlconf::
         # ...
     )
 
+If you're using the default report processor, you'll need to run
+``syncdb`` or ``migrate``, if you're using South_, or else create the
+database tables another way.
+
 That should do it! Go on to `configuring CSP <configuration-chapter>`_.
 
 .. [#] Strictly speaking, ``csp`` only needs to be in your installed apps
    if you plan to use the built-in report feature.
+
+.. _South: http://south.aeracode.org/
