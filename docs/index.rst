@@ -7,7 +7,7 @@
 django-csp
 ==========
 
-Django-CSP adds Content-Security-Policy_ headers and a CSP report
+django-csp adds Content-Security-Policy_ headers and a CSP report
 processing facility to Django.
 
 :Version:       |release|
@@ -23,6 +23,7 @@ Contents:
    installation
    configuration
    reports
+   changing
 
 
 
