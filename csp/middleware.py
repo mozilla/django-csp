@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.cache import patch_vary_headers
 
 from csp.utils import build_policy
 
@@ -22,10 +23,13 @@ class CSPMiddleware(object):
             if request.path_info.startswith(prefix):
                 return response
 
-        header = 'X-Content-Security-Policy'
+        ua = request.META.get('HTTP_USER_AGENT', '')
+        webkit = 'webkit' in ua.lower()
+        header = 'X-WebKit-CSP' if webkit else 'X-Content-Security-Policy'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
-            header = 'X-Content-Security-Policy-Report-Only'
+            header += '-Report-Only'
 
+        patch_vary_headers(response, ['User-Agent'])
         if header in response:
             # Don't overwrite existing headers.
             return response

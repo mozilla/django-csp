@@ -7,6 +7,8 @@ path = lambda *a: os.path.join(ROOT, *a)
 DEBUG = True
 TEMPLATE_DEBUG = True
 
+CSP_REPORT_ONLY = False
+
 SITE_ID = 1
 
 TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
