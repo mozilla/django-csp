@@ -46,7 +46,7 @@ def test_webkit_header():
             if is_webkit:
                 assert ('X-WebKit-CSP' + suffix) in response, response
             else:
-                assert ('X-Content-Security-Policy' + suffix) in response, ua
+                assert ('Content-Security-Policy' + suffix) in response, ua
             assert 'User-Agent' in response['Vary']
         return _test
 
