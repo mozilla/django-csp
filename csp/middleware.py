@@ -6,7 +6,7 @@ from csp.utils import build_policy
 
 class CSPMiddleware(object):
     """
-    Implements the X-Content-Security-Policy response header, which
+    Implements the Content-Security-Policy response header, which
     conforming user-agents can use to restrict the permitted sources
     of various content.
 
@@ -25,7 +25,7 @@ class CSPMiddleware(object):
 
         ua = request.META.get('HTTP_USER_AGENT', '')
         webkit = 'webkit' in ua.lower()
-        header = 'X-WebKit-CSP' if webkit else 'X-Content-Security-Policy'
+        header = 'X-WebKit-CSP' if webkit else 'Content-Security-Policy'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
             header += '-Report-Only'
 
