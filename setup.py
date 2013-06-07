@@ -6,15 +6,14 @@ setup(
     name='django_csp',
     version=csp.__version__,
     description='Django Content Security Policy support.',
+    long_description=open('README.rst').read(),
     author='James Socol',
     author_email='me@jamessocol.com',
     url='http://github.com/mozilla/django-csp',
     license='BSD',
     packages=find_packages(exclude=['example']),
     include_package_data=True,
-    package_data={
-        'csp': ['templates/csp/email/*'],
-    },
+    package_data={'': 'README.rst'}
     zip_safe=False,
     classifiers=[
         'Development Status :: 4 - Beta',
