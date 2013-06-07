@@ -24,6 +24,7 @@ Contents:
    configuration
    decorators
    reports
+   contributing
 
 
 Indices and tables
