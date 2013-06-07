@@ -14,7 +14,7 @@ def test_empty_policy():
 
 
 def test_webkit_header():
-    """If the browser looks like WebKit, send X-WebKit-CSP."""
+    """Content-Security-Policy headers should be sent back to agents."""
     request = RequestFactory().get('/')
     mw = CSPMiddleware()
 
@@ -43,10 +43,7 @@ def test_webkit_header():
             request.META['HTTP_USER_AGENT'] = ua
             response = HttpResponse()
             mw.process_response(request, response)
-            if is_webkit:
-                assert ('X-WebKit-CSP' + suffix) in response, response
-            else:
-                assert ('X-Content-Security-Policy' + suffix) in response, ua
+            assert ('Content-Security-Policy' + suffix) in response, ua
             assert 'User-Agent' in response['Vary']
         return _test
 
