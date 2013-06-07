@@ -16,13 +16,17 @@ First, install django-csp via pip or from source::
     $ cd django-csp
     $ python setup.py install
 
-Now edit your project's ``settings`` module [#]_::
+Now edit your project's ``settings`` module. If you are not using the
+built in report processor, all you need to do is::
 
     MIDDLEWARE_CLASSES = (
         # ...
         'csp.middleware.CSPMiddleware',
         # ...
     )
+
+If you are using the built-in processor, you'll also need to do this::
+
 
     INSTALLED_APPS = (
         # ...
@@ -45,8 +49,5 @@ If you're using the default report processor, you'll need to run
 database tables another way.
 
 That should do it! Go on to `configuring CSP <configuration-chapter>`_.
-
-.. [#] Strictly speaking, ``csp`` only needs to be in your installed apps
-   if you plan to use the built-in report feature.
 
 .. _South: http://south.aeracode.org/

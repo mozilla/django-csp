@@ -22,6 +22,7 @@ Contents:
 
    installation
    configuration
+   decorators
    reports
    changing
 

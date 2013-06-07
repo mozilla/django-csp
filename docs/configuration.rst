@@ -51,6 +51,13 @@ These settings affect the policy in the header. The defaults are in
     relative URI.
 
 
+Changing the Policy
+-------------------
+
+The policy can be changed on a per-view (or even per-request) basis. See
+the `decorator documentation <decorator-chapter>`_ for more details.
+
+
 Other Settings
 ==============
 

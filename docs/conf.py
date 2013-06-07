@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Django-CSP'
-copyright = u'2012, James Socol, Mozilla'
+copyright = u'2013 Mozilla Foundation'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
