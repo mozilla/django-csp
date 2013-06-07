@@ -1,2 +1,0 @@
-class BadReportError(ValueError):
-    pass

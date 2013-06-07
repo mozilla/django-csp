@@ -12,6 +12,7 @@ def csp_exempt(f):
 
 def csp_update(**kwargs):
     update = dict((k.lower().replace('_', '-'), v) for k, v in kwargs.items())
+
     def decorator(f):
         @wraps(f)
         def _wrapped(*a, **kw):
@@ -24,6 +25,7 @@ def csp_update(**kwargs):
 
 def csp_replace(**kwargs):
     replace = dict((k.lower().replace('_', '-'), v) for k, v in kwargs.items())
+
     def decorator(f):
         @wraps(f)
         def _wrapped(*a, **kw):
@@ -36,6 +38,7 @@ def csp_replace(**kwargs):
 
 def csp(**kwargs):
     config = dict((k.lower().replace('_', '-'), v) for k, v in kwargs.items())
+
     def decorator(f):
         @wraps(f)
         def _wrapped(*a, **kw):

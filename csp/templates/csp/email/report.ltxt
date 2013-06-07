@@ -1,8 +1,0 @@
-Content Security Policy Violation Report
-
-Request: {{ request }}
-Blocked URI: {{ blocked_uri }}
-Violation: {{ violated_directive }}
-Request Headers:
-
-{{ request_headers }}

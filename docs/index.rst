@@ -24,8 +24,6 @@ Contents:
    configuration
    decorators
    reports
-   changing
-
 
 
 Indices and tables

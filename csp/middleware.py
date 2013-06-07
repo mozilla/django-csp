@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.utils.cache import patch_vary_headers
 
 from csp.utils import build_policy
 
