@@ -50,3 +50,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+SECRET_KEY = 'csp-test-key'
