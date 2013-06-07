@@ -49,3 +49,28 @@ def test_dont_replace():
     response[HEADER] = 'default-src example.com'
     mw.process_response(request, response)
     eq_(response[HEADER], 'default-src example.com')
+
+
+def test_use_config():
+    request = rf.get('/')
+    response = HttpResponse()
+    response._csp_config = {'default-src': ['example.com']}
+    mw.process_response(request, response)
+    eq_(response[HEADER], 'default-src example.com')
+
+
+def test_use_update():
+    request = rf.get('/')
+    response = HttpResponse()
+    response._csp_update = {'default-src': ['example.com']}
+    mw.process_response(request, response)
+    eq_(response[HEADER], "default-src 'self' example.com")
+
+
+@override_settings(CSP_IMG_SRC=['foo.com'])
+def test_use_replace():
+    request = rf.get('/')
+    response = HttpResponse()
+    response._csp_replace = {'img-src': ['bar.com']}
+    mw.process_response(request, response)
+    eq_(response[HEADER], "default-src 'self'; img-src bar.com")

@@ -27,10 +27,13 @@ class CSPMiddleware(object):
         if getattr(settings, 'CSP_REPORT_ONLY', False):
             header += '-Report-Only'
 
-        patch_vary_headers(response, ['User-Agent'])
         if header in response:
             # Don't overwrite existing headers.
             return response
 
-        response[header] = build_policy()
+        config = getattr(response, '_csp_config', None)
+        update = getattr(response, '_csp_update', None)
+        replace = getattr(response, '_csp_replace', None)
+        response[header] = build_policy(config=config, update=update,
+                                        replace=replace)
         return response
