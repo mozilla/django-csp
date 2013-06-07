@@ -20,10 +20,29 @@ def from_settings():
     }
 
 
-def build_policy():
+def build_policy(config=None, update=None, replace=None):
     """Builds the policy as a string from the settings."""
 
-    config = from_settings()
+    if config is None:
+        config = from_settings()
+
+    # Update rules from settings.
+    if update is not None:
+        for k, v in update.items():
+            if not isinstance(v, (list, tuple)):
+                v = [v]
+            if config[k] is not None:
+                config[k] += v
+            else:
+                config[k] = v
+
+    # Replace rules from settings.
+    if replace is not None:
+        for k, v in replace.items():
+            if v is not None and not isinstance(v, (list, tuple)):
+                v = [v]
+            config[k] = v
+
     report_uri = config.pop('report-uri', None)
     policy = ['%s %s' % (k, ' '.join(v)) for k, v in
               config.items() if v is not None]

@@ -89,3 +89,15 @@ def test_sandbox_empty():
 def test_report_uri():
     policy = build_policy()
     policy_eq("default-src 'self'; report-uri /foo", policy)
+
+
+@override_settings(CSP_IMG_SRC=['example.com'])
+def test_update_img():
+    policy = build_policy(update={'img-src': 'example2.com'})
+    policy_eq("default-src 'self'; img-src example.com example2.com", policy)
+
+
+@override_settings(CSP_IMG_SRC=['example.com'])
+def test_replace_img():
+    policy = build_policy(replace={'img-src': 'example2.com'})
+    policy_eq("default-src 'self'; img-src example2.com", policy)
