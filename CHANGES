@@ -1,0 +1,12 @@
+=======
+CHANGES
+=======
+
+
+v2.0
+====
+
+- Dropped report processing feature and code.
+- Complies with CSP v1.0 and v1.1 (excluding experimental features).
+- Dropped support for X-Content-Security-Policy and X-WebKit-CSP
+  headers.
