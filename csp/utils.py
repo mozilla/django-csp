@@ -4,33 +4,31 @@ from django.conf import settings
 from django.template import loader, Context
 
 
+def from_settings():
+    return {
+        'default-src': getattr(settings, 'CSP_DEFAULT_SRC', ["'self'"]),
+        'script-src': getattr(settings, 'CSP_SCRIPT_SRC', None),
+        'object-src': getattr(settings, 'CSP_OBJECT_SRC', None),
+        'style-src': getattr(settings, 'CSP_STYLE_SRC', None),
+        'img-src': getattr(settings, 'CSP_IMG_SRC', None),
+        'media-src': getattr(settings, 'CSP_MEDIA_SRC', None),
+        'frame-src': getattr(settings, 'CSP_FRAME_SRC', None),
+        'font-src': getattr(settings, 'CSP_FONT_SRC', None),
+        'connect-src': getattr(settings, 'CSP_CONNECT_SRC', None),
+        'sandbox': getattr(settings, 'CSP_SANDBOX', None),
+        'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
+    }
+
+
 def build_policy():
     """Builds the policy as a string from the settings."""
 
-    policy = ['default-src %s' % (' '.join(getattr(settings,
-                                                   'CSP_DEFAULT_SRC',
-                                                   ("'self'",))))]
-    if hasattr(settings, 'CSP_IMG_SRC'):
-        policy.append('img-src %s' % ' '.join(settings.CSP_IMG_SRC))
-    if hasattr(settings, 'CSP_SCRIPT_SRC'):
-        policy.append('script-src %s' % ' '.join(settings.CSP_SCRIPT_SRC))
-    if hasattr(settings, 'CSP_OBJECT_SRC'):
-        policy.append('object-src %s' % ' '.join(settings.CSP_OBJECT_SRC))
-    if hasattr(settings, 'CSP_MEDIA_SRC'):
-        policy.append('media-src %s' % ' '.join(settings.CSP_MEDIA_SRC))
-    if hasattr(settings, 'CSP_FRAME_SRC'):
-        policy.append('frame-src %s' % ' '.join(settings.CSP_FRAME_SRC))
-    if hasattr(settings, 'CSP_FONT_SRC'):
-        policy.append('font-src %s' % ' '.join(settings.CSP_FONT_SRC))
-    if hasattr(settings, 'CSP_CONNECT_SRC'):
-        policy.append('connect-src %s' % ' '.join(settings.CSP_CONNECT_SRC))
-    if hasattr(settings, 'CSP_STYLE_SRC'):
-        policy.append('style-src %s' % ' '.join(settings.CSP_STYLE_SRC))
-    if hasattr(settings, 'CSP_SANDBOX'):
-        policy.append('sandbox %s' % ' '.join(settings.CSP_SANDBOX))
-    if hasattr(settings, 'CSP_REPORT_URI'):
-        policy.append('report-uri %s' % settings.CSP_REPORT_URI)
-
+    config = from_settings()
+    report_uri = config.pop('report-uri', None)
+    policy = ['%s %s' % (k, ' '.join(v)) for k, v in
+              config.items() if v is not None]
+    if report_uri:
+        policy.append('report-uri %s' % report_uri)
     return '; '.join(policy)
 
 
