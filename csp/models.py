@@ -70,7 +70,6 @@ class Report(models.Model):
         for key in kw.keys():
             if key not in fields:
                 del kw[key]
-        print kw
         return cls(**kw)
 
     def __unicode__(self):
