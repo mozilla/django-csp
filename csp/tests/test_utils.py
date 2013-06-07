@@ -94,7 +94,25 @@ def test_update_img():
     policy_eq("default-src 'self'; img-src example.com example2.com", policy)
 
 
+def test_update_missing_setting():
+    """update should work even if the setting is not defined."""
+    policy = build_policy(update={'img-src': 'example.com'})
+    policy_eq("default-src 'self'; img-src example.com", policy)
+
+
 @override_settings(CSP_IMG_SRC=['example.com'])
 def test_replace_img():
     policy = build_policy(replace={'img-src': 'example2.com'})
     policy_eq("default-src 'self'; img-src example2.com", policy)
+
+
+def test_replace_missing_setting():
+    """replace should work even if the setting is not defined."""
+    policy = build_policy(replace={'img-src': 'example.com'})
+    policy_eq("default-src 'self'; img-src example.com", policy)
+
+
+def test_config():
+    policy = build_policy(
+        config={'default-src': ["'none'"], 'img-src': ["'self'"]})
+    policy_eq("default-src 'none'; img-src 'self'", policy)
