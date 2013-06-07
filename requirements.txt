@@ -2,7 +2,7 @@
 nose
 mock
 fabric
-Django==1.4.2
+Django==1.5.1
 south
 -e git+git://github.com/jbalogh/test-utils.git#egg=test-utils
 -e git+git://github.com/jbalogh/django-nose.git#egg=django-nose
