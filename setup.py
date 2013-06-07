@@ -7,7 +7,7 @@ setup(
     version=csp.__version__,
     description='Django Content Security Policy support.',
     author='James Socol',
-    author_email='james@mozilla.com',
+    author_email='me@jamessocol.com',
     url='http://github.com/mozilla/django-csp',
     license='BSD',
     packages=find_packages(exclude=['example']),
