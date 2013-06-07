@@ -23,9 +23,7 @@ class CSPMiddleware(object):
         if request.path_info.startswith(prefixes):
             return response
 
-        ua = request.META.get('HTTP_USER_AGENT', '')
-        webkit = 'webkit' in ua.lower()
-        header = 'X-WebKit-CSP' if webkit else 'X-Content-Security-Policy'
+        header = 'Content-Security-Policy'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
             header += '-Report-Only'
 
