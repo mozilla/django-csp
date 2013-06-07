@@ -11,9 +11,9 @@ setup(
     author_email='me@jamessocol.com',
     url='http://github.com/mozilla/django-csp',
     license='BSD',
-    packages=find_packages(exclude=['example']),
+    packages=find_packages(),
     include_package_data=True,
-    package_data={'': 'README.rst'},
+    package_data={'': ['README.rst']},
     zip_safe=False,
     classifiers=[
         'Development Status :: 4 - Beta',
