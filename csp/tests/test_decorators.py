@@ -39,4 +39,5 @@ class DecoratorTests(TestCase):
         def view(request):
             return HttpResponse()
         response = view(REQUEST)
-        eq_(response._csp_config, {'img-src': 'foo.com', 'font-src': 'bar.com'})
+        eq_(response._csp_config,
+            {'img-src': 'foo.com', 'font-src': 'bar.com'})

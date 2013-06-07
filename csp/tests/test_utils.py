@@ -80,7 +80,8 @@ class UtilsTests(TestCase):
     @override_settings(CSP_IMG_SRC=['example.com'])
     def test_update_img(self):
         policy = build_policy(update={'img-src': 'example2.com'})
-        policy_eq("default-src 'self'; img-src example.com example2.com", policy)
+        policy_eq("default-src 'self'; img-src example.com example2.com",
+                  policy)
 
     def test_update_missing_setting(self):
         """update should work even if the setting is not defined."""
