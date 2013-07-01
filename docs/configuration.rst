@@ -74,11 +74,11 @@ These settings control the behavior of django-csp. Defaults are in
 
 .. warning::
 
-   Excluding a path on your website might kill all the CSP benefits for
-   good. The typical browser security model for JavaScript considers all
-   paths alike. A Cross-Site Scripting flaw on, e.g., `admin/` can be
-   leveraged to access everything on the same origin.
-
+   Excluding any path on your site will eliminate the benefits of CSP
+   everywhere on your site. The typical browser security model for
+   JavaScript considers all paths alike. A Cross-Site Scripting flaw
+   on, e.g., `admin/` can therefore be leveraged to access everything
+   on the same origin.
 
 .. _Content-Security-Policy: http://www.w3.org/TR/CSP/
 .. _spec: Content-Security-Policy_
