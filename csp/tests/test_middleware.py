@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.test import RequestFactory, TestCase
 from django.test.utils import override_settings
 
@@ -68,3 +68,10 @@ class MiddlewareTests(TestCase):
         response._csp_replace = {'img-src': ['bar.com']}
         mw.process_response(request, response)
         eq_(response[HEADER], "default-src 'self'; img-src bar.com")
+
+    @override_settings(DEBUG=True)
+    def test_debug_exempt(self):
+        request = rf.get('/')
+        response = HttpResponseServerError()
+        mw.process_response(request, response)
+        assert HEADER not in response

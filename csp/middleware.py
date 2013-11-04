@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.six.moves import http_client
 
 from csp.utils import build_policy
 
@@ -20,6 +21,11 @@ class CSPMiddleware(object):
         # Check for ignored path prefix.
         prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', ('/admin',))
         if request.path_info.startswith(prefixes):
+            return response
+
+        # Check for debug view
+        status_code = response.status_code
+        if status_code == http_client.INTERNAL_SERVER_ERROR and settings.DEBUG:
             return response
 
         header = 'Content-Security-Policy'
