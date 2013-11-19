@@ -2,6 +2,11 @@
 CHANGES
 =======
 
+v2.0.3
+======
+
+- Disable CSP on built-in error pages.
+
 v2.0.1 & v2.0.2
 ===============
 
