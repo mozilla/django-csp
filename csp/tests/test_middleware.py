@@ -8,6 +8,7 @@ from csp.middleware import CSPMiddleware
 
 
 HEADER = 'Content-Security-Policy'
+WEBKIT_LEGACY_HEADER = 'X-WebKit-CSP'
 mw = CSPMiddleware()
 rf = RequestFactory()
 
@@ -75,3 +76,21 @@ class MiddlewareTests(TestCase):
         response = HttpResponseServerError()
         mw.process_response(request, response)
         assert HEADER not in response
+
+    @override_settings(CSP_WEBKIT_LEGACY=True)
+    def test_webkit_legacy_header(self):
+        request = rf.get('/')
+        response = HttpResponse()
+        mw.process_response(request, response)
+        assert HEADER in response
+        assert WEBKIT_LEGACY_HEADER in response
+
+    @override_settings(CSP_REPORT_ONLY=True, CSP_WEBKIT_LEGACY=True)
+    def test_webkit_legacy_report_only(self):
+        request = rf.get('/')
+        response = HttpResponse()
+        mw.process_response(request, response)
+        assert HEADER not in response
+        assert WEBKIT_LEGACY_HEADER not in response
+        assert HEADER + '-Report-Only' in response
+        assert WEBKIT_LEGACY_HEADER + '-Report-Only' in response

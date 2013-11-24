@@ -28,8 +28,10 @@ class CSPMiddleware(object):
         if status_code == http_client.INTERNAL_SERVER_ERROR and settings.DEBUG:
             return response
 
+        webkit_legacy_header = 'X-WebKit-CSP'
         header = 'Content-Security-Policy'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
+            webkit_legacy_header += '-Report-Only'
             header += '-Report-Only'
 
         if header in response:
@@ -39,6 +41,8 @@ class CSPMiddleware(object):
         config = getattr(response, '_csp_config', None)
         update = getattr(response, '_csp_update', None)
         replace = getattr(response, '_csp_replace', None)
-        response[header] = build_policy(config=config, update=update,
-                                        replace=replace)
+        policy = build_policy(config=config, update=update, replace=replace)
+        response[header] = policy
+        if getattr(settings, 'CSP_WEBKIT_LEGACY', False):
+            response[webkit_legacy_header] = policy
         return response
