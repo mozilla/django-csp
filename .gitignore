@@ -1,4 +1,5 @@
-*.pyc
+*.py[co]
 *.egg-info
 *.db
+*.sw[po]
 dist
