@@ -94,3 +94,10 @@ class MiddlewareTests(TestCase):
         assert WEBKIT_LEGACY_HEADER not in response
         assert HEADER + '-Report-Only' in response
         assert WEBKIT_LEGACY_HEADER + '-Report-Only' in response
+
+    def test_webkit_legacy_default_off(self):
+        request = rf.get('/')
+        response = HttpResponse()
+        mw.process_response(request, response)
+        assert WEBKIT_LEGACY_HEADER not in response
+        assert WEBKIT_LEGACY_HEADER + 'Report-Only' not in response
