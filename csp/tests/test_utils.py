@@ -102,3 +102,22 @@ class UtilsTests(TestCase):
         policy = build_policy(
             config={'default-src': ["'none'"], 'img-src': ["'self'"]})
         policy_eq("default-src 'none'; img-src 'self'", policy)
+
+    @override_settings(CSP_IMG_SRC=('example.com',))
+    def test_update_string(self):
+        """
+        GitHub issue #40 - given project settings as a tuple, and
+        an update/replace with a string, concatenate correctly.
+        """
+        policy = build_policy(update={'img-src': 'example2.com'})
+        policy_eq("default-src 'self'; img-src example.com example2.com",
+                  policy)
+
+    @override_settings(CSP_IMG_SRC=('example.com',))
+    def test_replace_string(self):
+        """
+        Demonstrate that GitHub issue #40 doesn't affect replacements
+        """
+        policy = build_policy(replace={'img-src': 'example2.com'})
+        policy_eq("default-src 'self'; img-src example2.com",
+                  policy)
