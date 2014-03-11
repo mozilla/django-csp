@@ -27,7 +27,7 @@ def build_policy(config=None, update=None, replace=None):
     if update is not None:
         for k, v in update.items():
             if not isinstance(v, (list, tuple)):
-                v = [v]
+                v = (v,)
             if config[k] is not None:
                 config[k] += v
             else:
