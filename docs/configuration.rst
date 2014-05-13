@@ -30,6 +30,8 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_DEFAULT_SRC``
     Set the ``default-src`` directive. A tuple or list of
     values, e.g. ``("'self'", 'cdn.example.net')``. *'self'*
+``CSP_SCRIPT_SRC``
+    Set the ``script-src`` directive. A tuple or list. *None*
 ``CSP_IMG_SRC``
     Set the ``img-src`` directive. A tuple or list. *None*
 ``CSP_OBJECT_SRC``
