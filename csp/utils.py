@@ -3,7 +3,7 @@ from django.conf import settings
 
 def from_settings():
     return {
-        'default-src': getattr(settings, 'CSP_DEFAULT_SRC', ["'self'"]),
+        'default-src': getattr(settings, 'CSP_DEFAULT_SRC', None),
         'script-src': getattr(settings, 'CSP_SCRIPT_SRC', None),
         'object-src': getattr(settings, 'CSP_OBJECT_SRC', None),
         'style-src': getattr(settings, 'CSP_STYLE_SRC', None),
