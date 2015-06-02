@@ -57,7 +57,7 @@ Changing the Policy
 -------------------
 
 The policy can be changed on a per-view (or even per-request) basis. See
-the `decorator documentation <decorator-chapter>`_ for more details.
+the :ref:`decorator documentation <decorator-chapter>` for more details.
 
 
 Other Settings
@@ -68,7 +68,7 @@ These settings control the behavior of django-csp. Defaults are in
 
 ``CSP_REPORT_ONLY``
     Send "report-only" headers instead of real headers. See the spec_
-    and the chapter on `reports <reports-chapter>`_ for more info. A
+    and the chapter on :ref:`reports <reports-chapter>` for more info. A
     boolean. *False*
 ``CSP_EXCLUDE_URL_PREFIXES``
     A **tuple** of URL prefixes. URLs beginning with any of these will

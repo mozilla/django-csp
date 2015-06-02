@@ -25,4 +25,4 @@ built in report processor, all you need to do is::
         # ...
     )
 
-That should do it! Go on to `configuring CSP <configuration-chapter>`_.
+That should do it! Go on to :ref:`configuring CSP <configuration-chapter>`.
