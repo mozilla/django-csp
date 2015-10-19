@@ -48,8 +48,8 @@ passed to the decorator will be used verbatim.
 
     default-src 'self'; img-src imgsrv.com
 
-The arguments to the decorator the same as the `settings
-<configuration-chapter>`_ without the ``CSP_`` prefix, e.g. ``IMG_SRC``.
+The arguments to the decorator the same as the :ref:`settings
+<configuration-chapter>` without the ``CSP_`` prefix, e.g. ``IMG_SRC``.
 (They are also case-insensitive.) The values are either strings, lists
 or tuples.
 
