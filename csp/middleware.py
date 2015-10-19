@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.six.moves import http_client
 
 from csp.utils import build_policy
@@ -19,7 +20,14 @@ class CSPMiddleware(object):
             return response
 
         # Check for ignored path prefix.
-        prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', ('/admin',))
+        prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', None)
+        if prefixes is None:
+            # try and get the correct path for the Django admin
+            try:
+                prefixes = (reverse('admin:index'),)
+            except NoReverseMatch:
+                prefixes = ()
+
         if request.path_info.startswith(prefixes):
             return response
 

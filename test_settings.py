@@ -22,3 +22,5 @@ INSTALLED_APPS = (
 )
 
 SECRET_KEY = 'csp-test-key'
+
+ROOT_URLCONF = 'test_urlconf'
