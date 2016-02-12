@@ -72,7 +72,8 @@ def test_use_replace():
     response = HttpResponse()
     response._csp_replace = {'img-src': ['bar.com']}
     mw.process_response(request, response)
-    assert response[HEADER] == "default-src 'self'; img-src bar.com"
+    policy_list = sorted(response[HEADER].split('; '))
+    assert policy_list == ["default-src 'self'", "img-src bar.com"]
 
 
 @override_settings(DEBUG=True)
