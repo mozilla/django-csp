@@ -90,7 +90,7 @@ are as above::
 
     from csp.decorators import csp
 
-    @csp(DEFAULT_SRC="'self'", IMG_SRC='imgsrv.com',
+    @csp(DEFAULT_SRC=["'self'"], IMG_SRC=['imgsrv.com'],
          SCRIPT_SRC=['scriptsrv.com', 'googleanalytics.com'])
     def myview(request):
         return render(...)
