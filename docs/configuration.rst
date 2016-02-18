@@ -46,11 +46,24 @@ These settings affect the policy in the header. The defaults are in
     Set the ``connect-src`` directive. A tuple or list. *None*
 ``CSP_STYLE_SRC``
     Set the ``style-src`` directive. A tuple or list. *None*
+``CSP_BASE_URI``
+    Set the ``base-uri`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
+``CSP_CHILD_SRC``
+    Set the ``child-src`` directive. A tuple or list. *None*
+``CSP_FRAME_ANCESTORS``
+    Set the ``FRAME_ANCESTORS`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
+``CSP_FORM_ACTION``
+    Set the ``FORM_ACTION`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
 ``CSP_SANDBOX``
     Set the ``sandbox`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
 ``CSP_REPORT_URI``
     Set the ``report-uri`` directive. A **string** with a full or
     relative URI.
+    Note: This doesn't use default-src as a fall-back.
 
 
 Changing the Policy
