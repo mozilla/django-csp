@@ -42,6 +42,7 @@ class DecoratorTests(TestCase):
         eq_(response._csp_config,
             {'img-src': ['foo.com'], 'font-src': ['bar.com']})
         mw.process_response(REQUEST, response)
+        policy_list = sorted(response['Content-Security-Policy'].split("; "))
         eq_(policy_list, ["font-src bar.com", "img-src foo.com"])
 
     def test_csp_string_values(self):
