@@ -14,6 +14,13 @@ env:
   - DJANGO_VERSION=1.7.x
   - DJANGO_VERSION=1.6.x
 
+matrix:
+  exclude:
+    - python: '3.5'
+      env: DJANGO_VERSION=1.7.x
+    - python: '3.5'
+      env: DJANGO_VERSION=1.6.x
+
 install:
   - pip install tox
 
