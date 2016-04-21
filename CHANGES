@@ -2,6 +2,17 @@
 CHANGES
 =======
 
+v3.0
+====
+
+Currenty in development.
+
+ * Add support for Python 3 and PyPy
+ * Move to pytest for testing
+ * Add wheel build support
+ * Drops support for Django < 1.6, adds support for Django 1.6, 1.7, 1.8 and 1.9
+
+
 v2.0.3
 ======
 

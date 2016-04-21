@@ -25,24 +25,24 @@ def build_policy(config=None, update=None, replace=None):
 
     # Update rules from settings.
     if update is not None:
-        for k, v in update.items():
-            if not isinstance(v, (list, tuple)):
-                v = (v,)
-            if config[k] is not None:
-                config[k] += v
+        for key, value in update.items():
+            if not isinstance(value, (list, tuple)):
+                value = (value,)
+            if config[key] is not None:
+                config[key] += value
             else:
-                config[k] = v
+                config[key] = value
 
     # Replace rules from settings.
     if replace is not None:
-        for k, v in replace.items():
-            if v is not None and not isinstance(v, (list, tuple)):
-                v = [v]
-            config[k] = v
+        for key, value in replace.items():
+            if value is not None and not isinstance(value, (list, tuple)):
+                value = [value]
+            config[key] = value
 
     report_uri = config.pop('report-uri', None)
     policy = ['%s %s' % (k, ' '.join(v)) for k, v in
-              config.items() if v is not None]
+              sorted(config.items()) if v is not None]
     if report_uri:
         policy.append('report-uri %s' % report_uri)
     return '; '.join(policy)

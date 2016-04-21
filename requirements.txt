@@ -1,4 +1,0 @@
-# These are required to run the tests.
-Django==1.5.1
-nose
-mock
