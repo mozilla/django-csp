@@ -27,6 +27,26 @@ class UtilsTests(TestCase):
         policy = build_policy()
         policy_eq("default-src 'self'; script-src example.com", policy)
 
+    @override_settings(CSP_FORM_ACTION=['example.com'])
+    def test_form_action(self):
+        policy = build_policy()
+        policy_eq("default-src 'self'; form-action example.com", policy)
+
+    @override_settings(CSP_BASE_URI=['example.com'])
+    def test_base_uri(self):
+        policy = build_policy()
+        policy_eq("default-src 'self'; base-uri example.com", policy)
+
+    @override_settings(CSP_CHILD_SRC=['example.com'])
+    def test_child_src(self):
+        policy = build_policy()
+        policy_eq("default-src 'self'; child-src example.com", policy)
+
+    @override_settings(CSP_FRAME_ANCESTORS=['example.com'])
+    def test_frame_ancestors(self):
+        policy = build_policy()
+        policy_eq("default-src 'self'; frame-ancestors example.com", policy)
+
     @override_settings(CSP_OBJECT_SRC=['example.com'])
     def test_object_src(self):
         policy = build_policy()
