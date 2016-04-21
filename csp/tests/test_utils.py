@@ -136,3 +136,27 @@ def test_replace_string():
     policy = build_policy(replace={'img-src': 'example2.com'})
     policy_eq("default-src 'self'; img-src example2.com",
               policy)
+
+
+@override_settings(CSP_FORM_ACTION=['example.com'])
+def test_form_action():
+    policy = build_policy()
+    policy_eq("default-src 'self'; form-action example.com", policy)
+
+
+@override_settings(CSP_BASE_URI=['example.com'])
+def test_base_uri():
+    policy = build_policy()
+    policy_eq("default-src 'self'; base-uri example.com", policy)
+
+
+@override_settings(CSP_CHILD_SRC=['example.com'])
+def test_child_src():
+    policy = build_policy()
+    policy_eq("default-src 'self'; child-src example.com", policy)
+
+
+@override_settings(CSP_FRAME_ANCESTORS=['example.com'])
+def test_frame_ancestors():
+    policy = build_policy()
+    policy_eq("default-src 'self'; frame-ancestors example.com", policy)

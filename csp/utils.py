@@ -14,6 +14,10 @@ def from_settings():
         'connect-src': getattr(settings, 'CSP_CONNECT_SRC', None),
         'sandbox': getattr(settings, 'CSP_SANDBOX', None),
         'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
+        'base-uri': getattr(settings, 'CSP_BASE_URI', None),
+        'child-src': getattr(settings, 'CSP_CHILD_SRC', None),
+        'form-action': getattr(settings, 'CSP_FORM_ACTION', None),
+        'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
     }
 
 
