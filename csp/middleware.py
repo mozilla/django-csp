@@ -19,7 +19,7 @@ class CSPMiddleware(object):
             return response
 
         # Check for ignored path prefix.
-        prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', ('/admin',))
+        prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', ())
         if request.path_info.startswith(prefixes):
             return response
 

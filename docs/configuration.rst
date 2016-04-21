@@ -72,14 +72,14 @@ These settings control the behavior of django-csp. Defaults are in
     boolean. *False*
 ``CSP_EXCLUDE_URL_PREFIXES``
     A **tuple** of URL prefixes. URLs beginning with any of these will
-    not get the CSP headers. *('/admin',)*
+    not get the CSP headers. *()*
 
 .. warning::
 
    Excluding any path on your site will eliminate the benefits of CSP
    everywhere on your site. The typical browser security model for
    JavaScript considers all paths alike. A Cross-Site Scripting flaw
-   on, e.g., `admin/` can therefore be leveraged to access everything
+   on, e.g., `excluded-page/` can therefore be leveraged to access everything
    on the same origin.
 
 .. _Content-Security-Policy: http://www.w3.org/TR/CSP/

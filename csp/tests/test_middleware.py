@@ -26,8 +26,9 @@ class MiddlewareTests(TestCase):
         mw.process_response(request, response)
         assert HEADER not in response
 
+    @override_settings(CSP_EXCLUDE_URL_PREFIXES=('/inlines-r-us'))
     def text_exclude(self):
-        request = rf.get('/admin/foo')
+        request = rf.get('/inlines-r-us/foo')
         response = HttpResponse()
         mw.process_response(request, response)
         assert HEADER not in response
