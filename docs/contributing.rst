@@ -28,11 +28,12 @@ To run the tests, install the requirements from ``requirements.txt``
 
     pip install -r requirements.txt
 
-Then just use the test-running shell script::
+Then just `py.test`_ to run the tests::
 
-    ./run.sh test
+    py.test
 
 
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
 .. _flake8: https://pypi.python.org/pypi/flake8
 .. _virtualenv: http://www.virtualenv.org/
+.. _py.test: https://pytest.org/latest/usage.html
