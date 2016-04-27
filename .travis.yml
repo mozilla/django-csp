@@ -1,9 +1,28 @@
+sudo: false
+
 language: python
-env:
- - DJANGO_VERSION=1.4.5
- - DJANGO_VERSION=1.5.1
+
 python:
- - "2.6"
- - "2.7"
-install: pip install -q Django==${DJANGO_VERSION} --use-mirrors
-script: ./run.sh test
+  - '2.7'
+  - '3.4'
+  - '3.5'
+  - pypy
+
+env:
+  - DJANGO_VERSION=1.9.x
+  - DJANGO_VERSION=1.8.x
+  - DJANGO_VERSION=1.7.x
+  - DJANGO_VERSION=1.6.x
+
+matrix:
+  exclude:
+    - python: '3.5'
+      env: DJANGO_VERSION=1.7.x
+    - python: '3.5'
+      env: DJANGO_VERSION=1.6.x
+
+install:
+  - pip install tox
+
+script:
+  - tox -e "$TRAVIS_PYTHON_VERSION-$DJANGO_VERSION"

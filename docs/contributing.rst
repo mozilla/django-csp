@@ -23,16 +23,17 @@ Patches fixing bugs should include regression tests (ideally tests that
 fail without the rest of the patch). Patches adding new features should
 test those features thoroughly.
 
-To run the tests, install the requirements from ``requirements.txt``
-(probably into a virtualenv_)::
+To run the tests, install the requirements (probably into a virtualenv_)::
 
-    pip install -r requirements.txt
+    pip install -e .
+    pip install -e .[tests]
 
-Then just use the test-running shell script::
+Then just `py.test`_ to run the tests::
 
-    ./run.sh test
+    py.test
 
 
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
 .. _flake8: https://pypi.python.org/pypi/flake8
 .. _virtualenv: http://www.virtualenv.org/
+.. _py.test: https://pytest.org/latest/usage.html
