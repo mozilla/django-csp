@@ -23,10 +23,10 @@ Patches fixing bugs should include regression tests (ideally tests that
 fail without the rest of the patch). Patches adding new features should
 test those features thoroughly.
 
-To run the tests, install the requirements from ``requirements.txt``
-(probably into a virtualenv_)::
+To run the tests, install the requirements (probably into a virtualenv_)::
 
-    pip install -r requirements.txt
+    pip install -e .
+    pip install -e .[tests]
 
 Then just `py.test`_ to run the tests::
 
