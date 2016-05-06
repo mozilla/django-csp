@@ -16,8 +16,8 @@ First, install django-csp via pip or from source::
     $ cd django-csp
     $ python setup.py install
 
-Now edit your project's ``settings`` module. If you are not using the
-built in report processor, all you need to do is::
+Now edit your project's ``settings`` module, to add the django-csp middleware
+to ``MIDDLEWARE_CLASSES``, like so::
 
     MIDDLEWARE_CLASSES = (
         # ...
