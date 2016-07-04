@@ -1,4 +1,6 @@
 from django.conf import settings
+import copy
+from itertools import chain
 
 
 def from_settings():
@@ -26,27 +28,32 @@ def build_policy(config=None, update=None, replace=None):
 
     if config is None:
         config = from_settings()
+        # Be careful, don't mutate config as it could be from settings
 
-    # Update rules from settings.
-    if update is not None:
-        for key, value in update.items():
-            if not isinstance(value, (list, tuple)):
-                value = (value,)
-            if config[key] is not None:
-                config[key] += value
+    update = update if update is not None else {}
+    replace = replace if replace is not None else {}
+    csp = {}
+
+    for k in set(chain(config, replace)):
+        v = replace.get(k) or config[k]
+        if v is not None:
+            v = copy.copy(v)
+            if not isinstance(v, (list, tuple)):
+                v = (v,)
+            csp[k] = v
+
+    for k, v in update.items():
+        if v is not None:
+            if not isinstance(v, (list, tuple)):
+                v = (v,)
+            if csp.get(k) is None:
+                csp[k] = v
             else:
-                config[key] = value
+                csp[k] += tuple(v)
 
-    # Replace rules from settings.
-    if replace is not None:
-        for key, value in replace.items():
-            if value is not None and not isinstance(value, (list, tuple)):
-                value = [value]
-            config[key] = value
-
-    report_uri = config.pop('report-uri', None)
-    policy = ['%s %s' % (k, ' '.join(v)) for k, v in
-              sorted(config.items()) if v is not None]
+    report_uri = csp.pop('report-uri', None)
+    policy = ['%s %s' % (kk, ' '.join(vv)) for kk, vv in
+              csp.items() if vv is not None]
     if report_uri:
-        policy.append('report-uri %s' % report_uri)
+        policy.append('report-uri %s' % ' '.join(report_uri))
     return '; '.join(policy)
