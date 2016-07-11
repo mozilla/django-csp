@@ -5,13 +5,16 @@ CHANGES
 v3.0
 ====
 
-Currenty in development.
+- Add support for Python 3 and PyPy
+- Move to pytest for testing
+- Add wheel build support
+- Drops support for Django < 1.6, adds support for Django 1.6, 1.7, 1.8 and 1.9
+- Remove leftover references to the old report processing feature (#64)
+- Fix accidental mutation of config (#52)
 
- * Add support for Python 3 and PyPy
- * Move to pytest for testing
- * Add wheel build support
- * Drops support for Django < 1.6, adds support for Django 1.6, 1.7, 1.8 and 1.9
-
+Please note that this is a big release that touches quite a few parts so please
+make sure you're testing thoroughly and report any issues to
+https://github.com/mozilla/django-csp/issues
 
 v2.0.3
 ======
