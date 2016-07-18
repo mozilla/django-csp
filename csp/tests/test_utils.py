@@ -1,4 +1,6 @@
 from django.test.utils import override_settings
+from django.utils.functional import lazy
+from django.utils import six
 
 from csp.utils import build_policy
 
@@ -12,6 +14,13 @@ def policy_eq(a, b, msg='%r != %r'):
 def test_empty_policy():
     policy = build_policy()
     assert "default-src 'self'" == policy
+
+
+def literal(s):
+    return s
+
+
+lazy_literal = lazy(literal, six.text_type)
 
 
 @override_settings(CSP_DEFAULT_SRC=['example.com', 'example2.com'])
@@ -82,6 +91,12 @@ def test_sandbox_empty():
 
 @override_settings(CSP_REPORT_URI='/foo')
 def test_report_uri():
+    policy = build_policy()
+    policy_eq("default-src 'self'; report-uri /foo", policy)
+
+
+@override_settings(CSP_REPORT_URI=lazy_literal('/foo'))
+def test_report_uri_lazy():
     policy = build_policy()
     policy_eq("default-src 'self'; report-uri /foo", policy)
 
