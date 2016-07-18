@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils.encoding import force_text
 import copy
 from itertools import chain
 
@@ -55,5 +56,6 @@ def build_policy(config=None, update=None, replace=None):
     policy = ['%s %s' % (kk, ' '.join(vv)) for kk, vv in
               csp.items() if vv is not None]
     if report_uri:
+        report_uri = map(force_text, report_uri)
         policy.append('report-uri %s' % ' '.join(report_uri))
     return '; '.join(policy)
