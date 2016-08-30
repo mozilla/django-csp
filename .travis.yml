@@ -9,6 +9,7 @@ python:
   - pypy
 
 env:
+  - DJANGO_VERSION=1.10.x
   - DJANGO_VERSION=1.9.x
   - DJANGO_VERSION=1.8.x
   - DJANGO_VERSION=1.7.x
