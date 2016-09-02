@@ -1,10 +1,20 @@
 from django.conf import settings
 from django.utils.six.moves import http_client
 
+try:
+    from django.utils.deprecation import MiddlewareMixin
+except ImportError:
+    class MiddlewareMixin(object):
+        """
+        If this middleware doesn't exist, this is an older version of django
+        and we don't need it.
+        """
+        pass
+
 from csp.utils import build_policy
 
 
-class CSPMiddleware(object):
+class CSPMiddleware(MiddlewareMixin):
     """
     Implements the Content-Security-Policy response header, which
     conforming user-agents can use to restrict the permitted sources
