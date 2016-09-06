@@ -2,7 +2,7 @@
 .. image:: https://badge.fury.io/py/django_csp.svg
    :target: https://pypi.python.org/pypi/django_csp
 
-.. image:: https://travis-ci.org/mozilla/django-csp.png?branch=master
+.. image:: https://travis-ci.org/mozilla/django-csp.svg?branch=master
    :target: https://travis-ci.org/mozilla/django-csp
 
 
