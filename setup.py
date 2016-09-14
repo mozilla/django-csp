@@ -4,7 +4,7 @@ import codecs
 from setuptools import setup, find_packages
 
 
-version = '3.0'
+version = '3.1'
 
 
 if sys.argv[-1] == 'publish':
@@ -23,7 +23,7 @@ def read(*parts):
 
 
 install_requires = [
-    'Django>=1.6,<1.10',
+    'Django>=1.6,<1.11',
 ]
 
 
