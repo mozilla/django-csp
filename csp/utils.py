@@ -21,6 +21,7 @@ def from_settings():
         'child-src': getattr(settings, 'CSP_CHILD_SRC', None),
         'form-action': getattr(settings, 'CSP_FORM_ACTION', None),
         'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
+        'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
     }
 
 

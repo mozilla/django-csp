@@ -175,3 +175,9 @@ def test_child_src():
 def test_frame_ancestors():
     policy = build_policy()
     policy_eq("default-src 'self'; frame-ancestors example.com", policy)
+
+
+@override_settings(CSP_MANIFEST_SRC=['example.com'])
+def test_manifest_src():
+    policy = build_policy()
+    policy_eq("default-src 'self'; manifest-src example.com", policy)
