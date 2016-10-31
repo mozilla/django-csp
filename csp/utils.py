@@ -23,6 +23,7 @@ def from_settings():
         'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
         'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
         'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
+        'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
     }
 
 

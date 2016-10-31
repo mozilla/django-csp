@@ -68,6 +68,9 @@ These settings affect the policy in the header. The defaults are in
     Set the ``manifest-src`` directive. A tuple or list. *None*
 ``CSP_WOKER_SRC``
     Set the ``worker-src`` directive. A tuple or list. *None*
+``CSP_PLUGIN_TYPES``
+    Set the ``plugin-types`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
 
 
 Changing the Policy

@@ -187,3 +187,9 @@ def test_manifest_src():
 def test_worker_src():
     policy = build_policy()
     policy_eq("default-src 'self'; worker-src example.com", policy)
+
+
+@override_settings(CSP_PLUGIN_TYPES=['application/pdf'])
+def test_plugin_types():
+    policy = build_policy()
+    policy_eq("default-src 'self'; plugin-types application/pdf", policy)
