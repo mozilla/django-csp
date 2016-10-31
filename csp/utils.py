@@ -22,6 +22,7 @@ def from_settings():
         'form-action': getattr(settings, 'CSP_FORM_ACTION', None),
         'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
         'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
+        'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
     }
 
 
