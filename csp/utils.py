@@ -24,6 +24,7 @@ def from_settings():
         'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
         'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
         'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
+        'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
     }
 
 

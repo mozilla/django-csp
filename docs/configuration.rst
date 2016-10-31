@@ -71,6 +71,10 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_PLUGIN_TYPES``
     Set the ``plugin-types`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
+``CSP_REQUIRE_SRI_FOR``
+    Set the ``require-sri-for`` directive. A tuple or list. *None*
+    Valid values: ``script``, ``style``, or both. See: require-sri-for-known-tokens_
+    Note: This doesn't use default-src as a fall-back.
 
 
 Changing the Policy
@@ -104,3 +108,4 @@ These settings control the behavior of django-csp. Defaults are in
 
 .. _Content-Security-Policy: http://www.w3.org/TR/CSP/
 .. _spec: Content-Security-Policy_
+.. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for

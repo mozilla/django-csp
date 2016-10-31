@@ -193,3 +193,9 @@ def test_worker_src():
 def test_plugin_types():
     policy = build_policy()
     policy_eq("default-src 'self'; plugin-types application/pdf", policy)
+
+
+@override_settings(CSP_REQUIRE_SRI_FOR=['script'])
+def test_require_sri_for():
+    policy = build_policy()
+    policy_eq("default-src 'self'; require-sri-for script", policy)
