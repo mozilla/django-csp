@@ -75,6 +75,9 @@ These settings affect the policy in the header. The defaults are in
     Set the ``require-sri-for`` directive. A tuple or list. *None*
     Valid values: ``script``, ``style``, or both. See: require-sri-for-known-tokens_
     Note: This doesn't use default-src as a fall-back.
+``CSP_UPGRADE_INSECURE_REQUESTS``
+    Include ``upgrade-insecure-requests`` directive. A boolean. *None*
+    See: upgrade-insecure-requests_
 
 
 Changing the Policy
@@ -109,3 +112,4 @@ These settings control the behavior of django-csp. Defaults are in
 .. _Content-Security-Policy: http://www.w3.org/TR/CSP/
 .. _spec: Content-Security-Policy_
 .. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
+.. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery

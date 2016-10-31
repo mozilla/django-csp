@@ -199,3 +199,9 @@ def test_plugin_types():
 def test_require_sri_for():
     policy = build_policy()
     policy_eq("default-src 'self'; require-sri-for script", policy)
+
+
+@override_settings(CSP_UPGRADE_INSECURE_REQUESTS=True)
+def test_upgrade_insecure_requests():
+    policy = build_policy()
+    policy_eq("default-src 'self'; upgrade-insecure-requests ", policy)

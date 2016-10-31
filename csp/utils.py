@@ -25,6 +25,8 @@ def from_settings():
         'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
         'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
         'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
+        'upgrade-insecure-requests': getattr(
+            settings, 'CSP_UPGRADE_INSECURE_REQUESTS', None),
     }
 
 
@@ -57,9 +59,16 @@ def build_policy(config=None, update=None, replace=None):
                 csp[k] += tuple(v)
 
     report_uri = csp.pop('report-uri', None)
+    upgrade_insecure_requests = csp.pop('upgrade-insecure-requests', None)
+
     policy = ['%s %s' % (kk, ' '.join(vv)) for kk, vv in
               csp.items() if vv is not None]
+
     if report_uri:
         report_uri = map(force_text, report_uri)
         policy.append('report-uri %s' % ' '.join(report_uri))
+
+    if upgrade_insecure_requests:
+        policy.append('upgrade-insecure-requests ')
+
     return '; '.join(policy)
