@@ -76,10 +76,10 @@ These settings affect the policy in the header. The defaults are in
     Valid values: ``script``, ``style``, or both. See: require-sri-for-known-tokens_
     Note: This doesn't use default-src as a fall-back.
 ``CSP_UPGRADE_INSECURE_REQUESTS``
-    Include ``upgrade-insecure-requests`` directive. A boolean. *None*
+    Include ``upgrade-insecure-requests`` directive. A boolean. *False*
     See: upgrade-insecure-requests_
 ``CSP_UPGRADE_INSECURE_REQUESTS``
-    Include ``block-all-mixed-content`` directive. A boolean. *None*
+    Include ``block-all-mixed-content`` directive. A boolean. *False*
     See: block-all-mixed-content_
 
 
