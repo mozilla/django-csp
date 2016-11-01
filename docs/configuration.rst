@@ -78,6 +78,9 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_UPGRADE_INSECURE_REQUESTS``
     Include ``upgrade-insecure-requests`` directive. A boolean. *None*
     See: upgrade-insecure-requests_
+``CSP_UPGRADE_INSECURE_REQUESTS``
+    Include ``block-all-mixed-content`` directive. A boolean. *None*
+    See: block-all-mixed-content_
 
 
 Changing the Policy
@@ -113,3 +116,4 @@ These settings control the behavior of django-csp. Defaults are in
 .. _spec: Content-Security-Policy_
 .. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
 .. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
+.. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/

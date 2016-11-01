@@ -27,6 +27,8 @@ def from_settings():
         'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
         'upgrade-insecure-requests': getattr(
             settings, 'CSP_UPGRADE_INSECURE_REQUESTS', None),
+        'block-all-mixed-content': getattr(
+            settings, 'CSP_BLOCK_ALL_MIXED_CONTENT', None),
     }
 
 
@@ -60,6 +62,7 @@ def build_policy(config=None, update=None, replace=None):
 
     report_uri = csp.pop('report-uri', None)
     upgrade_insecure_requests = csp.pop('upgrade-insecure-requests', None)
+    block_all_mixed_content = csp.pop('block-all-mixed-content', None)
 
     policy = ['%s %s' % (kk, ' '.join(vv)) for kk, vv in
               csp.items() if vv is not None]
@@ -70,5 +73,8 @@ def build_policy(config=None, update=None, replace=None):
 
     if upgrade_insecure_requests:
         policy.append('upgrade-insecure-requests ')
+
+    if block_all_mixed_content:
+        policy.append('block-all-mixed-content ')
 
     return '; '.join(policy)

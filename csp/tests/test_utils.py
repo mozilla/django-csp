@@ -205,3 +205,9 @@ def test_require_sri_for():
 def test_upgrade_insecure_requests():
     policy = build_policy()
     policy_eq("default-src 'self'; upgrade-insecure-requests ", policy)
+
+
+@override_settings(CSP_BLOCK_ALL_MIXED_CONTENT=True)
+def test_block_all_mixed_content():
+    policy = build_policy()
+    policy_eq("default-src 'self'; block-all-mixed-content ", policy)
