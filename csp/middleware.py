@@ -1,4 +1,7 @@
+from functools import partial
+
 from django.conf import settings
+from django.utils.crypto import get_random_string
 from django.utils.six.moves import http_client
 
 try:
@@ -23,6 +26,14 @@ class CSPMiddleware(MiddlewareMixin):
     See http://www.w3.org/TR/CSP/
 
     """
+    def _make_nonce(self, request, length=16):
+        # Return cached value if this has been executed already
+        if not getattr(request, '_csp_nonce', None):
+            request._csp_nonce = get_random_string(length)
+        return request._csp_nonce
+
+    def process_request(self, request):
+        request.csp_nonce = partial(self._make_nonce, request)
 
     def process_response(self, request, response):
         if getattr(response, '_csp_exempt', False):
@@ -49,6 +60,8 @@ class CSPMiddleware(MiddlewareMixin):
         config = getattr(response, '_csp_config', None)
         update = getattr(response, '_csp_update', None)
         replace = getattr(response, '_csp_replace', None)
+        nonce = getattr(request, '_csp_nonce', None)
+
         response[header] = build_policy(config=config, update=update,
-                                        replace=replace)
+                                        replace=replace, nonce=nonce)
         return response

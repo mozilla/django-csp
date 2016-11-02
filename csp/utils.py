@@ -32,7 +32,7 @@ def from_settings():
     }
 
 
-def build_policy(config=None, update=None, replace=None):
+def build_policy(config=None, update=None, replace=None, nonce=None):
     """Builds the policy as a string from the settings."""
 
     if config is None:
@@ -75,5 +75,8 @@ def build_policy(config=None, update=None, replace=None):
     if report_uri:
         report_uri = map(force_text, report_uri)
         policy_parts.append('report-uri %s' % ' '.join(report_uri))
+
+    if nonce:
+        policy_parts.append('nonce-%s' % nonce)
 
     return '; '.join(policy_parts)

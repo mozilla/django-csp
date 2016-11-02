@@ -211,3 +211,8 @@ def test_upgrade_insecure_requests():
 def test_block_all_mixed_content():
     policy = build_policy()
     policy_eq("default-src 'self'; block-all-mixed-content", policy)
+
+
+def test_nonce():
+    policy = build_policy(nonce='abc123')
+    policy_eq("default-src 'self'; nonce-abc123", policy)
