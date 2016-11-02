@@ -175,3 +175,39 @@ def test_child_src():
 def test_frame_ancestors():
     policy = build_policy()
     policy_eq("default-src 'self'; frame-ancestors example.com", policy)
+
+
+@override_settings(CSP_MANIFEST_SRC=['example.com'])
+def test_manifest_src():
+    policy = build_policy()
+    policy_eq("default-src 'self'; manifest-src example.com", policy)
+
+
+@override_settings(CSP_WORKER_SRC=['example.com'])
+def test_worker_src():
+    policy = build_policy()
+    policy_eq("default-src 'self'; worker-src example.com", policy)
+
+
+@override_settings(CSP_PLUGIN_TYPES=['application/pdf'])
+def test_plugin_types():
+    policy = build_policy()
+    policy_eq("default-src 'self'; plugin-types application/pdf", policy)
+
+
+@override_settings(CSP_REQUIRE_SRI_FOR=['script'])
+def test_require_sri_for():
+    policy = build_policy()
+    policy_eq("default-src 'self'; require-sri-for script", policy)
+
+
+@override_settings(CSP_UPGRADE_INSECURE_REQUESTS=True)
+def test_upgrade_insecure_requests():
+    policy = build_policy()
+    policy_eq("default-src 'self'; upgrade-insecure-requests", policy)
+
+
+@override_settings(CSP_BLOCK_ALL_MIXED_CONTENT=True)
+def test_block_all_mixed_content():
+    policy = build_policy()
+    policy_eq("default-src 'self'; block-all-mixed-content", policy)

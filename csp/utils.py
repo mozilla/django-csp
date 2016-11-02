@@ -21,6 +21,14 @@ def from_settings():
         'child-src': getattr(settings, 'CSP_CHILD_SRC', None),
         'form-action': getattr(settings, 'CSP_FORM_ACTION', None),
         'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
+        'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
+        'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
+        'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
+        'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
+        'upgrade-insecure-requests': getattr(
+            settings, 'CSP_UPGRADE_INSECURE_REQUESTS', False),
+        'block-all-mixed-content': getattr(
+            settings, 'CSP_BLOCK_ALL_MIXED_CONTENT', False),
     }
 
 
@@ -53,9 +61,19 @@ def build_policy(config=None, update=None, replace=None):
                 csp[k] += tuple(v)
 
     report_uri = csp.pop('report-uri', None)
-    policy = ['%s %s' % (kk, ' '.join(vv)) for kk, vv in
-              csp.items() if vv is not None]
+
+    policy_parts = []
+    for key, value in csp.items():
+        # flag directives with an empty directive value
+        if len(value) and value[0] is True:
+            policy_parts.append(key)
+        elif len(value) and value[0] is False:
+            pass
+        else:  # directives with many values like src lists
+            policy_parts.append('%s %s' % (key, ' '.join(value)))
+
     if report_uri:
         report_uri = map(force_text, report_uri)
-        policy.append('report-uri %s' % ' '.join(report_uri))
-    return '; '.join(policy)
+        policy_parts.append('report-uri %s' % ' '.join(report_uri))
+
+    return '; '.join(policy_parts)

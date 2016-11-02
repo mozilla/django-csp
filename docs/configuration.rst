@@ -64,6 +64,23 @@ These settings affect the policy in the header. The defaults are in
     Set the ``report-uri`` directive. A **string** with a full or
     relative URI.
     Note: This doesn't use default-src as a fall-back.
+``CSP_MANIFEST_SRC``
+    Set the ``manifest-src`` directive. A tuple or list. *None*
+``CSP_WOKER_SRC``
+    Set the ``worker-src`` directive. A tuple or list. *None*
+``CSP_PLUGIN_TYPES``
+    Set the ``plugin-types`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
+``CSP_REQUIRE_SRI_FOR``
+    Set the ``require-sri-for`` directive. A tuple or list. *None*
+    Valid values: ``script``, ``style``, or both. See: require-sri-for-known-tokens_
+    Note: This doesn't use default-src as a fall-back.
+``CSP_UPGRADE_INSECURE_REQUESTS``
+    Include ``upgrade-insecure-requests`` directive. A boolean. *False*
+    See: upgrade-insecure-requests_
+``CSP_UPGRADE_INSECURE_REQUESTS``
+    Include ``block-all-mixed-content`` directive. A boolean. *False*
+    See: block-all-mixed-content_
 
 
 Changing the Policy
@@ -97,3 +114,6 @@ These settings control the behavior of django-csp. Defaults are in
 
 .. _Content-Security-Policy: http://www.w3.org/TR/CSP/
 .. _spec: Content-Security-Policy_
+.. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
+.. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
+.. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/
