@@ -24,6 +24,7 @@ def read(*parts):
 
 install_requires = [
     'Django>=1.8',
+    'jinja2>=2.9.6'
 ]
 
 

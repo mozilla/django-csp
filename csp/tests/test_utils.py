@@ -1,7 +1,9 @@
+from __future__ import absolute_import
+
+import pytest
 from django.test.utils import override_settings
 from django.utils.functional import lazy
 from django.utils import six
-import pytest
 
 from csp.utils import build_policy
 
