@@ -78,7 +78,7 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_UPGRADE_INSECURE_REQUESTS``
     Include ``upgrade-insecure-requests`` directive. A boolean. *False*
     See: upgrade-insecure-requests_
-``CSP_UPGRADE_INSECURE_REQUESTS``
+``CSP_BLOCK_ALL_MIXED_CONTENT``
     Include ``block-all-mixed-content`` directive. A boolean. *False*
     See: block-all-mixed-content_
 
