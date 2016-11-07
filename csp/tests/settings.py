@@ -1,4 +1,5 @@
 CSP_REPORT_ONLY = False
+CSP_DISABLE_NONCE = False
 
 DATABASES = {
     'default': {

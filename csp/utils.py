@@ -76,7 +76,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
         report_uri = map(force_text, report_uri)
         policy_parts.append('report-uri %s' % ' '.join(report_uri))
 
-    if nonce:
+    if nonce and not getattr(settings, 'CSP_DISABLE_NONCE', False):
         policy_parts.append('nonce-%s' % nonce)
 
     return '; '.join(policy_parts)
