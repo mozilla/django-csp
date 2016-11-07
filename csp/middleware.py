@@ -27,7 +27,8 @@ class CSPMiddleware(MiddlewareMixin):
 
     """
     def _make_nonce(self, request, length=16):
-        # Return cached value if this has been executed already
+        # Ensure that any subsequent calls to request.csp_nonce return the
+        # same value
         if not getattr(request, '_csp_nonce', None):
             request._csp_nonce = get_random_string(length)
         return request._csp_nonce
