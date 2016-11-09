@@ -2,6 +2,7 @@ from functools import partial
 
 from django.conf import settings
 from django.utils.crypto import get_random_string
+from django.utils.functional import SimpleLazyObject
 from django.utils.six.moves import http_client
 
 try:
@@ -34,7 +35,8 @@ class CSPMiddleware(MiddlewareMixin):
         return request._csp_nonce
 
     def process_request(self, request):
-        request.csp_nonce = partial(self._make_nonce, request)
+        nonce = partial(self._make_nonce, request)
+        request.csp_nonce = SimpleLazyObject(nonce)
 
     def process_response(self, request, response):
         if getattr(response, '_csp_exempt', False):
