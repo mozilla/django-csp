@@ -1,6 +1,7 @@
 from django.test.utils import override_settings
 from django.utils.functional import lazy
 from django.utils import six
+import pytest
 
 from csp.utils import build_policy
 
@@ -167,8 +168,9 @@ def test_base_uri():
 
 @override_settings(CSP_CHILD_SRC=['example.com'])
 def test_child_src():
-    policy = build_policy()
-    policy_eq("default-src 'self'; child-src example.com", policy)
+    with pytest.warns(DeprecationWarning):
+        policy = build_policy()
+        policy_eq("default-src 'self'; child-src example.com", policy)
 
 
 @override_settings(CSP_FRAME_ANCESTORS=['example.com'])
