@@ -6,7 +6,7 @@ import warnings
 
 
 CHILD_SRC_DEPRECATION_WARNING = \
-    'child-src is deprecated in CSP v3.  Use frame-src and worker-src.'
+    'child-src is deprecated in CSP v3. Use frame-src and worker-src.'
 
 
 def from_settings():
