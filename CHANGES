@@ -2,10 +2,22 @@
 CHANGES
 =======
 
-v3.0.1
-======
+Upcoming (3.2)
+==============
 
-- Add deprecation warning for child-src
+- Add manifest-src fetch directive - https://w3c.github.io/webappsec-csp/#directive-manifest-src
+- Add worker-src fetch directive - https://w3c.github.io/webappsec-csp/#directive-worker-src
+- Add plugin-types document directive - https://w3c.github.io/webappsec-csp/#directive-plugin-types
+- Add require-sri-for https://www.w3.org/TR/CSP/#directives-elsewhere - https://w3c.github.io/webappsec-subresource-integrity/#request-verification-algorithms
+- Add upgrade-insecure-requests - https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
+- Add block-all-mixed-content - https://w3c.github.io/webappsec-mixed-content/
+- Add deprecation warning for child-src (#80)
+
+3.1
+===
+
+- Add support for Django 1.10 middlewares
+- Allow lazy objects to be assigned to CSP_REPORT_URI
 
 v3.0
 ====
