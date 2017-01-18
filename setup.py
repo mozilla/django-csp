@@ -4,7 +4,7 @@ import codecs
 from setuptools import setup, find_packages
 
 
-version = '3.1'
+version = '3.2'
 
 
 if sys.argv[-1] == 'publish':

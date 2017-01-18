@@ -2,8 +2,8 @@
 CHANGES
 =======
 
-Upcoming (3.2)
-==============
+3.2
+===
 
 - Add manifest-src fetch directive - https://w3c.github.io/webappsec-csp/#directive-manifest-src
 - Add worker-src fetch directive - https://w3c.github.io/webappsec-csp/#directive-worker-src
