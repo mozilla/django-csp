@@ -65,6 +65,14 @@ def test_csp_replace():
     policy_list = sorted(response['Content-Security-Policy'].split("; "))
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
+    @csp_replace(IMG_SRC=None)
+    def view_removing_directive(request):
+        return HttpResponse()
+    response = view_removing_directive(REQUEST)
+    mw.process_response(REQUEST, response)
+    policy_list = sorted(response["Content-Security-Policy"].split("; "))
+    assert policy_list == ["default-src 'self'"]
+
 
 def test_csp():
     def view_without_decorator(request):

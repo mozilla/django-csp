@@ -49,7 +49,10 @@ def build_policy(config=None, update=None, replace=None):
     csp = {}
 
     for k in set(chain(config, replace)):
-        v = replace.get(k) or config[k]
+        if k in replace:
+            v = replace[k]
+        else:
+            v = config[k]
         if v is not None:
             v = copy.copy(v)
             if not isinstance(v, (list, tuple)):
