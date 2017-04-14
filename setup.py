@@ -23,7 +23,7 @@ def read(*parts):
 
 
 install_requires = [
-    'Django>=1.6,<2.0',
+    'Django>=1.6',
 ]
 
 
