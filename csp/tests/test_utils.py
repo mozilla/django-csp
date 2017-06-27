@@ -3,7 +3,7 @@ from django.utils.functional import lazy
 from django.utils import six
 import pytest
 
-from csp.utils import build_policy
+from csp.utils import build_policy, CspDeprecationWarning
 
 
 def policy_eq(a, b, msg='%r != %r'):
@@ -168,7 +168,7 @@ def test_base_uri():
 
 @override_settings(CSP_CHILD_SRC=['example.com'])
 def test_child_src():
-    with pytest.warns(DeprecationWarning):
+    with pytest.warns(CspDeprecationWarning):
         policy = build_policy()
         policy_eq("default-src 'self'; child-src example.com", policy)
 

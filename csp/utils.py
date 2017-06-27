@@ -9,6 +9,10 @@ CHILD_SRC_DEPRECATION_WARNING = \
     'child-src is deprecated in CSP v3. Use frame-src and worker-src.'
 
 
+class CspDeprecationWarning(DeprecationWarning):
+    pass
+
+
 def from_settings():
     return {
         'default-src': getattr(settings, 'CSP_DEFAULT_SRC', ["'self'"]),
@@ -78,7 +82,7 @@ def build_policy(config=None, update=None, replace=None):
             policy_parts.append('%s %s' % (key, ' '.join(value)))
 
         if key == 'child-src':
-            warnings.warn(CHILD_SRC_DEPRECATION_WARNING, DeprecationWarning)
+            warnings.warn(CHILD_SRC_DEPRECATION_WARNING, CspDeprecationWarning)
 
     if report_uri:
         report_uri = map(force_text, report_uri)
