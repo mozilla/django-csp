@@ -1,5 +1,6 @@
 CSP_REPORT_ONLY = False
-CSP_DISABLE_NONCE = False
+
+CSP_INCLUDE_NONCE_IN = ['default-src']
 
 DATABASES = {
     'default': {

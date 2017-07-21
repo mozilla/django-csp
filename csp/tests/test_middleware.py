@@ -118,7 +118,7 @@ def test_nonce_regenerated_on_new_request():
     assert nonce2 not in response1[HEADER]
 
 
-@override_settings(CSP_DISABLE_NONCE=True)
+@override_settings(CSP_INCLUDE_NONCE_IN=[])
 def test_no_nonce_when_disabled_by_settings():
     request = rf.get('/')
     mw.process_request(request)
