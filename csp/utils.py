@@ -82,5 +82,5 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
             policy_parts[section] = ("%s %s" %
                                      (policy, "nonce-%s" % nonce)).strip()
 
-    return '; '.join(['{} {}'.format(k, v).strip()
-                      for k, v in policy_parts.items()])
+    return '; '.join(['{} {}'.format(k, val).strip()
+                      for k, val in policy_parts.items()])
