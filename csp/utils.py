@@ -62,21 +62,25 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
 
     report_uri = csp.pop('report-uri', None)
 
-    policy_parts = []
+    policy_parts = {}
     for key, value in csp.items():
         # flag directives with an empty directive value
         if len(value) and value[0] is True:
-            policy_parts.append(key)
+            policy_parts[key] = ''
         elif len(value) and value[0] is False:
             pass
         else:  # directives with many values like src lists
-            policy_parts.append('%s %s' % (key, ' '.join(value)))
+            policy_parts[key] = ' '.join(value)
 
     if report_uri:
         report_uri = map(force_text, report_uri)
-        policy_parts.append('report-uri %s' % ' '.join(report_uri))
+        policy_parts['report-uri'] = ' '.join(report_uri)
 
-    if nonce and not getattr(settings, 'CSP_DISABLE_NONCE', False):
-        policy_parts.append('nonce-%s' % nonce)
+    if nonce and getattr(settings, 'CSP_INCLUDE_NONCE_IN', ['default-src']):
+        for section in settings.CSP_INCLUDE_NONCE_IN:
+            policy = policy_parts.get(section, '')
+            policy_parts[section] = ("%s %s" %
+                                     (policy, "nonce-%s" % nonce)).strip()
 
-    return '; '.join(policy_parts)
+    return '; '.join(['{} {}'.format(k, v).strip()
+                      for k, v in policy_parts.items()])
