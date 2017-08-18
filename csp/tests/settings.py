@@ -1,5 +1,7 @@
 CSP_REPORT_ONLY = False
 
+CSP_INCLUDE_NONCE_IN = ['default-src']
+
 DATABASES = {
     'default': {
         'NAME': 'test.db',

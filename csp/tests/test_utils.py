@@ -87,7 +87,7 @@ def test_sandbox():
 @override_settings(CSP_SANDBOX=[])
 def test_sandbox_empty():
     policy = build_policy()
-    policy_eq("default-src 'self'; sandbox ", policy)
+    policy_eq("default-src 'self'; sandbox", policy)
 
 
 @override_settings(CSP_REPORT_URI='/foo')
@@ -213,3 +213,16 @@ def test_upgrade_insecure_requests():
 def test_block_all_mixed_content():
     policy = build_policy()
     policy_eq("default-src 'self'; block-all-mixed-content", policy)
+
+
+def test_nonce():
+    policy = build_policy(nonce='abc123')
+    policy_eq("default-src 'self' 'nonce-abc123'", policy)
+
+
+@override_settings(CSP_INCLUDE_NONCE_IN=['script-src', 'style-src'])
+def test_nonce_include_in():
+    policy = build_policy(nonce='abc123')
+    policy_eq(("default-src 'self'; "
+               "script-src 'nonce-abc123'; "
+               "style-src 'nonce-abc123'"), policy)

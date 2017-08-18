@@ -82,3 +82,47 @@ def test_debug_exempt():
     response = HttpResponseServerError()
     mw.process_response(request, response)
     assert HEADER not in response
+
+
+def test_nonce_created_when_accessed():
+    request = rf.get('/')
+    mw.process_request(request)
+    nonce = str(request.csp_nonce)
+    response = HttpResponse()
+    mw.process_response(request, response)
+    assert nonce in response[HEADER]
+
+
+def test_no_nonce_when_not_accessed():
+    request = rf.get('/')
+    mw.process_request(request)
+    response = HttpResponse()
+    mw.process_response(request, response)
+    assert 'nonce-' not in response[HEADER]
+
+
+def test_nonce_regenerated_on_new_request():
+    request1 = rf.get('/')
+    request2 = rf.get('/')
+    mw.process_request(request1)
+    mw.process_request(request2)
+    nonce1 = str(request1.csp_nonce)
+    nonce2 = str(request2.csp_nonce)
+    assert request1.csp_nonce != request2.csp_nonce
+
+    response1 = HttpResponse()
+    response2 = HttpResponse()
+    mw.process_response(request1, response1)
+    mw.process_response(request2, response2)
+    assert nonce1 not in response2[HEADER]
+    assert nonce2 not in response1[HEADER]
+
+
+@override_settings(CSP_INCLUDE_NONCE_IN=[])
+def test_no_nonce_when_disabled_by_settings():
+    request = rf.get('/')
+    mw.process_request(request)
+    nonce = str(request.csp_nonce)
+    response = HttpResponse()
+    mw.process_response(request, response)
+    assert nonce not in response[HEADER]
