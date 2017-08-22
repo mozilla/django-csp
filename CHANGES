@@ -2,6 +2,19 @@
 CHANGES
 =======
 
+3.4
+===
+
+- Remove support for Django 1.6 and 1.7 as they're out of life
+- Allow removing directives using @csp_replace
+- Add CSP nonce support
+
+3.3
+===
+
+- Add support for Django 1.11
+- Add support for Python 3.6
+
 3.2
 ===
 
