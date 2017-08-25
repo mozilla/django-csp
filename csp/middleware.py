@@ -1,3 +1,4 @@
+import random
 from functools import partial
 
 from django.conf import settings
@@ -65,6 +66,10 @@ class CSPMiddleware(MiddlewareMixin):
         replace = getattr(response, '_csp_replace', None)
         nonce = getattr(request, '_csp_nonce', None)
 
+        report_percentage = getattr(settings, 'CSP_REPORT_PERCENTAGE', 1)
+        include_report_uri = random.random() < report_percentage
+
         response[header] = build_policy(config=config, update=update,
-                                        replace=replace, nonce=nonce)
+                                        replace=replace, nonce=nonce,
+                                        include_report_uri=include_report_uri)
         return response
