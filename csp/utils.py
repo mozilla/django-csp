@@ -87,8 +87,10 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
         report_uri = map(force_text, report_uri)
         policy_parts['report-uri'] = ' '.join(report_uri)
 
-    if nonce and getattr(settings, 'CSP_INCLUDE_NONCE_IN', ['default-src']):
-        for section in settings.CSP_INCLUDE_NONCE_IN:
+    if nonce:
+        include_nonce_in = getattr(settings, 'CSP_INCLUDE_NONCE_IN',
+                                   ['default-src'])
+        for section in include_nonce_in:
             policy = policy_parts.get(section, '')
             policy_parts[section] = ("%s %s" %
                                      (policy, "'nonce-%s'" % nonce)).strip()
