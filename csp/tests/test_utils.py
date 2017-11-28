@@ -1,6 +1,7 @@
 from django.test.utils import override_settings
 from django.utils.functional import lazy
 from django.utils import six
+from django.conf import settings
 import pytest
 
 from csp.utils import build_policy
@@ -226,3 +227,10 @@ def test_nonce_include_in():
     policy_eq(("default-src 'self'; "
                "script-src 'nonce-abc123'; "
                "style-src 'nonce-abc123'"), policy)
+
+
+@override_settings()
+def test_nonce_include_in_absent():
+    del settings.CSP_INCLUDE_NONCE_IN
+    policy = build_policy(nonce='abc123')
+    policy_eq("default-src 'self' 'nonce-abc123'", policy)
