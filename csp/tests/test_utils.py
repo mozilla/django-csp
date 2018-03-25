@@ -103,12 +103,6 @@ def test_report_uri_lazy():
     policy_eq("default-src 'self'; report-uri /foo", policy)
 
 
-@override_settings(CSP_REPORT_URI='/foo')
-def test_report_uri_skip():
-    policy = build_policy(include_report_uri=False)
-    policy_eq("default-src 'self'", policy)
-
-
 @override_settings(CSP_IMG_SRC=['example.com'])
 def test_update_img():
     policy = build_policy(update={'img-src': 'example2.com'})
