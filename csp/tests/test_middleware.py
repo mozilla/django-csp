@@ -126,16 +126,3 @@ def test_no_nonce_when_disabled_by_settings():
     response = HttpResponse()
     mw.process_response(request, response)
     assert nonce not in response[HEADER]
-
-
-@override_settings(CSP_REPORT_PERCENTAGE=0.1, CSP_REPORT_URI='x')
-def test_report_percentage():
-    times_seen = 0
-    for _ in range(1000):
-        request = rf.get('/')
-        response = HttpResponse()
-        mw.process_response(request, response)
-        if 'report-uri' in response[HEADER]:
-            times_seen += 1
-    # Roughly 10%
-    assert 80 <= times_seen <= 120
