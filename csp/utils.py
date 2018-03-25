@@ -37,8 +37,7 @@ def from_settings():
     }
 
 
-def build_policy(config=None, update=None, replace=None, nonce=None,
-                 include_report_uri=True):
+def build_policy(config=None, update=None, replace=None, nonce=None):
     """Builds the policy as a string from the settings."""
 
     if config is None:
@@ -84,7 +83,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None,
         if key == 'child-src':
             warnings.warn(CHILD_SRC_DEPRECATION_WARNING, DeprecationWarning)
 
-    if report_uri and include_report_uri:
+    if report_uri:
         report_uri = map(force_text, report_uri)
         policy_parts['report-uri'] = ' '.join(report_uri)
 
