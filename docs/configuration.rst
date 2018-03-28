@@ -81,6 +81,8 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_BLOCK_ALL_MIXED_CONTENT``
     Include ``block-all-mixed-content`` directive. A boolean. *False*
     See: block-all-mixed-content_
+``CSP_INCLUDE_NONCE_IN``
+    Include dynamically generated nonce in all listed directives, e.g. ``CSP_INCLUDE_NONCE_IN=['script-src']`` will add ``'nonce-<b64-value>'`` to the ``script-src`` directive. A tuple or list. *None*
 
 
 Changing the Policy
