@@ -7,9 +7,12 @@ python:
   - '3.4'
   - '3.5'
   - '3.6'
-  - pypy
+  - 'pypy'
+  - 'pypy3'
 
 env:
+  - DJANGO_VERSION=master
+  - DJANGO_VERSION=2.0.x
   - DJANGO_VERSION=1.11.x
   - DJANGO_VERSION=1.10.x
   - DJANGO_VERSION=1.9.x
@@ -17,6 +20,16 @@ env:
 
 matrix:
   exclude:
+    - python: '3.4'
+      env: DJANGO_VERSION=master
+    - python: '2.7'
+      env: DJANGO_VERSION=master
+    - python: 'pypy'
+      env: DJANGO_VERSION=master
+    - python: '2.7'
+      env: DJANGO_VERSION=2.0.x
+    - python: 'pypy'
+      env: DJANGO_VERSION=2.0.x
     - python: '3.6'
       env: DJANGO_VERSION=1.10.x
     - python: '3.6'
@@ -29,3 +42,4 @@ install:
 
 script:
   - tox -e "$TRAVIS_PYTHON_VERSION-$DJANGO_VERSION"
+  
