@@ -38,8 +38,11 @@ matrix:
       env: DJANGO_VERSION=1.8.x
 
 install:
-  - pip install tox
+  - pip install tox coveralls
 
 script:
   - tox -e "$TRAVIS_PYTHON_VERSION-$DJANGO_VERSION"
+
+after_success:
+  - coveralls
   
