@@ -61,8 +61,8 @@ These settings affect the policy in the header. The defaults are in
     Set the ``sandbox`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
 ``CSP_REPORT_URI``
-    Set the ``report-uri`` directive. A **string** with a full or
-    relative URI.
+    Set the ``report-uri`` directive. A tuple or list. Each URI can be a
+    full or relative URI. *None*
     Note: This doesn't use default-src as a fall-back.
 ``CSP_MANIFEST_SRC``
     Set the ``manifest-src`` directive. A tuple or list. *None*
