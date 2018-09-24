@@ -1,8 +1,12 @@
+import copy
+import re
+import warnings
+
+from collections import OrderedDict
+from itertools import chain
+
 from django.conf import settings
 from django.utils.encoding import force_text
-import copy
-from itertools import chain
-import warnings
 
 
 CHILD_SRC_DEPRECATION_WARNING = \
@@ -97,3 +101,68 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
 
     return '; '.join(['{} {}'.format(k, val).strip()
                       for k, val in policy_parts.items()])
+
+
+def _default_attr_mapper(attr_name, val):
+    if val:
+        return ' {}="{}"'.format(attr_name, val)
+    else:
+        return ''
+
+
+def _bool_attr_mapper(attr_name, val):
+    # Only return the bare word if the value is truthy
+    # ie - defer=False should actually return an empty string
+    if val:
+        return ' {}'.format(attr_name)
+    else:
+        return ''
+
+
+def _async_attr_mapper(attr_name, val):
+    """The `async` attribute works slightly different than the other bool
+    attributes. It can be set explicitly to `false` with no surrounding quotes
+    according to the spec."""
+    if val in [False, 'False']:
+        return ' {}=false'.format(attr_name)
+    elif val:
+        return ' {}'.format(attr_name)
+    else:
+        return ''
+
+
+# Allow per-attribute customization of returned string template
+SCRIPT_ATTRS = OrderedDict()
+SCRIPT_ATTRS['nonce'] = _default_attr_mapper
+SCRIPT_ATTRS['id'] = _default_attr_mapper
+SCRIPT_ATTRS['src'] = _default_attr_mapper
+SCRIPT_ATTRS['type'] = _default_attr_mapper
+SCRIPT_ATTRS['async'] = _async_attr_mapper
+SCRIPT_ATTRS['defer'] = _bool_attr_mapper
+SCRIPT_ATTRS['integrity'] = _default_attr_mapper
+SCRIPT_ATTRS['nomodule'] = _bool_attr_mapper
+
+# Generates an interpolatable string of valid attrs eg - '{nonce}{id}...'
+ATTR_FORMAT_STR = ''.join(['{{{}}}'.format(a) for a in SCRIPT_ATTRS])
+
+
+def _unwrap_script(text):
+    """Extract content defined between script tags"""
+    matches = re.search(r'<script[\s|\S]*>([\s|\S]+?)</script>', text)
+    if matches and len(matches.groups()):
+        return matches.group(1).strip()
+
+    return text
+
+
+def build_script_tag(content=None, **kwargs):
+    data = {}
+    # Iterate all possible script attrs instead of kwargs to make
+    # interpolation as easy as possible below
+    for attr_name, mapper in SCRIPT_ATTRS.items():
+        data[attr_name] = mapper(attr_name, kwargs.get(attr_name))
+
+    # Don't render block contents if the script has a 'src' attribute
+    c = _unwrap_script(content) if content and not kwargs.get('src') else ''
+    attrs = ATTR_FORMAT_STR.format(**data).rstrip()
+    return ('<script{}>{}</script>'.format(attrs, c).strip())
