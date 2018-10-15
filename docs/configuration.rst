@@ -23,7 +23,7 @@ These settings affect the policy in the header. The defaults are in
 
 .. note::
    The "special" source values of ``'self'``, ``'unsafe-inline'``,
-   ``'unsafe-eval'``, and ``'none'`` must be quoted! e.g.:
+   ``'unsafe-eval'``, ``'none'`` and hash-source (``'sha256-...'``) must be quoted! e.g.:
    ``CSP_DEFAULT_SRC = ("'self'",)``. Without quotes they will not work
    as intended.
 
