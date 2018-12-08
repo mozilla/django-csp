@@ -17,9 +17,9 @@ First, install django-csp via pip or from source::
     $ python setup.py install
 
 Now edit your project's ``settings`` module, to add the django-csp middleware
-to ``MIDDLEWARE_CLASSES``, like so::
+to ``MIDDLEWARE``, like so::
 
-    MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = (
         # ...
         'csp.middleware.CSPMiddleware',
         # ...
