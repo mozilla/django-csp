@@ -39,6 +39,11 @@ This library contains an optional context processor, adding ``csp.context_proces
 
 ``Django Template Tag/Jinja Extension``
 =======================================
+
+.. note::
+
+    If you're making use of ``csp.extensions.NoncedScript`` you need to have ``jinja2>=2.9.6`` installed, so please make sure to either use ``django-csp[jinja2]`` in your requirements or define it yourself.
+
 Since it can be easy to forget to include the ``nonce`` property in a script tag, there is also a ``script`` template tag available for both Django templates and Jinja environments.
 
 This tag will output a properly nonced script every time. For the sake of syntax highlighting, you can wrap the content inside of the ``script`` tag in ``<script>`` html tags, which will be subsequently removed in the rendered output. Any valid script tag attributes can be specified and will be forwarded into the rendered html.
