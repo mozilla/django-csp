@@ -24,9 +24,7 @@ def read(*parts):
 
 install_requires = [
     'Django>=1.8',
-    'jinja2>=2.9.6'
 ]
-
 
 test_requires = [
     'pytest==2.9.1',
@@ -53,6 +51,7 @@ setup(
     install_requires=install_requires,
     extras_require={
         'tests': test_requires,
+        'jinja2': ['jinja2>=2.9.6']
     },
     include_package_data=True,
     zip_safe=False,
