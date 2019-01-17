@@ -2,6 +2,13 @@
 CHANGES
 =======
 
+3.5
+===
+
+- New RateLimitedCSPMiddleware middleware (#97)
+- Add support for csp nonce and "script" template tag. (#78)
+- Various smaller fixes along the way
+
 3.4
 ===
 

@@ -4,7 +4,7 @@ import codecs
 from setuptools import setup, find_packages
 
 
-version = '3.4'
+version = '3.5'
 
 
 if sys.argv[-1] == 'publish':
@@ -26,6 +26,9 @@ install_requires = [
     'Django>=1.8',
 ]
 
+jinja2_requires = [
+    'jinja2>=2.9.6',
+]
 
 test_requires = [
     'pytest==2.9.1',
@@ -35,6 +38,8 @@ test_requires = [
     'pep8==1.4.6',
     'mock==1.0.1',
 ]
+
+test_requires += jinja2_requires
 
 
 setup(
@@ -52,6 +57,7 @@ setup(
     install_requires=install_requires,
     extras_require={
         'tests': test_requires,
+        'jinja2': jinja2_requires,
     },
     include_package_data=True,
     zip_safe=False,

@@ -23,7 +23,7 @@ These settings affect the policy in the header. The defaults are in
 
 .. note::
    The "special" source values of ``'self'``, ``'unsafe-inline'``,
-   ``'unsafe-eval'``, and ``'none'`` must be quoted! e.g.:
+   ``'unsafe-eval'``, ``'none'`` and hash-source (``'sha256-...'``) must be quoted! e.g.:
    ``CSP_DEFAULT_SRC = ("'self'",)``. Without quotes they will not work
    as intended.
 
@@ -61,8 +61,8 @@ These settings affect the policy in the header. The defaults are in
     Set the ``sandbox`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
 ``CSP_REPORT_URI``
-    Set the ``report-uri`` directive. A **string** with a full or
-    relative URI.
+    Set the ``report-uri`` directive. A tuple or list. Each URI can be a
+    full or relative URI. *None*
     Note: This doesn't use default-src as a fall-back.
 ``CSP_MANIFEST_SRC``
     Set the ``manifest-src`` directive. A tuple or list. *None*
@@ -81,6 +81,8 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_BLOCK_ALL_MIXED_CONTENT``
     Include ``block-all-mixed-content`` directive. A boolean. *False*
     See: block-all-mixed-content_
+``CSP_INCLUDE_NONCE_IN``
+    Include dynamically generated nonce in all listed directives, e.g. ``CSP_INCLUDE_NONCE_IN=['script-src']`` will add ``'nonce-<b64-value>'`` to the ``script-src`` directive. A tuple or list. *None*
 
 
 Changing the Policy

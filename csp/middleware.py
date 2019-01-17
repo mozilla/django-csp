@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from functools import partial
 
 from django.conf import settings
@@ -60,11 +62,14 @@ class CSPMiddleware(MiddlewareMixin):
             # Don't overwrite existing headers.
             return response
 
+        response[header] = self.build_policy(request, response)
+
+        return response
+
+    def build_policy(self, request, response):
         config = getattr(response, '_csp_config', None)
         update = getattr(response, '_csp_update', None)
         replace = getattr(response, '_csp_replace', None)
         nonce = getattr(request, '_csp_nonce', None)
-
-        response[header] = build_policy(config=config, update=update,
-                                        replace=replace, nonce=nonce)
-        return response
+        return build_policy(config=config, update=update, replace=replace,
+                            nonce=nonce)
