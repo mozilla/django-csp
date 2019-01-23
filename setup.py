@@ -31,8 +31,8 @@ jinja2_requires = [
 ]
 
 test_requires = [
-    'pytest==2.9.1',
-    'pytest-django==2.9.1',
+    'pytest<4.0',
+    'pytest-django',
     'pytest-flakes==1.0.1',
     'pytest-pep8==1.0.6',
     'pep8==1.4.6',
