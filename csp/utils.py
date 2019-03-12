@@ -17,8 +17,12 @@ def from_settings():
     return {
         'default-src': getattr(settings, 'CSP_DEFAULT_SRC', ["'self'"]),
         'script-src': getattr(settings, 'CSP_SCRIPT_SRC', None),
+        'script-src-attr': getattr(settings, 'CSP_SCRIPT_SRC_ATTR', None),
+        'script-src-elem': getattr(settings, 'CSP_SCRIPT_SRC_ELEM', None),
         'object-src': getattr(settings, 'CSP_OBJECT_SRC', None),
         'style-src': getattr(settings, 'CSP_STYLE_SRC', None),
+        'style-src-attr': getattr(settings, 'CSP_STYLE_SRC_ATTR', None),
+        'style-src-elem': getattr(settings, 'CSP_STYLE_SRC_ELEM', None),
         'img-src': getattr(settings, 'CSP_IMG_SRC', None),
         'media-src': getattr(settings, 'CSP_MEDIA_SRC', None),
         'frame-src': getattr(settings, 'CSP_FRAME_SRC', None),
