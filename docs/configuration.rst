@@ -32,6 +32,10 @@ These settings affect the policy in the header. The defaults are in
     values, e.g. ``("'self'", 'cdn.example.net')``. *'self'*
 ``CSP_SCRIPT_SRC``
     Set the ``script-src`` directive. A tuple or list. *None*
+``CSP_SCRIPT_SRC_ATTR``
+    Set the ``script-src-attr`` directive. A tuple or list. *None*
+``CSP_SCRIPT_SRC_ELEM``
+    Set the ``script-src-elem`` directive. A tuple or list. *None*
 ``CSP_IMG_SRC``
     Set the ``img-src`` directive. A tuple or list. *None*
 ``CSP_OBJECT_SRC``
@@ -46,6 +50,10 @@ These settings affect the policy in the header. The defaults are in
     Set the ``connect-src`` directive. A tuple or list. *None*
 ``CSP_STYLE_SRC``
     Set the ``style-src`` directive. A tuple or list. *None*
+``CSP_STYLE_SRC_ATTR``
+    Set the ``style-src-attr`` directive. A tuple or list. *None*
+``CSP_STYLE_SRC_ELEM``
+    Set the ``style-src-elem`` directive. A tuple or list. *None*
 ``CSP_BASE_URI``
     Set the ``base-uri`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
