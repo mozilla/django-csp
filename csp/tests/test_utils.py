@@ -40,13 +40,13 @@ def test_script_src():
 
 
 @override_settings(CSP_SCRIPT_SRC_ATTR=['example.com'])
-def test_script_src():
+def test_script_src_attr():
     policy = build_policy()
     policy_eq("default-src 'self'; script-src-attr example.com", policy)
 
 
 @override_settings(CSP_SCRIPT_SRC_ELEM=['example.com'])
-def test_script_src():
+def test_script_src_elem():
     policy = build_policy()
     policy_eq("default-src 'self'; script-src-elem example.com", policy)
 
@@ -64,13 +64,13 @@ def test_style_src():
 
 
 @override_settings(CSP_STYLE_SRC_ATTR=['example.com'])
-def test_style_src():
+def test_style_src_attr():
     policy = build_policy()
     policy_eq("default-src 'self'; style-src-attr example.com", policy)
 
 
 @override_settings(CSP_STYLE_SRC_ELEM=['example.com'])
-def test_style_src():
+def test_style_src_elem():
     policy = build_policy()
     policy_eq("default-src 'self'; style-src-elem example.com", policy)
 
