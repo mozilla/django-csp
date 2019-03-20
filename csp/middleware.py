@@ -5,7 +5,12 @@ from functools import partial
 from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.utils.functional import SimpleLazyObject
-from django.utils.six.moves import http_client
+
+try:
+    from django.utils.six.moves import http_client
+except ImportError:
+    # django 3.x removed six
+    import http.client as http_client
 
 try:
     from django.utils.deprecation import MiddlewareMixin

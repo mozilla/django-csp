@@ -11,7 +11,7 @@ python:
   - 'pypy3'
 
 env:
-  - DJANGO_VERSION=master
+  - DJANGO_VERSION=2.1.x
   - DJANGO_VERSION=2.0.x
   - DJANGO_VERSION=1.11.x
   - DJANGO_VERSION=1.10.x
@@ -19,13 +19,11 @@ env:
   - DJANGO_VERSION=1.8.x
 
 matrix:
+  include:
+    - python: '3.6'
+      env: DJANGO_VERSION=master
+      dist: xenial  # meet SQLite >=3.8.3 requirement
   exclude:
-    - python: '3.4'
-      env: DJANGO_VERSION=master
-    - python: '2.7'
-      env: DJANGO_VERSION=master
-    - python: 'pypy'
-      env: DJANGO_VERSION=master
     - python: '2.7'
       env: DJANGO_VERSION=2.0.x
     - python: 'pypy'
