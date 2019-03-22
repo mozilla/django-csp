@@ -58,7 +58,7 @@ def test_object_src():
 
 
 @override_settings(CSP_PREFETCH_SRC=['example.com'])
-def test_object_src():
+def test_prefetch_src():
     policy = build_policy()
     policy_eq("default-src 'self'; prefetch-src example.com", policy)
 
