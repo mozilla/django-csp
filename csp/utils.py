@@ -15,6 +15,9 @@ CHILD_SRC_DEPRECATION_WARNING = \
 
 def from_settings():
     return {
+        # Fetch Directives
+        'child-src': getattr(settings, 'CSP_CHILD_SRC', None),
+        'connect-src': getattr(settings, 'CSP_CONNECT_SRC', None),
         'default-src': getattr(settings, 'CSP_DEFAULT_SRC', ["'self'"]),
         'script-src': getattr(settings, 'CSP_SCRIPT_SRC', None),
         'script-src-attr': getattr(settings, 'CSP_SCRIPT_SRC_ATTR', None),
@@ -23,21 +26,25 @@ def from_settings():
         'style-src': getattr(settings, 'CSP_STYLE_SRC', None),
         'style-src-attr': getattr(settings, 'CSP_STYLE_SRC_ATTR', None),
         'style-src-elem': getattr(settings, 'CSP_STYLE_SRC_ELEM', None),
-        'img-src': getattr(settings, 'CSP_IMG_SRC', None),
-        'media-src': getattr(settings, 'CSP_MEDIA_SRC', None),
-        'frame-src': getattr(settings, 'CSP_FRAME_SRC', None),
         'font-src': getattr(settings, 'CSP_FONT_SRC', None),
-        'connect-src': getattr(settings, 'CSP_CONNECT_SRC', None),
-        'sandbox': getattr(settings, 'CSP_SANDBOX', None),
-        'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
+        'frame-src': getattr(settings, 'CSP_FRAME_SRC', None),
+        'img-src': getattr(settings, 'CSP_IMG_SRC', None),
+        'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
+        'media-src': getattr(settings, 'CSP_MEDIA_SRC', None),
+        'prefetch-src': getattr(settings, 'CSP_PREFETCH_SRC', None),
+        'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
+        # Document Directives
         'base-uri': getattr(settings, 'CSP_BASE_URI', None),
-        'child-src': getattr(settings, 'CSP_CHILD_SRC', None),
+        'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
+        'sandbox': getattr(settings, 'CSP_SANDBOX', None),
+        # Navigation Directives
         'form-action': getattr(settings, 'CSP_FORM_ACTION', None),
         'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
-        'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
-        'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
-        'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
+        'navigate-to': getattr(settings, 'CSP_NAVIGATE_TO', None),
+        # Reporting Directives
+        'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
         'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
+        # Other Directives
         'upgrade-insecure-requests': getattr(
             settings, 'CSP_UPGRADE_INSECURE_REQUESTS', False),
         'block-all-mixed-content': getattr(

@@ -57,6 +57,12 @@ def test_object_src():
     policy_eq("default-src 'self'; object-src example.com", policy)
 
 
+@override_settings(CSP_PREFETCH_SRC=['example.com'])
+def test_object_src():
+    policy = build_policy()
+    policy_eq("default-src 'self'; prefetch-src example.com", policy)
+
+
 @override_settings(CSP_STYLE_SRC=['example.com'])
 def test_style_src():
     policy = build_policy()
@@ -204,6 +210,12 @@ def test_child_src():
 def test_frame_ancestors():
     policy = build_policy()
     policy_eq("default-src 'self'; frame-ancestors example.com", policy)
+
+
+@override_settings(CSP_NAVIGATE_TO=['example.com'])
+def test_navigate_to():
+    policy = build_policy()
+    policy_eq("default-src 'self'; navigate-to example.com", policy)
 
 
 @override_settings(CSP_MANIFEST_SRC=['example.com'])
