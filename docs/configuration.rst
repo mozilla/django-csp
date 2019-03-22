@@ -40,6 +40,8 @@ These settings affect the policy in the header. The defaults are in
     Set the ``img-src`` directive. A tuple or list. *None*
 ``CSP_OBJECT_SRC``
     Set the ``object-src`` directive. A tuple or list. *None*
+``CSP_PREFETCH_SRC``
+    Set the ``prefetch-src`` directive. A tuple or list. *None*
 ``CSP_MEDIA_SRC``
     Set the ``media-src`` directive. A tuple or list. *None*
 ``CSP_FRAME_SRC``
@@ -60,7 +62,10 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_CHILD_SRC``
     Set the ``child-src`` directive. A tuple or list. *None* Note: Deprecated in CSP v3. Use frame-src and worker-src instead.
 ``CSP_FRAME_ANCESTORS``
-    Set the ``FRAME_ANCESTORS`` directive. A tuple or list. *None*
+    Set the ``frame-ancestors`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
+``CSP_NAVIGATE_TO``
+    Set the ``navigate-to`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
 ``CSP_FORM_ACTION``
     Set the ``FORM_ACTION`` directive. A tuple or list. *None*
@@ -123,6 +128,7 @@ These settings control the behavior of django-csp. Defaults are in
    on the same origin.
 
 .. _Content-Security-Policy: http://www.w3.org/TR/CSP/
+.. _Content-Security-Policy-L3: https://w3c.github.io/webappsec-csp/
 .. _spec: Content-Security-Policy_
 .. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
 .. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
