@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
 import pytest
+import six
 from django.conf import settings
 from django.test.utils import override_settings
 from django.utils.functional import lazy
-from django.utils import six
 
 from csp.utils import build_policy
 
