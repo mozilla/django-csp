@@ -1,3 +1,4 @@
+dist: xenial   # required for Python >= 3.7
 sudo: false
 
 language: python
@@ -7,10 +8,21 @@ python:
   - '3.4'
   - '3.5'
   - '3.6'
+  - '3.7'
   - 'pypy'
   - 'pypy3'
 
+# Issue: https://travis-ci.org/mozilla/django-csp/jobs/520940574
+# More detail: https://github.com/travis-ci/apt-package-safelist/issues/368#issuecomment-198586476
+addons:
+  apt:
+    sources:
+      - travis-ci/sqlite3
+    packages:
+      - sqlite3
+
 env:
+  - DJANGO_VERSION=2.2.x
   - DJANGO_VERSION=2.1.x
   - DJANGO_VERSION=2.0.x
   - DJANGO_VERSION=1.11.x
@@ -24,6 +36,10 @@ matrix:
       env: DJANGO_VERSION=master
       dist: xenial  # meet SQLite >=3.8.3 requirement
   exclude:
+    - python: '2.7'
+      env: DJANGO_VERSION=2.2.x
+    - python: '2.7'
+      env: DJANGO_VERSION=2.1.x
     - python: '2.7'
       env: DJANGO_VERSION=2.0.x
     - python: 'pypy'
