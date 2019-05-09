@@ -1,4 +1,8 @@
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import (
+    HttpResponse,
+    HttpResponseServerError,
+    HttpResponseNotFound,
+)
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
@@ -77,9 +81,17 @@ def test_use_replace():
 
 
 @override_settings(DEBUG=True)
-def test_debug_exempt():
+def test_debug_errors_exempt():
     request = rf.get('/')
     response = HttpResponseServerError()
+    mw.process_response(request, response)
+    assert HEADER not in response
+
+
+@override_settings(DEBUG=True)
+def test_debug_notfound_exempt():
+    request = rf.get('/')
+    response = HttpResponseNotFound()
     mw.process_response(request, response)
     assert HEADER not in response
 

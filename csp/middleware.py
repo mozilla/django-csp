@@ -56,7 +56,11 @@ class CSPMiddleware(MiddlewareMixin):
 
         # Check for debug view
         status_code = response.status_code
-        if status_code == http_client.INTERNAL_SERVER_ERROR and settings.DEBUG:
+        exempted_debug_codes = (
+            http_client.INTERNAL_SERVER_ERROR,
+            http_client.NOT_FOUND,
+        )
+        if status_code in exempted_debug_codes and settings.DEBUG:
             return response
 
         header = 'Content-Security-Policy'
