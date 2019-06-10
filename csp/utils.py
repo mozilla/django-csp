@@ -43,6 +43,7 @@ def from_settings():
         'navigate-to': getattr(settings, 'CSP_NAVIGATE_TO', None),
         # Reporting Directives
         'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
+        'report-to': getattr(settings, 'CSP_REPORT_TO', None),
         'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
         # Other Directives
         'upgrade-insecure-requests': getattr(
