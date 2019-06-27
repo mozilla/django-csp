@@ -115,6 +115,10 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
                       for k, val in policy_parts.items()])
 
 
+def build_report_policy(config=None, update=None, replace=None, nonce=None):
+
+
+
 def _default_attr_mapper(attr_name, val):
     if val:
         return ' {}="{}"'.format(attr_name, val)

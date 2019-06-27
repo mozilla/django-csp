@@ -59,15 +59,17 @@ class CSPMiddleware(MiddlewareMixin):
         if status_code == http_client.INTERNAL_SERVER_ERROR and settings.DEBUG:
             return response
 
-        header = 'Content-Security-Policy'
+        csp_header = 'Content-Security-Policy'
+        report_header = 'Report-To'
         if getattr(settings, 'CSP_REPORT_ONLY', False):
-            header += '-Report-Only'
+            csp_header += '-Report-Only'
 
-        if header in response:
+        if csp_header in response:
             # Don't overwrite existing headers.
             return response
 
-        response[header] = self.build_policy(request, response)
+        response[csp_header] = self.build_policy(request, response)
+        response[report_header] = self.build_report_policy(request, response)
 
         return response
 
