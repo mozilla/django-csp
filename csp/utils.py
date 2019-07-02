@@ -117,7 +117,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
 
 
 def build_report_policy(config=None, update=None, replace=None, nonce=None):
-"""Builds the report policy as a string from the settings."""
+    """Builds the report policy as a string from the settings."""
 
     if config is None:
         config = from_settings()
