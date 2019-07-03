@@ -116,7 +116,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
                       for k, val in policy_parts.items()])
 
 
-def build_report_policy(config=None, update=None, replace=None, nonce=None):
+def build_report_policy(config=None, update=None, replace=None):
     """Builds the report policy as a string from the settings."""
 
     if config is None:
