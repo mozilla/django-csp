@@ -149,6 +149,7 @@ def build_report_policy(config=None, update=None, replace=None):
 
     return json.dumps(report_to)
 
+
 def _default_attr_mapper(attr_name, val):
     if val:
         return ' {}="{}"'.format(attr_name, val)
