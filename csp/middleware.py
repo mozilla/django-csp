@@ -22,7 +22,7 @@ except ImportError:
         """
         pass
 
-from csp.utils import build_policy
+from csp.utils import build_policy, build_report_policy
 
 
 class CSPMiddleware(MiddlewareMixin):
