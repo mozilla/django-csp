@@ -1,7 +1,6 @@
 import copy
 import re
 import warnings
-import json
 
 from collections import OrderedDict
 from itertools import chain
@@ -114,40 +113,6 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
 
     return '; '.join(['{} {}'.format(k, val).strip()
                       for k, val in policy_parts.items()])
-
-
-def build_report_policy(config=None, update=None, replace=None):
-    """Builds the report policy as a string from the settings."""
-
-    if config is None:
-        config = from_settings()
-        # Be careful, don't mutate config as it could be from settings
-
-    update = update if update is not None else {}
-    replace = replace if replace is not None else {}
-    report_to = {}
-
-    for k in set(chain(config, replace)):
-        if k in replace:
-            v = replace[k]
-        else:
-            v = config[k]
-        if v is not None:
-            v = copy.copy(v)
-            if not isinstance(v, (list, tuple)):
-                v = (v,)
-            report_to[k] = v
-
-    for k, v in update.items():
-        if v is not None:
-            if not isinstance(v, (list, tuple)):
-                v = (v,)
-            if report_to.get(k) is None:
-                report_to[k] = v
-            else:
-                report_to[k] += tuple(v)
-
-    return json.dumps(report_to)
 
 
 def _default_attr_mapper(attr_name, val):
