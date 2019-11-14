@@ -135,18 +135,11 @@ def test_report_uri_lazy():
     policy_eq("default-src 'self'; report-uri /foo", policy)
 
 
-@override_settings(CSP_REPORT_TO='{"group": "some_endpoint", \
-    "max_age": 7, \
-    "endpoints": [\
-    { "url": "https://foo.bar/reports_or_something", "priotity": 1}, \
-    { "url": "https://bar.foo/whatever", "priotity": 2}]}')
+@override_settings(CSP_REPORT_TO='some_endpoint')
 def test_report_to():
     policy = build_policy()
-    policy_eq("default-src 'self'; report-to {\"group\": \"some_endpoint\", \
-    \"max_age\": 7, \
-    \"endpoints\": [\
-    { \"url\": \"https://foo.bar/reports_or_something\", \"priotity\": 1}, \
-    { \"url\": \"https://bar.foo/whatever\", \"priotity\": 2}]}", policy)
+    policy_eq("default-src 'self'; report-to some_endpoint",
+              policy)
 
 
 @override_settings(CSP_IMG_SRC=['example.com'])
