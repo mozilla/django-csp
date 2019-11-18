@@ -135,6 +135,13 @@ def test_report_uri_lazy():
     policy_eq("default-src 'self'; report-uri /foo", policy)
 
 
+@override_settings(CSP_REPORT_TO='some_endpoint')
+def test_report_to():
+    policy = build_policy()
+    policy_eq("default-src 'self'; report-to some_endpoint",
+              policy)
+
+
 @override_settings(CSP_IMG_SRC=['example.com'])
 def test_update_img():
     policy = build_policy(update={'img-src': 'example2.com'})

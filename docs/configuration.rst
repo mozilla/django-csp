@@ -77,6 +77,10 @@ These settings affect the policy in the header. The defaults are in
     Set the ``report-uri`` directive. A tuple or list. Each URI can be a
     full or relative URI. *None*
     Note: This doesn't use default-src as a fall-back.
+``CSP_REPORT_TO``
+    Set the ``report-to`` directive. A string describing a reporting group. *None*
+    Note: This doesn't use default-src as a fall-back.
+    See Section 1.2: https://w3c.github.io/reporting/#group
 ``CSP_MANIFEST_SRC``
     Set the ``manifest-src`` directive. A tuple or list. *None*
 ``CSP_WORKER_SRC``
