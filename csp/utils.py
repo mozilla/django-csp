@@ -6,7 +6,7 @@ from collections import OrderedDict
 from itertools import chain
 
 from django.conf import settings
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 
 CHILD_SRC_DEPRECATION_WARNING = \
@@ -100,7 +100,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
             warnings.warn(CHILD_SRC_DEPRECATION_WARNING, DeprecationWarning)
 
     if report_uri:
-        report_uri = map(force_text, report_uri)
+        report_uri = map(force_str, report_uri)
         policy_parts['report-uri'] = ' '.join(report_uri)
 
     if nonce:
