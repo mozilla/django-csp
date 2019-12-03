@@ -5,6 +5,8 @@
 .. image:: https://travis-ci.org/mozilla/django-csp.svg?branch=master
    :target: https://travis-ci.org/mozilla/django-csp
 
+.. image:: https://coveralls.io/repos/github/mozilla/django-csp/badge.svg?branch=master
+   :target: https://coveralls.io/github/mozilla/django-csp?branch=master
 
 ==========
 Django-CSP
