@@ -22,6 +22,12 @@ env:
 
 matrix:
   include:
+    - python: '3.8'
+      env: DJANGO_VERSION=master
+      dist: xenial  # meet SQLite >=3.8.3 requirement
+    - python: '3.7'
+      env: DJANGO_VERSION=master
+      dist: xenial  # meet SQLite >=3.8.3 requirement
     - python: '3.6'
       env: DJANGO_VERSION=master
       dist: xenial  # meet SQLite >=3.8.3 requirement
