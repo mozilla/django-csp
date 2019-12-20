@@ -2,6 +2,15 @@
 CHANGES
 =======
 
+3.6
+===
+
+- Add support/testing for Django 2.2 and 3.0
+- Add support/testing for Python 3.7 and 3.8
+- Disable CSP for Django NotFound debug view
+- Add new headers used in CSP level 3
+- Add support for the report-to directive
+
 3.5
 ===
 
