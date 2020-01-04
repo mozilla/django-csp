@@ -50,6 +50,8 @@ def from_settings():
             settings, 'CSP_UPGRADE_INSECURE_REQUESTS', False),
         'block-all-mixed-content': getattr(
             settings, 'CSP_BLOCK_ALL_MIXED_CONTENT', False),
+        '_include-nonce-in': getattr(
+            settings, 'CSP_INCLUDE_NONCE_IN', ['default-src']),
     }
 
 
@@ -65,6 +67,8 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
     csp = {}
 
     for k in set(chain(config, replace)):
+        if k.startswith('_'):
+            continue
         if k in replace:
             v = replace[k]
         else:
@@ -104,9 +108,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
         policy_parts['report-uri'] = ' '.join(report_uri)
 
     if nonce:
-        include_nonce_in = getattr(settings, 'CSP_INCLUDE_NONCE_IN',
-                                   ['default-src'])
-        for section in include_nonce_in:
+        for section in config.get('_include-nonce-in', ['default-src']):
             policy = policy_parts.get(section, '')
             policy_parts[section] = ("%s %s" %
                                      (policy, "'nonce-%s'" % nonce)).strip()
