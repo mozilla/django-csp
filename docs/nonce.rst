@@ -28,7 +28,7 @@ Assuming the ``CSP_INCLUDE_NONCE_IN`` list contains the ``script-src`` directive
 
 ``Context Processor``
 =====================
-This library contains an optional context processor, adding ``csp.context_processors.nonce`` to your configured context processors exposes a variable called ``nonce`` into the global template context. This is simple shorthand for ``request.csp_nonce``, but can be useful if you have many occurences of script tags.
+This library contains an optional context processor, adding ``csp.context_processors.nonce`` to your configured context processors exposes a variable called ``nonce`` into the global template context. This is simple shorthand for ``request.csp_nonce``, but can be useful if you have many occurrences of script tags.
 
 .. code-block:: jinja
 
