@@ -1,5 +1,5 @@
 
-.. image:: https://badge.fury.io/py/django_csp.svg
+.. image:: https://badge.fury.io/py/django-csp.svg
    :target: https://pypi.python.org/pypi/django_csp
 
 .. image:: https://travis-ci.org/mozilla/django-csp.svg?branch=master
