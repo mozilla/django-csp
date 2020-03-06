@@ -1,6 +1,5 @@
 from functools import wraps
 
-
 def csp_exempt(f):
     @wraps(f)
     def _wrapped(*a, **kw):

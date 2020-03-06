@@ -8,12 +8,6 @@ from django.conf import settings
 from django.utils.functional import SimpleLazyObject
 
 try:
-    from django.utils.six.moves import http_client
-except ImportError:
-    # django 3.x removed six
-    import http.client as http_client
-
-try:
     from django.utils.deprecation import MiddlewareMixin
 except ImportError:
     class MiddlewareMixin(object):
@@ -23,7 +17,10 @@ except ImportError:
         """
         pass
 
-from csp.utils import build_policy
+from .conf import defaults
+from .utils import (
+    build_policy, EXEMPTED_DEBUG_CODES,
+)
 
 
 class CSPMiddleware(MiddlewareMixin):
@@ -55,17 +52,17 @@ class CSPMiddleware(MiddlewareMixin):
             return response
 
         # Check for ignored path prefix.
-        prefixes = getattr(settings, 'CSP_EXCLUDE_URL_PREFIXES', ())
+        # TODO: Legacy setting
+        prefixes = getattr(
+            settings,
+            'CSP_EXCLUDE_URL_PREFIXES',
+            defaults.EXCLUDE_URL_PREFIXES,
+        )
         if request.path_info.startswith(prefixes):
             return response
 
         # Check for debug view
-        status_code = response.status_code
-        exempted_debug_codes = (
-            http_client.INTERNAL_SERVER_ERROR,
-            http_client.NOT_FOUND,
-        )
-        if status_code in exempted_debug_codes and settings.DEBUG:
+        if response.status_code in EXEMPTED_DEBUG_CODES and settings.DEBUG:
             return response
 
         header = 'Content-Security-Policy'

@@ -7,50 +7,48 @@ from itertools import chain
 from django.conf import settings
 from django.utils.encoding import force_str
 
+try:
+    from django.utils.six.moves import http_client
+except ImportError:
+    # django 3.x removed six
+    import http.client as http_client
+
+from .conf import (
+    defaults, deprecation,
+    setting_to_directive, PSEUDO_DIRECTIVES,
+)
+
+
+HTTP_HEADERS = (
+    'Content-Security-Policy',
+    'Content-Security-Policy-Report-Only',
+)
+
+
+EXEMPTED_DEBUG_CODES = {
+    http_client.INTERNAL_SERVER_ERROR,
+    http_client.NOT_FOUND,
+}
+
 
 def from_settings():
-    return {
-        # Fetch Directives
-        'child-src': getattr(settings, 'CSP_CHILD_SRC', None),
-        'connect-src': getattr(settings, 'CSP_CONNECT_SRC', None),
-        'default-src': getattr(settings, 'CSP_DEFAULT_SRC', ["'self'"]),
-        'script-src': getattr(settings, 'CSP_SCRIPT_SRC', None),
-        'script-src-attr': getattr(settings, 'CSP_SCRIPT_SRC_ATTR', None),
-        'script-src-elem': getattr(settings, 'CSP_SCRIPT_SRC_ELEM', None),
-        'object-src': getattr(settings, 'CSP_OBJECT_SRC', None),
-        'style-src': getattr(settings, 'CSP_STYLE_SRC', None),
-        'style-src-attr': getattr(settings, 'CSP_STYLE_SRC_ATTR', None),
-        'style-src-elem': getattr(settings, 'CSP_STYLE_SRC_ELEM', None),
-        'font-src': getattr(settings, 'CSP_FONT_SRC', None),
-        'frame-src': getattr(settings, 'CSP_FRAME_SRC', None),
-        'img-src': getattr(settings, 'CSP_IMG_SRC', None),
-        'manifest-src': getattr(settings, 'CSP_MANIFEST_SRC', None),
-        'media-src': getattr(settings, 'CSP_MEDIA_SRC', None),
-        'prefetch-src': getattr(settings, 'CSP_PREFETCH_SRC', None),
-        'worker-src': getattr(settings, 'CSP_WORKER_SRC', None),
-        # Document Directives
-        'base-uri': getattr(settings, 'CSP_BASE_URI', None),
-        'plugin-types': getattr(settings, 'CSP_PLUGIN_TYPES', None),
-        'sandbox': getattr(settings, 'CSP_SANDBOX', None),
-        # Navigation Directives
-        'form-action': getattr(settings, 'CSP_FORM_ACTION', None),
-        'frame-ancestors': getattr(settings, 'CSP_FRAME_ANCESTORS', None),
-        'navigate-to': getattr(settings, 'CSP_NAVIGATE_TO', None),
-        # Reporting Directives
-        'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
-        'report-to': getattr(settings, 'CSP_REPORT_TO', None),
-        'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
-        #trusted Types Directives
-        'require-trusted-types-for': getattr(
-            settings,
-            'CSP_REQUIRE_TRUSTED_TYPES_FOR', None),
-        'trusted-types': getattr(settings, 'CSP_TRUSTED_TYPES', None),
-        # Other Directives
-        'upgrade-insecure-requests': getattr(
-            settings, 'CSP_UPGRADE_INSECURE_REQUESTS', False),
-        'block-all-mixed-content': getattr(
-            settings, 'CSP_BLOCK_ALL_MIXED_CONTENT', False),
-    }
+    policies = getattr(settings, 'CSP_POLICIES', defaults.POLICIES)
+    definitions = csp_definitions_update({}, defaults.POLICY_DEFINITIONS)
+    custom_definitions = getattr(
+        settings,
+        'CSP_POLICY_DEFINITIONS',
+        {'default': {}},
+    )
+     # Technically we're modifying Django settings here,
+     # but it shouldn't matter since the end result of either will be the same
+    deprecation._handle_legacy_settings(custom_definitions)
+    for name, csp in custom_definitions.items():
+        definitions[name].update(csp)
+    # TODO: Error handling
+    # TODO: Remove in October 2020 when ordered dicts are the default
+    return OrderedDict(
+        (name, definitions[name]) for name in policies
+    )
 
 
 def build_policy(config=None, update=None, replace=None, nonce=None):
@@ -185,3 +183,16 @@ def build_script_tag(content=None, **kwargs):
     c = _unwrap_script(content) if content and not kwargs.get('src') else ''
     attrs = ATTR_FORMAT_STR.format(**data).rstrip()
     return ('<script{}>{}</script>'.format(attrs, c).strip())
+
+
+def kwarg_to_directive(kwarg, value=None):
+    return setting_to_directive(kwarg, prefix='', value=value)
+
+
+def csp_definitions_update(csp_definitions, other):
+    """ Update one csp defnitions dictionary with another """
+    if isinstance(other, dict):
+        other = other.items()
+    for name, csp in other:
+        csp_definitions.setdefault(name, {}).update(csp)
+    return csp_definitions
