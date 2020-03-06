@@ -14,8 +14,10 @@ except ImportError:
     import http.client as http_client
 
 from .conf import (
-    defaults, deprecation,
-    setting_to_directive, PSEUDO_DIRECTIVES,
+    defaults,
+    deprecation,
+    setting_to_directive,
+    LEGACY_KWARGS,
 )
 
 
@@ -31,58 +33,132 @@ EXEMPTED_DEBUG_CODES = {
 }
 
 
-def from_settings():
-    policies = getattr(settings, 'CSP_POLICIES', defaults.POLICIES)
-    definitions = csp_definitions_update({}, defaults.POLICY_DEFINITIONS)
-    custom_definitions = getattr(
-        settings,
-        'CSP_POLICY_DEFINITIONS',
-        {'default': {}},
+def get_declared_policy_definitions():
+    custom_definitions = csp_definitions_update(
+        {},
+        getattr(
+            settings,
+            'CSP_POLICY_DEFINITIONS',
+            {'default': {}},
+        ),
     )
-     # Technically we're modifying Django settings here,
-     # but it shouldn't matter since the end result of either will be the same
-    deprecation._handle_legacy_settings(custom_definitions)
+    deprecation._handle_legacy_settings(
+        custom_definitions['default'],
+        allow_legacy=True  # not hasattr(settings, 'CSP_POLICY_DEFINITIONS'),
+    )
+    definitions = csp_definitions_update(
+        {},
+        {name: defaults.POLICY for name in custom_definitions}
+    )
     for name, csp in custom_definitions.items():
-        definitions[name].update(csp)
-    # TODO: Error handling
-    # TODO: Remove in October 2020 when ordered dicts are the default
-    return OrderedDict(
-        (name, definitions[name]) for name in policies
-    )
+        definitions.setdefault(name, {}).update(csp)
+    return definitions
 
 
-def build_policy(config=None, update=None, replace=None, nonce=None):
-    """Builds the policy as a string from the settings."""
+def get_declared_policies():
+    return getattr(settings, 'CSP_POLICIES', defaults.POLICIES)
 
+
+def _normalize_config(config, key='default'):
+    """
+    Permits the config to be a single policy, which will be returned under the
+    'default' key by default.
+    """
     if config is None:
-        config = from_settings()
-        # Be careful, don't mutate config as it could be from settings
+        return {}
+    if not config:
+        return config
 
-    update = update if update is not None else {}
-    replace = replace if replace is not None else {}
-    csp = {}
+    if not isinstance(next(iter(config.values())), dict):
+        return {'default': config}
+    return config
 
-    for k in set(chain(config, replace)):
-        if k in replace:
-            v = replace[k]
-        else:
-            v = config[k]
-        if v is not None:
-            v = copy.copy(v)
-            if not isinstance(v, (list, tuple)):
-                v = (v,)
-            csp[k] = v
 
+def build_policy(
+    config=None,
+    update=None,
+    replace=None,
+    nonce=None,
+    select=None,
+):
+    """
+    Builds the policy from the settings as a list of tuples:
+    (policy_string<str>, report_only<bool>)
+    """
+
+    base_config = get_declared_policy_definitions()
+    if config:
+        config = _normalize_config(config)
+        base_config.update(config)
+        if not select:
+            select = config.keys()
+    replace = _normalize_config(replace) or {}
+    update = _normalize_config(update) or {}
+    config = {}
+    for name, policy in base_config.items():
+        policy = _replace_policy(policy, replace.get(name, {}))
+        if update:
+            update_policy = update.get(name)
+            if update_policy is not None:
+                _update_policy(policy, update_policy)
+        config[name] = policy
+
+    if not select:  # empty select not permitted: use csp_exempt instead
+        select = get_declared_policies()
+    policies = (config[name] for name in select)
+
+    return [_compile_policy(csp, nonce=nonce) for csp in policies]
+
+
+def _update_policy(csp, update):
     for k, v in update.items():
         if v is not None:
             if not isinstance(v, (list, tuple)):
                 v = (v,)
+
             if csp.get(k) is None:
                 csp[k] = v
             else:
                 csp[k] += tuple(v)
 
-    report_uri = csp.pop('report-uri', None)
+
+def _replace_policy(csp, replace):
+    new_policy = {}
+    for k in set(chain(csp, replace)):
+        if k in replace:
+            v = replace[k]
+        else:
+            v = csp[k]
+        if v is not None:
+            v = copy.copy(v)
+            if not isinstance(v, (list, tuple)):
+                v = (v,)
+            new_policy[k] = v
+    return new_policy
+
+
+def _compile_policy(csp, nonce=None):
+    """
+    Compile a content security policy, returning a 3-tuple:
+    header_value, report_only, exclude_url_prefixes
+    """
+    report_uri = csp.pop(
+        'report-uri',
+        defaults.POLICY['report-uri'],
+    )
+    report_only = csp.pop(
+        'report_only',
+        # every directive is normalized to a tuple/list at this point
+        (defaults.POLICY['report_only'],),
+    )[0]
+    include_nonce_in = csp.pop(
+        'include_nonce_in',
+        defaults.POLICY['include_nonce_in']
+    )
+    exclude_url_prefixes = csp.pop(
+        'exclude_url_prefixes',
+        defaults.POLICY['exclude_url_prefixes'],
+    )
 
     policy_parts = {}
     for key, value in csp.items():
@@ -99,15 +175,118 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
         policy_parts['report-uri'] = ' '.join(report_uri)
 
     if nonce:
-        include_nonce_in = getattr(settings, 'CSP_INCLUDE_NONCE_IN',
-                                   ['default-src'])
         for section in include_nonce_in:
             policy = policy_parts.get(section, '')
             policy_parts[section] = ("%s %s" %
                                      (policy, "'nonce-%s'" % nonce)).strip()
 
-    return '; '.join(['{} {}'.format(k, val).strip()
-                      for k, val in policy_parts.items()])
+    policy_string = '; '.join(
+        '{} {}'.format(k, val).strip() for k, val in policy_parts.items()
+    )
+
+    return policy_string, report_only, exclude_url_prefixes
+
+
+def kwarg_to_directive(kwarg, value=None):
+    return setting_to_directive(kwarg, prefix='', value=value)
+
+
+def csp_definitions_update(csp_definitions, other):
+    """ Update one csp definitions dictionary with another """
+    if isinstance(other, dict):
+        other = other.items()
+    for name, csp in other:
+        csp_definitions.setdefault(name, {}).update(csp)
+    return csp_definitions
+
+
+class PolicyNames:
+    length = 20
+    last_policy_name = None
+
+    def __next__(self):
+        self.last_policy_name = get_random_string(self.length)
+        return self.last_policy_name
+
+    def __iter__(self):
+        return self
+
+
+policy_names = PolicyNames()
+
+
+def _clean_input_policy(policy):
+    return dict(
+        kwarg_to_directive(in_directive, value=value)
+        if in_directive.isupper() else (in_directive, value)
+        for in_directive, value in policy.items()
+    )
+
+
+def iter_policies(policies, name_generator=policy_names):
+    """
+    Accepts the following formats:
+    - a policy dictionary (formatted like in settings.CSP_POLICY_DEFINITIONS)
+    - an iterable of policies: (item, item, item,...)
+
+    item can be any of the following:
+        - subscriptable two-tuple: (name, csp)
+        - csp dictionary which will be assigned a random name
+
+    Yields a tuple: (name, csp)
+    """
+    if isinstance(policies, dict):
+        yield from (
+            (name, _clean_input_policy(policy))
+            for name, policy in policies.items()
+        )
+        return
+
+    for policy in policies:
+        if isinstance(policy, (list, tuple)):
+            yield (policy[0], _clean_input_policy(policy[1]))
+        else:  # dictionary containing a single csp
+            yield (next(name_generator), _clean_input_policy(policy))
+
+
+def _kwargs_are_directives(kwargs):
+    keys = set(kwargs)
+    if keys.intersection(LEGACY_KWARGS):  # Legacy settings
+        # Single-policy kwargs is the legacy behaviour (deprecate?)
+        if keys.difference(LEGACY_KWARGS):
+            raise ValueError(
+                "If legacy settings are passed to the csp decorator, all "
+                "kwargs must be legacy settings."
+            )
+        return False
+    # else: a dictionary of named policies
+    return True
+
+
+def _policies_from_names_and_kwargs(csp_names, kwargs):
+    """
+    Helper used in csp_update and csp_replace to process args
+    """
+    if kwargs:
+        if not _kwargs_are_directives(kwargs):
+            policy = _clean_input_policy(kwargs)
+            return {name: policy for name in csp_names}
+        return dict(iter_policies(kwargs))
+    else:
+        raise ValueError("kwargs must not be empty.")
+
+
+def _policies_from_args_and_kwargs(args, kwargs):
+    all_definitions = []
+    if args:  # A list of policy dictionaries
+        all_definitions.append(iter_policies(args))
+
+    if kwargs:
+        if not _kwargs_are_directives(kwargs):
+            kwargs = [kwargs]
+        all_definitions.append(iter_policies(kwargs))
+
+    return dict(chain(*all_definitions))
 
 
 def _default_attr_mapper(attr_name, val):
@@ -183,16 +362,3 @@ def build_script_tag(content=None, **kwargs):
     c = _unwrap_script(content) if content and not kwargs.get('src') else ''
     attrs = ATTR_FORMAT_STR.format(**data).rstrip()
     return ('<script{}>{}</script>'.format(attrs, c).strip())
-
-
-def kwarg_to_directive(kwarg, value=None):
-    return setting_to_directive(kwarg, prefix='', value=value)
-
-
-def csp_definitions_update(csp_definitions, other):
-    """ Update one csp defnitions dictionary with another """
-    if isinstance(other, dict):
-        other = other.items()
-    for name, csp in other:
-        csp_definitions.setdefault(name, {}).update(csp)
-    return csp_definitions
