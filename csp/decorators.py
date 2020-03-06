@@ -1,4 +1,11 @@
 from functools import wraps
+from itertools import chain
+
+from .utils import (
+    _policies_from_args_and_kwargs,
+    _policies_from_names_and_kwargs,
+)
+
 
 def csp_exempt(f):
     @wraps(f)
@@ -9,8 +16,11 @@ def csp_exempt(f):
     return _wrapped
 
 
-def csp_update(**kwargs):
-    update = dict((k.lower().replace('_', '-'), v) for k, v in kwargs.items())
+def csp_update(csp_names=('default',), **kwargs):
+    update = _policies_from_names_and_kwargs(
+        csp_names,
+        kwargs,
+    )
 
     def decorator(f):
         @wraps(f)
@@ -22,8 +32,11 @@ def csp_update(**kwargs):
     return decorator
 
 
-def csp_replace(**kwargs):
-    replace = dict((k.lower().replace('_', '-'), v) for k, v in kwargs.items())
+def csp_replace(csp_names=('default',), **kwargs):
+    replace = _policies_from_names_and_kwargs(
+        csp_names,
+        kwargs,
+    )
 
     def decorator(f):
         @wraps(f)
@@ -35,12 +48,8 @@ def csp_replace(**kwargs):
     return decorator
 
 
-def csp(**kwargs):
-    config = dict(
-        (k.lower().replace('_', '-'), [v] if isinstance(v, str) else v)
-        for k, v
-        in kwargs.items()
-    )
+def csp(*args, **kwargs):
+    config = _policies_from_args_and_kwargs(args, kwargs)
 
     def decorator(f):
         @wraps(f)
