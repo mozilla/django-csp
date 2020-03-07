@@ -2,6 +2,7 @@ from __future__ import absolute_import
 
 import os
 import base64
+from collections import defaultdict
 from functools import partial
 
 from django.conf import settings
@@ -17,9 +18,8 @@ except ImportError:
         """
         pass
 
-from .conf import defaults
 from .utils import (
-    build_policy, EXEMPTED_DEBUG_CODES,
+    build_policy, EXEMPTED_DEBUG_CODES, HTTP_HEADERS,
 )
 
 
@@ -51,36 +51,43 @@ class CSPMiddleware(MiddlewareMixin):
         if getattr(response, '_csp_exempt', False):
             return response
 
-        # Check for ignored path prefix.
-        # TODO: Legacy setting
-        prefixes = getattr(
-            settings,
-            'CSP_EXCLUDE_URL_PREFIXES',
-            defaults.EXCLUDE_URL_PREFIXES,
-        )
-        if request.path_info.startswith(prefixes):
-            return response
-
         # Check for debug view
         if response.status_code in EXEMPTED_DEBUG_CODES and settings.DEBUG:
             return response
 
-        header = 'Content-Security-Policy'
-        if getattr(settings, 'CSP_REPORT_ONLY', False):
-            header += '-Report-Only'
-
-        if header in response:
+        existing_headers = {
+            header for header in HTTP_HEADERS if header in response
+        }
+        if len(existing_headers) == len(HTTP_HEADERS):
             # Don't overwrite existing headers.
             return response
 
-        response[header] = self.build_policy(request, response)
+        headers = defaultdict(list)
+        path_info = request.path_info
 
+        for csp, report_only, exclude_prefixes in self.build_policy(
+            request, response,
+        ):
+            # Check for ignored path prefix.
+            for prefix in exclude_prefixes:
+                if path_info.startswith(prefix):
+                    break
+            else:
+                header = HTTP_HEADERS[int(report_only)]
+                if header in existing_headers:  # don't overwrite
+                    continue
+                headers[header].append(csp)
+
+        for header, policies in headers.items():
+            response[header] = '; '.join(policies)
         return response
 
     def build_policy(self, request, response):
-        config = getattr(response, '_csp_config', None)
-        update = getattr(response, '_csp_update', None)
-        replace = getattr(response, '_csp_replace', None)
-        nonce = getattr(request, '_csp_nonce', None)
-        return build_policy(config=config, update=update, replace=replace,
-                            nonce=nonce)
+        build_kwargs = {
+            key: getattr(response, '_csp_%s' % key, None)
+            for key in ('config', 'update', 'replace', 'select')
+        }
+        return build_policy(
+            nonce=getattr(request, '_csp_nonce', None),
+            **build_kwargs,
+        )
