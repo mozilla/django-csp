@@ -1,9 +1,14 @@
 import django
 
 
-CSP_REPORT_ONLY = False
-
-CSP_INCLUDE_NONCE_IN = ['default-src']
+CSP_POLICY_DEFINITIONS = {
+    'default': {
+        'report_only': False,
+    },
+    'report': {
+        'report_only': True,
+    },
+}
 
 DATABASES = {
     'default': {

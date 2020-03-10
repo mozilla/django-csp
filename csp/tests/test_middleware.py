@@ -58,7 +58,9 @@ def test_dont_replace():
 def test_use_config():
     request = rf.get('/')
     response = HttpResponse()
-    response._csp_config = {'default-src': ['example.com']}
+    response._csp_config = {'default': {
+        'default-src': ['example.com'],
+    }}
     mw.process_response(request, response)
     assert response[HEADER] == 'default-src example.com'
 
@@ -66,7 +68,9 @@ def test_use_config():
 def test_use_update():
     request = rf.get('/')
     response = HttpResponse()
-    response._csp_update = {'default-src': ['example.com']}
+    response._csp_update = {'default': {
+        'default-src': ['example.com']
+    }}
     mw.process_response(request, response)
     assert response[HEADER] == "default-src 'self' example.com"
 

@@ -8,15 +8,22 @@ from django.utils.functional import lazy
 from csp.utils import build_policy
 
 
-def policy_eq(a, b, msg='%r != %r'):
-    parts_a = sorted(a.split('; '))
-    parts_b = sorted(b.split('; '))
-    assert parts_a == parts_b, msg % (a, b)
+def policy_eq(a, b, msg='%r != %r', report_only=False):
+    if not isinstance(a, list):
+        a = [(a, report_only)]
+    if not isinstance(a, list):
+        b = [(b, report_only)]
+
+    for csp_a, csp_b in zip(a, b):
+        parts_a = sorted(csp_a[0].split('; '))
+        parts_b = sorted(csp_b[0].split('; '))
+        assert csp_a[1] == csp_b[1]
+        assert parts_a == parts_b, msg % (a, b)
 
 
 def test_empty_policy():
     policy = build_policy()
-    assert "default-src 'self'" == policy
+    assert [("default-src 'self'", False)] == policy
 
 
 def literal(s):
@@ -29,7 +36,7 @@ lazy_literal = lazy(literal, six.text_type)
 @override_settings(CSP_DEFAULT_SRC=['example.com', 'example2.com'])
 def test_default_src():
     policy = build_policy()
-    assert 'default-src example.com example2.com' == policy
+    assert [('default-src example.com example2.com', False)] == policy
 
 
 @override_settings(CSP_SCRIPT_SRC=['example.com'])
