@@ -26,6 +26,32 @@ These settings affect the policy in the header. The defaults are in *italics*.
    quoted! e.g.: ``CSP_DEFAULT_SRC = ("'self'",)``. Without quotes they will
    not work as intended.
 
+``CSP_POLICY_DEFINITIONS``
+    A dictionary of dictionaries of directives or pseudo-directives. *{'default': default_policy}*
+
+    `default_policy` uses the defaults for each directive as shown in :ref:`deprecated-policy-settings`
+    and :ref:`deprecated-pseudo-directives` below.
+
+    The policy directives are lower-case and use dashes (``-``) rather than (``_``) used by the old
+    settings, with the exception of the :ref:`deprecated-pseudo-directives` (``report_only``,
+    ``exclude_url_prefixes``, and ``include_nonce_in``) which are specified with underscores rather
+    than dashes to distinguish them visually from the csp directives.
+
+``CSP_POLICIES``
+    A list or tuple specifying which definitions will be applied by default and
+    defining an order on those policies. *['default']*
+
+
+.. deprecated-policy-settings:
+
+Deprecated Policy Settings
+--------------------------
+
+With the introduction of multi-policy support, the following settings are deprecated.
+If ``CSP_POLICY_DEFINITIONS`` is not defined, they will be used to populate it until
+the deprecation period is over.  It will be populated with a single policy under the
+``default`` key.
+
 ``CSP_DEFAULT_SRC``
     Set the ``default-src`` directive. A ``tuple`` or ``list`` of values,
     e.g.: ``("'self'", 'cdn.example.net')``. *["'self'"]*
@@ -150,6 +176,15 @@ These settings affect the policy in the header. The defaults are in *italics*.
 
     See: block-all-mixed-content_
 
+
+.. deprecated-pseudo-directives:
+
+Pseudo-Directives
+^^^^^^^^^^^^^^^^^
+
+These settings affect how the policy is applied, but do not correspond with a single
+csp directive.
+
 ``CSP_INCLUDE_NONCE_IN``
     Include dynamically generated nonce in all listed directives.
     A ``tuple`` or ``list``, e.g.: ``CSP_INCLUDE_NONCE_IN = ['script-src']``
@@ -158,20 +193,6 @@ These settings affect the policy in the header. The defaults are in *italics*.
 
     Note: The nonce value will only be generated if ``request.csp_nonce``
     is accessed during the request/response cycle.
-
-
-Changing the Policy
--------------------
-
-The policy can be changed on a per-view (or even per-request) basis. See
-the :ref:`decorator documentation <decorator-chapter>` for more details.
-
-
-Other Settings
-==============
-
-These settings control the behavior of django-csp. Defaults are in
-*italics*.
 
 ``CSP_REPORT_ONLY``
     Send "report-only" headers instead of real headers.
@@ -191,6 +212,13 @@ These settings control the behavior of django-csp. Defaults are in
    JavaScript considers all paths alike. A Cross-Site Scripting flaw
    on, e.g., ``excluded-page/`` can therefore be leveraged to access
    everything on the same origin.
+
+Changing the Policy
+-------------------
+
+The policy can be changed on a per-view (or even per-request) basis. See
+the :ref:`decorator documentation <decorator-chapter>` for more details.
+
 
 .. _Content-Security-Policy: https://www.w3.org/TR/CSP/
 .. _Content-Security-Policy-L3: https://w3c.github.io/webappsec-csp/
