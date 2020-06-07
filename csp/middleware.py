@@ -1,9 +1,10 @@
 from __future__ import absolute_import
 
+import os
+import base64
 from functools import partial
 
 from django.conf import settings
-from django.utils.crypto import get_random_string
 from django.utils.functional import SimpleLazyObject
 
 try:
@@ -34,11 +35,15 @@ class CSPMiddleware(MiddlewareMixin):
     See http://www.w3.org/TR/CSP/
 
     """
-    def _make_nonce(self, request, length=16):
+    def _make_nonce(self, request):
         # Ensure that any subsequent calls to request.csp_nonce return the
         # same value
         if not getattr(request, '_csp_nonce', None):
-            request._csp_nonce = get_random_string(length)
+            request._csp_nonce = (
+                base64
+                .b64encode(os.urandom(16))
+                .decode("ascii")
+            )
         return request._csp_nonce
 
     def process_request(self, request):
