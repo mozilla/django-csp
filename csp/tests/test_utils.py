@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import pytest
 import six
 from django.conf import settings
 from django.test.utils import override_settings
@@ -208,9 +207,8 @@ def test_base_uri():
 
 @override_settings(CSP_CHILD_SRC=['example.com'])
 def test_child_src():
-    with pytest.warns(DeprecationWarning):
-        policy = build_policy()
-        policy_eq("default-src 'self'; child-src example.com", policy)
+    policy = build_policy()
+    policy_eq("default-src 'self'; child-src example.com", policy)
 
 
 @override_settings(CSP_FRAME_ANCESTORS=['example.com'])
