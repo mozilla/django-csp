@@ -92,6 +92,14 @@ These settings affect the policy in the header. The defaults are in
     Set the ``require-sri-for`` directive. A tuple or list. *None*
     Valid values: ``script``, ``style``, or both. See: require-sri-for-known-tokens_
     Note: This doesn't use default-src as a fall-back.
+``CSP_TRUSTED_TYPES``
+    Set the ``trusted-types`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
+    See Section 4.7.1: https://w3c.github.io/webappsec-trusted-types/dist/spec/#integrations
+``CSP_REQUIRE_TRUSTED_TYPES_FOR``
+    Set the ``require-trusted-types-for`` directive. A tuple or list. *None*
+    Note: This doesn't use default-src as a fall-back.
+    See Section 4.7.2: https://w3c.github.io/webappsec-trusted-types/dist/spec/#integrations
 ``CSP_UPGRADE_INSECURE_REQUESTS``
     Include ``upgrade-insecure-requests`` directive. A boolean. *False*
     See: upgrade-insecure-requests_

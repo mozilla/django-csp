@@ -142,6 +142,20 @@ def test_report_to():
               policy)
 
 
+@override_settings(CSP_TRUSTED_TYPES=["foo", "bar", "'allow-duplicates'"])
+def test_trusted_types():
+    policy = build_policy()
+    policy_eq("default-src 'self'; trusted-types foo bar 'allow-duplicates'",
+              policy)
+
+
+@override_settings(CSP_REQUIRE_TRUSTED_TYPES_FOR=["'script'"])
+def test_require_trusted_types_for():
+    policy = build_policy()
+    policy_eq("default-src 'self'; require-trusted-types-for 'script'",
+              policy)
+
+
 @override_settings(CSP_IMG_SRC=['example.com'])
 def test_update_img():
     policy = build_policy(update={'img-src': 'example2.com'})

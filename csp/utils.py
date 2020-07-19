@@ -8,7 +8,6 @@ from itertools import chain
 from django.conf import settings
 from django.utils.encoding import force_str
 
-
 CHILD_SRC_DEPRECATION_WARNING = \
     'child-src is deprecated in CSP v3. Use frame-src and worker-src.'
 
@@ -45,6 +44,9 @@ def from_settings():
         'report-uri': getattr(settings, 'CSP_REPORT_URI', None),
         'report-to': getattr(settings, 'CSP_REPORT_TO', None),
         'require-sri-for': getattr(settings, 'CSP_REQUIRE_SRI_FOR', None),
+        # Trusted Types Directives
+        'trusted-types': getattr(settings, 'CSP_TRUSTED_TYPES', None),
+        'require-trusted-types-for': getattr(settings, 'CSP_REQUIRE_TRUSTED_TYPES_FOR', None),
         # Other Directives
         'upgrade-insecure-requests': getattr(
             settings, 'CSP_UPGRADE_INSECURE_REQUESTS', False),
