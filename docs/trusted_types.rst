@@ -46,21 +46,21 @@ dangerous ``innerHTML`` sink, the image could be created with
 Rewriting may be possible for any of the dangerous sinks, which are listed here.
 
 * Script manipulation:
-  * ``<script src>`` and setting text content of ``<script>`` elements.
-    * Tip: Avoid creating scripts at run time
-    * Tip: Create a policy with a URL stringifier to verify scripts are from a trusted origin
+    * ``<script src>`` and setting text content of ``<script>`` elements.
+        * Tip: Avoid creating scripts at run time
+        * Tip: Create a policy with a URL stringifier to verify scripts are from a trusted origin
 * Generating HTML from a string:
-  * ``innerHTML``, ``outerHTML``, ``insertAdjacentHTML``, ``<iframe> srcdoc``, ``document.write``, ``document.writeln``, and ``DOMParser.parseFromString``
-    * Tip: Use textContent instead of inner HTML
-    * Tip: Use a templating library that supports Trusted Types
-    * Tip: Use createElement and appendChild as explained above
+    * ``innerHTML``, ``outerHTML``, ``insertAdjacentHTML``, ``<iframe> srcdoc``, ``document.write``, ``document.writeln``, and ``DOMParser.parseFromString``
+        * Tip: Use textContent instead of inner HTML
+        * Tip: Use a templating library that supports Trusted Types
+        * Tip: Use createElement and appendChild as explained above
 * Executing plugin content:
-  * ``<embed src>``, ``<object data>`` and ``<object codebase>``
-  * Tip: Consider limiting plugin content by setting``CSP_OBJECT_SRC`` to *none*
+    * ``<embed src>``, ``<object data>`` and ``<object codebase>``
+        * Tip: Consider limiting plugin content by setting``CSP_OBJECT_SRC`` to *none*
 * Runtime JavaScript code compilation:
-  * ``eval``, ``setTimeout``, ``setInterval``, and ``new Function()``
-    * Tip: Avoid using eval entirely
-    * Tip: Avoid passing strings to runtime compiled functions
+    * ``eval``, ``setTimeout``, ``setInterval``, and ``new Function()``
+        * Tip: Avoid using eval entirely
+        * Tip: Avoid passing strings to runtime compiled functions
 
 Use a Library
 -------------
@@ -83,7 +83,7 @@ based on the sink context. Each policy should be given a distinct name.
 
 Here is an example policy that sanitizes HTML by escaping the ``<`` character.
 
-.. code-block:: Javascript
+.. code-block:: javascript
 	if (window.trustedTypes && trustedTypes.createPolicy) {
     	const escapeHTMLPolicy = trustedTypes.createPolicy('myEscapePolicy', {
     		createHTML: string => string.replace(/\</g, '&lt;')
@@ -92,7 +92,7 @@ Here is an example policy that sanitizes HTML by escaping the ``<`` character.
 
 Here is an example of how that policy can be used.
 
-.. code-block:: Javascript
+.. code-block:: javascript
 	const escaped = escapeHTMLPolicy.createHTML('<img src=x onerror=alert(1)>');
 	console.log(escaped instanceof TrustedHTML);
 	el.innerHTML = escaped;
@@ -108,9 +108,9 @@ In the event that you don’t have control over the offending code, you can use 
 default policy. This may happen if you are loading a third party library that
 is not Trusted Types compliant. A default policy is defined the same way as any
 other Trusted Types policy. In order to be used by the browser as the default
-policy it must be named *‘default’*.
+policy it must be named *default*.
 
-The policy called *‘default’* will be used wherever a string is sent to a
+The policy called *default* will be used wherever a string is sent to a
 dangerous sink that requires Trusted Types.
 
 
