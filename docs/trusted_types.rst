@@ -70,7 +70,7 @@ is wrapped in a TrustedHTML, TrustedScript, or TrustedScriptURL object to certif
 it has been sanitized or otherwise assured to be safe in the given context. Some libraries will process data and return Trusted
 Types objects for you. For example, DOMPurify_ supports Trusted Types.
 
-.. note ::
+.. note::
    Libraries are preferred to writing your own sanitation policies since they
    are generally more comprehensive, secure, and well reviewed.
 
@@ -84,6 +84,7 @@ based on the sink context. Each policy should be given a distinct name.
 Here is an example policy that sanitizes HTML by escaping the ``<`` character.
 
 .. code-block:: javascript
+
 	if (window.trustedTypes && trustedTypes.createPolicy) {
     	const escapeHTMLPolicy = trustedTypes.createPolicy('myEscapePolicy', {
     		createHTML: string => string.replace(/\</g, '&lt;')
@@ -93,11 +94,12 @@ Here is an example policy that sanitizes HTML by escaping the ``<`` character.
 Here is an example of how that policy can be used.
 
 .. code-block:: javascript
+
 	const escaped = escapeHTMLPolicy.createHTML('<img src=x onerror=alert(1)>');
 	console.log(escaped instanceof TrustedHTML);
 	el.innerHTML = escaped;
 
-.. note ::
+.. note::
    Keep in mind that you are creating your own security rules with policies.
    Your application is only protected from DOM XSS if you use strict sanitation
    rules that consider which sink is accepting the data.
@@ -121,7 +123,7 @@ application, you can begin enforcing Trusted Types to prevent DOM XSS.
 
 Configure django-csp so that ``CSP_REPORT_ONLY`` is set to *False*.
 
-.. note ::
+.. note::
    To learn more about trusted types or learn how to limit policy creation with
    ``CSP_TRUSTED_TYPES`` take a look at the complete spec_ or the article_ this
    guide is based on.
