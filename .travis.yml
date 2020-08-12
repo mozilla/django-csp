@@ -78,3 +78,12 @@ script:
 
 after_success:
   - coveralls
+
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: "__token__"
+  on:
+    tags: true
+    repo: mozilla/django-csp
+    python: "3.7"
