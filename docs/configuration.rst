@@ -95,6 +95,14 @@ These settings affect the policy in the header. The defaults are in
 ``CSP_UPGRADE_INSECURE_REQUESTS``
     Include ``upgrade-insecure-requests`` directive. A boolean. *False*
     See: upgrade-insecure-requests_
+``CSP_REQUIRE_TRUSTED_TYPES_FOR``
+    Include ``reuire-trusted-types-for`` directive. A tuple or list. *None*
+    Valid values: ``'script'``
+    Note: This doesn't use default-src as a fall-back.
+``CSP_TRUSTED_TYPES``
+    Include ``trusted-types`` directive. A tuple of list. *This header is empty by default*
+    Valid values: a list of allowed policy names that may include ``default`` and/or ``'allow-duplicates'``
+    Note: This doesn't use default-src as a fall-back.
 ``CSP_BLOCK_ALL_MIXED_CONTENT``
     Include ``block-all-mixed-content`` directive. A boolean. *False*
     See: block-all-mixed-content_
