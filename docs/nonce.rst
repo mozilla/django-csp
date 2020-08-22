@@ -50,6 +50,36 @@ This tag will output a properly nonced script every time. For the sake of syntax
 
 Django:
 
+To enable the loading of the 'csp' tag in templates, you'll need to add the CSP template tags to the TEMPLATES section of your settings file..
+
+.. code-block:: python
+
+	TEMPLATES = [
+	    {
+		"OPTIONS": {
+		    'libraries':          {
+			'csp': 'csp.templatetags.csp',
+		    }
+		},
+	    }
+	]
+
+Then you can load the 'csp' template tags and use 'script' in the template:
+
+To enable the loading of the 'csp' tag in templates, you'll need to add the CSP template tags to the TEMPLATES settings.
+
+.. code-block:: python
+
+	TEMPLATES = [
+	    {
+		"OPTIONS": {
+		    'libraries':          {
+			'csp': 'csp.templatetags.csp',
+		    }
+		},
+	    }
+	]
+
 .. code-block:: jinja
 
 	{% load csp %}
