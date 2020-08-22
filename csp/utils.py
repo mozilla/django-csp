@@ -165,7 +165,7 @@ ATTR_FORMAT_STR = ''.join(['{{{}}}'.format(a) for a in SCRIPT_ATTRS])
 
 def _unwrap_script(text):
     """Extract content defined between script tags"""
-    matches = re.search(r'<script[\s|\S]*>([\s|\S]+?)</script>', text)
+    matches = re.search(r'<script[\s|\S]*?>([\s|\S]+)</script>', text)
     if matches and len(matches.groups()):
         return matches.group(1).strip()
 

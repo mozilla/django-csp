@@ -76,3 +76,24 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
             'var hello=\'world\';</script>')
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
+
+    def test_regex_captures_script_content(self):
+        """
+        Ensure that script content get captured properly.
+        Especially when using angle brackets."""
+        tpl = """
+            {% load csp %}
+            {% script %}
+            <script type="text/javascript">
+                let capture_text = "<script></script>"
+            </script>
+            {% endscript %}
+            """
+
+        expected = (
+            '<script nonce="{}">'
+            'let capture_text = "<script></script>"'
+            '</script>')
+
+        print(self.process_templates(tpl, expected))
+        self.assert_template_eq(*self.process_templates(tpl, expected))
