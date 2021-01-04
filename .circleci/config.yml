@@ -1,0 +1,137 @@
+version: 2.1
+
+workflows:
+  test:
+    jobs:
+      - test:
+          matrix:
+            parameters:
+              python_image:
+                - "python:2.7-slim"
+                - "python:3.4-slim"
+                - "python:3.5-slim"
+                - "python:3.6-slim"
+                - "python:3.7-slim"
+                - "python:3.8-slim"
+                - "pypy:2-slim-buster"
+                - "pypy:3-slim-buster"
+              django_version:
+                - "master"
+                - "3.0.x" # 3.x supports python 3.6 to 3.9
+                - "2.2.x" # 2.x supports python 3.4 to 3.7
+                - "2.1.x"
+                - "2.0.x"
+                - "1.11.x" # 1.11.x supports python 2.7
+                - "1.10.x"
+                - "1.9.x"
+                - "1.8.x"
+            exclude:
+              - python_image: "python:3.8-slim"
+                django_version: "2.2.x"
+              - python_image: "python:3.8-slim"
+                django_version: "2.1.x"
+              - python_image: "python:3.8-slim"
+                django_version: "2.0.x"
+              - python_image: "python:3.8-slim"
+                django_version: "1.11.x"
+              - python_image: "python:3.8-slim"
+                django_version: "1.10.x"
+              - python_image: "python:3.8-slim"
+                django_version: "1.9.x"
+              - python_image: "python:3.8-slim"
+                django_version: "1.8.x"
+
+              - python_image: "python:3.7-slim"
+                django_version: "1.10.x"
+              - python_image: "python:3.7-slim"
+                django_version: "1.9.x"
+              - python_image: "python:3.7-slim"
+                django_version: "1.8.x"
+
+              - python_image: "python:3.6-slim"
+                django_version: "1.10.x"
+              - python_image: "python:3.6-slim"
+                django_version: "1.9.x"
+              - python_image: "python:3.6-slim"
+                django_version: "1.8.x"
+
+              - python_image: "python:3.5-slim"
+                django_version: "master"
+              - python_image: "python:3.5-slim"
+                django_version: "3.0.x"
+
+              - python_image: "python:3.4-slim"
+                django_version: "master"
+              - python_image: "python:3.4-slim"
+                django_version: "3.0.x"
+
+              - python_image: "python:2.7-slim"
+                django_version: "master"
+              - python_image: "python:2.7-slim"
+                django_version: "3.0.x"
+              - python_image: "python:2.7-slim"
+                django_version: "2.2.x"
+              - python_image: "python:2.7-slim"
+                django_version: "2.1.x"
+              - python_image: "python:2.7-slim"
+                django_version: "2.0.x"
+
+              - python_image: "pypy:2-slim-buster"
+                django_version: "master"
+              - python_image: "pypy:2-slim-buster"
+                django_version: "3.0.x"
+              - python_image: "pypy:2-slim-buster"
+                django_version: "2.2.x"
+              - python_image: "pypy:2-slim-buster"
+                django_version: "2.1.x"
+              - python_image: "pypy:2-slim-buster"
+                django_version: "2.0.x"
+
+jobs:
+  test:
+    parameters:
+      python_image:
+        type: string
+      django_version:
+        type: string
+    docker:
+      - image: << parameters.python_image >>
+        # auth:
+        #   username: $DOCKER_USER
+        #   password: $DOCKER_PASS
+        environment:
+          DJANGO_VERSION: << parameters.django_version >>
+          PYTHON_IMAGE: << parameters.python_image >>
+    steps:
+      - checkout
+      - run:
+          name: install
+          command: pip install tox coveralls
+      - when:
+          condition:
+            not:
+              or:
+                - equal: [ "pypy:2-slim-buster", << parameters.python_image >> ]
+                - equal: [ "pypy:3-slim-buster", << parameters.python_image >> ]
+          steps:
+            - run:
+                name: test cpython
+                command: |
+                  PYTHON_VERSION="$(python --version 2>&1 | cut -d ' ' -f 2 | cut -d '.' -f 1,2)"
+                  echo "$PYTHON_VERSION-$DJANGO_VERSION"
+                  tox -e "$PYTHON_VERSION-$DJANGO_VERSION"
+      - when:
+          condition:
+            or:
+              - equal: [ "pypy:2-slim-buster", << parameters.python_image >> ]
+              - equal: [ "pypy:3-slim-buster", << parameters.python_image >> ]
+          steps:
+            - run:
+                name: test pypy
+                command: |
+                  PYTHON_VERSION="pypy$(pypy --version 2>&1 | head -n 1 | cut -d ' ' -f 2 | cut -d '.' -f 1)"
+                  echo "$PYTHON_VERSION-$DJANGO_VERSION"
+                  tox -e "$PYTHON_VERSION-$DJANGO_VERSION"
+      - run:
+          name: report coverage
+          command: coveralls
