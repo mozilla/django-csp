@@ -23,7 +23,7 @@ def read(*parts):
 
 
 install_requires = [
-    'Django>=1.8',
+    'Django>=2.2',
 ]
 
 jinja2_requires = [
@@ -32,6 +32,7 @@ jinja2_requires = [
 
 test_requires = [
     'pytest<4.0',
+    'pytest-cov',
     'pytest-django',
     'pytest-flakes==1.0.1',
     'pytest-pep8==1.0.6',
@@ -72,14 +73,11 @@ setup(
         'Intended Audience :: Developers',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Programming Language :: Python :: Implementation :: CPython',
         'Framework :: Django',

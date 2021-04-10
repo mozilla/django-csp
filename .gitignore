@@ -3,6 +3,7 @@
 *.db
 *.sw[po]
 .cache
+.coverage
 .tox
 dist
 build

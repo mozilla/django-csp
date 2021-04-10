@@ -7,86 +7,21 @@ workflows:
           matrix:
             parameters:
               python_image:
-                - "python:2.7-slim"
-                - "python:3.4-slim"
                 - "python:3.5-slim"
                 - "python:3.6-slim"
                 - "python:3.7-slim"
                 - "python:3.8-slim"
-                - "pypy:2-slim-buster"
+                - "python:3.9-slim"
                 - "pypy:3-slim-buster"
               django_version:
                 - "master"
-                - "3.0.x" # 3.x supports python 3.6 to 3.9
-                - "2.2.x" # 2.x supports python 3.4 to 3.7
-                - "2.1.x"
-                - "2.0.x"
-                - "1.11.x" # 1.11.x supports python 2.7
-                - "1.10.x"
-                - "1.9.x"
-                - "1.8.x"
+                - "3.0.x" # 3.0 supports python 3.6 to 3.9
+                - "2.2.x" # 2.2 supports python 3.5 to 3.9
             exclude:
-              - python_image: "python:3.8-slim"
-                django_version: "2.2.x"
-              - python_image: "python:3.8-slim"
-                django_version: "2.1.x"
-              - python_image: "python:3.8-slim"
-                django_version: "2.0.x"
-              - python_image: "python:3.8-slim"
-                django_version: "1.11.x"
-              - python_image: "python:3.8-slim"
-                django_version: "1.10.x"
-              - python_image: "python:3.8-slim"
-                django_version: "1.9.x"
-              - python_image: "python:3.8-slim"
-                django_version: "1.8.x"
-
-              - python_image: "python:3.7-slim"
-                django_version: "1.10.x"
-              - python_image: "python:3.7-slim"
-                django_version: "1.9.x"
-              - python_image: "python:3.7-slim"
-                django_version: "1.8.x"
-
-              - python_image: "python:3.6-slim"
-                django_version: "1.10.x"
-              - python_image: "python:3.6-slim"
-                django_version: "1.9.x"
-              - python_image: "python:3.6-slim"
-                django_version: "1.8.x"
-
               - python_image: "python:3.5-slim"
                 django_version: "master"
               - python_image: "python:3.5-slim"
                 django_version: "3.0.x"
-
-              - python_image: "python:3.4-slim"
-                django_version: "master"
-              - python_image: "python:3.4-slim"
-                django_version: "3.0.x"
-
-              - python_image: "python:2.7-slim"
-                django_version: "master"
-              - python_image: "python:2.7-slim"
-                django_version: "3.0.x"
-              - python_image: "python:2.7-slim"
-                django_version: "2.2.x"
-              - python_image: "python:2.7-slim"
-                django_version: "2.1.x"
-              - python_image: "python:2.7-slim"
-                django_version: "2.0.x"
-
-              - python_image: "pypy:2-slim-buster"
-                django_version: "master"
-              - python_image: "pypy:2-slim-buster"
-                django_version: "3.0.x"
-              - python_image: "pypy:2-slim-buster"
-                django_version: "2.2.x"
-              - python_image: "pypy:2-slim-buster"
-                django_version: "2.1.x"
-              - python_image: "pypy:2-slim-buster"
-                django_version: "2.0.x"
-
 jobs:
   test:
     parameters:
@@ -111,7 +46,6 @@ jobs:
           condition:
             not:
               or:
-                - equal: [ "pypy:2-slim-buster", << parameters.python_image >> ]
                 - equal: [ "pypy:3-slim-buster", << parameters.python_image >> ]
           steps:
             - run:
@@ -123,7 +57,6 @@ jobs:
       - when:
           condition:
             or:
-              - equal: [ "pypy:2-slim-buster", << parameters.python_image >> ]
               - equal: [ "pypy:3-slim-buster", << parameters.python_image >> ]
           steps:
             - run:
