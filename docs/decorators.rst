@@ -1,3 +1,4 @@
+
 .. _decorator-chapter:
 
 ====================================
@@ -94,3 +95,32 @@ are as above::
          SCRIPT_SRC=['scriptsrv.com', 'googleanalytics.com'])
     def myview(request):
         return render(...)
+
+``Request Method Restriction``
+========
+
+If you are using the same view for multiple request methods and want to make changes to policy only for your selected methods, you can use the ``methods`` parameter. You can use only one method as string, or pass list of methods. For example;
+
+
+    @csp_exempt(methods=["POST"])
+    def view(request):
+        if request.method == "GET":
+            result = do_get_with_default_csp(request)
+        elif request.method == "POST":
+            result = do_post_with_csp_excluded(request)
+        elif request.method == "PUT":
+            result = do_put_with_default_csp(request)
+        else:
+            #handle invalid request
+        return render(result)
+
+    @csp_update(methods="GET", SCRIPT_SRC=["url"])
+    def another_view(request):
+        if request.method == "GET":
+            result = do_get_with_updated_csp(request)
+        elif request.method == "POST":
+            result = do_post_with_default_csp(request)
+        else:
+            #handle invalid request
+        return render(result)
+
