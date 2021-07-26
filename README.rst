@@ -2,11 +2,11 @@
 .. image:: https://badge.fury.io/py/django-csp.svg
    :target: https://pypi.python.org/pypi/django_csp
 
-.. image:: https://travis-ci.org/mozilla/django-csp.svg?branch=master
+.. image:: https://travis-ci.org/mozilla/django-csp.svg?branch=main
    :target: https://travis-ci.org/mozilla/django-csp
 
-.. image:: https://coveralls.io/repos/github/mozilla/django-csp/badge.svg?branch=master
-   :target: https://coveralls.io/github/mozilla/django-csp?branch=master
+.. image:: https://coveralls.io/repos/github/mozilla/django-csp/badge.svg?branch=main
+   :target: https://coveralls.io/github/mozilla/django-csp?branch=main
 
 ==========
 Django-CSP

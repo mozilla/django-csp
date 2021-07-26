@@ -58,7 +58,7 @@ setup(
     packages=find_packages(),
     project_urls={
         "Documentation": "http://django-csp.readthedocs.org/",
-        "Changelog": "https://github.com/mozilla/django-csp/blob/master/CHANGES",
+        "Changelog": "https://github.com/mozilla/django-csp/blob/main/CHANGES",
         "Bug Tracker": "https://github.com/mozilla/django-csp/issues",
         "Source Code": "https://github.com/mozilla/django-csp",
     },
