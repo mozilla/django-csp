@@ -247,6 +247,20 @@ def test_require_sri_for():
     policy_eq("default-src 'self'; require-sri-for script", policy)
 
 
+@override_settings(CSP_REQUIRE_TRUSTED_TYPES_FOR=["'script'"])
+def test_require_trusted_types_for():
+    policy = build_policy()
+    policy_eq("default-src 'self'; require-trusted-types-for 'script'", policy)
+
+
+@override_settings(CSP_TRUSTED_TYPES=["strictPolicy", "laxPolicy",
+                                      "default", "'allow-duplicates'"])
+def test_trusted_types():
+    policy = build_policy()
+    policy_eq("default-src 'self'; trusted-types strictPolicy laxPolicy "
+              + "default 'allow-duplicates'", policy)
+
+
 @override_settings(CSP_UPGRADE_INSECURE_REQUESTS=True)
 def test_upgrade_insecure_requests():
     policy = build_policy()

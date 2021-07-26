@@ -6,6 +6,13 @@ Next
 ====
 
 - Remove deprecation warning for child-src
+=======
+
+3.7
+===
+
+- Add support for Trusted Types
+- Use 128 bits base64 encoded for nonce
 
 3.6
 ===

@@ -76,5 +76,5 @@ Will output -
 
 .. code-block:: html
 
-	<script nonce='123456' type="application/javascript" async=false></script>
+	<script nonce='123456' type="application/javascript" async=false>var hello='world';</script>
 

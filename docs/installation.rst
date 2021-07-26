@@ -24,5 +24,6 @@ to ``MIDDLEWARE``, like so::
         'csp.middleware.CSPMiddleware',
         # ...
     )
+Note: Middleware order does not matter unless you have other middleware modifying the CSP header.
 
 That should do it! Go on to :ref:`configuring CSP <configuration-chapter>`.

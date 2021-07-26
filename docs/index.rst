@@ -23,6 +23,7 @@ Contents:
    configuration
    decorators
    nonce
+   trusted_types
    reports
    contributing
 
