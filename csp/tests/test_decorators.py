@@ -4,10 +4,11 @@ from django.test.utils import override_settings
 
 from csp.decorators import csp, csp_replace, csp_update, csp_exempt
 from csp.middleware import CSPMiddleware
+from csp.tests.utils import response
 
 
 REQUEST = RequestFactory().get('/')
-mw = CSPMiddleware()
+mw = CSPMiddleware(response())
 
 
 def test_csp_exempt():

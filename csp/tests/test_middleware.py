@@ -7,10 +7,11 @@ from django.test import RequestFactory
 from django.test.utils import override_settings
 
 from csp.middleware import CSPMiddleware
+from csp.tests.utils import response
 
 
 HEADER = 'Content-Security-Policy'
-mw = CSPMiddleware()
+mw = CSPMiddleware(response())
 rf = RequestFactory()
 
 

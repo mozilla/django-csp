@@ -3,9 +3,11 @@ from django.test import RequestFactory
 
 from csp.middleware import CSPMiddleware
 from csp.context_processors import nonce
+from csp.tests.utils import response
+
 
 rf = RequestFactory()
-mw = CSPMiddleware()
+mw = CSPMiddleware(response())
 
 
 def test_nonce_context_processor():

@@ -3,10 +3,11 @@ from django.test import RequestFactory
 from django.test.utils import override_settings
 
 from csp.contrib.rate_limiting import RateLimitedCSPMiddleware
+from csp.tests.utils import response
 
 
 HEADER = 'Content-Security-Policy'
-mw = RateLimitedCSPMiddleware()
+mw = RateLimitedCSPMiddleware(response())
 rf = RequestFactory()
 
 

@@ -1,11 +1,22 @@
+from django.http import HttpResponse
 from django.template import engines, Template, Context
 from django.test import RequestFactory
 
 from csp.middleware import CSPMiddleware
 
 
+def response(*args, headers=None, **kwargs):
+    def get_response(req):
+        response = HttpResponse(*args, **kwargs)
+        if headers:
+            for k, v in headers.items():
+                response.headers[k] = v
+        return response
+    return get_response
+
+
 JINJA_ENV = engines['jinja2']
-mw = CSPMiddleware()
+mw = CSPMiddleware(response())
 rf = RequestFactory()
 
 
