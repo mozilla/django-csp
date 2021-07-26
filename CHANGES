@@ -6,7 +6,9 @@ Next
 ====
 
 - Remove deprecation warning for child-src
-=======
+- Add project urls to setup.py
+- Drop support for EOL Python <3.6 and Django <2.2 versions
+- Rename default branch to main
 
 3.7
 ===
