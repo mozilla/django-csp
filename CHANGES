@@ -2,6 +2,12 @@
 CHANGES
 =======
 
+Next
+====
+
+- Remove deprecation warning for child-src
+=======
+
 3.7
 ===
 

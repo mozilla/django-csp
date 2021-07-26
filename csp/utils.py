@@ -1,16 +1,11 @@
 import copy
 import re
-import warnings
 
 from collections import OrderedDict
 from itertools import chain
 
 from django.conf import settings
 from django.utils.encoding import force_str
-
-
-CHILD_SRC_DEPRECATION_WARNING = \
-    'child-src is deprecated in CSP v3. Use frame-src and worker-src.'
 
 
 def from_settings():
@@ -100,9 +95,6 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
             pass
         else:  # directives with many values like src lists
             policy_parts[key] = ' '.join(value)
-
-        if key == 'child-src':
-            warnings.warn(CHILD_SRC_DEPRECATION_WARNING, DeprecationWarning)
 
     if report_uri:
         report_uri = map(force_str, report_uri)

@@ -60,7 +60,7 @@ These settings affect the policy in the header. The defaults are in
     Set the ``base-uri`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
 ``CSP_CHILD_SRC``
-    Set the ``child-src`` directive. A tuple or list. *None* Note: Deprecated in CSP v3. Use frame-src and worker-src instead.
+    Set the ``child-src`` directive. A tuple or list. *None*
 ``CSP_FRAME_ANCESTORS``
     Set the ``frame-ancestors`` directive. A tuple or list. *None*
     Note: This doesn't use default-src as a fall-back.
