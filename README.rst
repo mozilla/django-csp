@@ -1,9 +1,8 @@
-
 .. image:: https://badge.fury.io/py/django-csp.svg
    :target: https://pypi.python.org/pypi/django_csp
 
-.. image:: https://travis-ci.org/mozilla/django-csp.svg?branch=master
-   :target: https://travis-ci.org/mozilla/django-csp
+.. image:: https://circleci.com/gh/mozilla/django-csp/tree/master.svg?style=svg
+   :target: https://circleci.com/gh/mozilla/django-csp/?branch=master
 
 .. image:: https://coveralls.io/repos/github/mozilla/django-csp/badge.svg?branch=master
    :target: https://coveralls.io/github/mozilla/django-csp?branch=master
