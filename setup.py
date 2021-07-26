@@ -55,6 +55,12 @@ setup(
     url='http://github.com/mozilla/django-csp',
     license='BSD',
     packages=find_packages(),
+    project_urls={
+        "Documentation": "http://django-csp.readthedocs.org/",
+        "Changelog": "https://github.com/mozilla/django-csp/blob/master/CHANGES",
+        "Bug Tracker": "https://github.com/mozilla/django-csp/issues",
+        "Source Code": "https://github.com/mozilla/django-csp",
+    },
     install_requires=install_requires,
     extras_require={
         'tests': test_requires,
