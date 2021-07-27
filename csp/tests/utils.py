@@ -24,7 +24,7 @@ class ScriptTestBase(object):
     def assert_template_eq(self, tpl1, tpl2):
         aaa = tpl1.replace('\n', '').replace('  ', '')
         bbb = tpl2.replace('\n', '').replace('  ', '')
-        assert aaa == bbb
+        assert aaa == bbb, "{} != {}".format(aaa, bbb)
 
     def process_templates(self, tpl, expected):
         request = rf.get('/')
