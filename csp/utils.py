@@ -155,9 +155,19 @@ SCRIPT_ATTRS['nomodule'] = _bool_attr_mapper
 ATTR_FORMAT_STR = ''.join(['{{{}}}'.format(a) for a in SCRIPT_ATTRS])
 
 
+_script_tag_contents_re = re.compile(
+    r"""<script        # match the opening script tag
+            [\s|\S]*?> # minimally match attrs and spaces in opening script tag
+    ([\s|\S]+)         # greedily capture the script tag contents
+    </script>          # match the closing script tag
+""",
+    re.VERBOSE,
+)
+
+
 def _unwrap_script(text):
     """Extract content defined between script tags"""
-    matches = re.search(r'<script[\s|\S]*>([\s|\S]+?)</script>', text)
+    matches = re.search(_script_tag_contents_re, text)
     if matches and len(matches.groups()):
         return matches.group(1).strip()
 

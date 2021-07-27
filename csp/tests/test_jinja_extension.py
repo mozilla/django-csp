@@ -77,3 +77,22 @@ class TestJinjaExtension(ScriptExtensionTestBase):
             'var hello=\'world\';</script>')
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
+
+    def test_regex_captures_script_content_including_brackets(self):
+        """
+        Ensure that script content get captured properly.
+        Especially when using angle brackets."""
+        tpl = """
+            {% script %}
+            <script type="text/javascript">
+                let capture_text = "<script></script>"
+            </script>
+            {% endscript %}
+            """
+
+        expected = (
+            '<script nonce="{}">'
+            'let capture_text = "<script></script>"'
+            '</script>')
+
+        self.assert_template_eq(*self.process_templates(tpl, expected))
