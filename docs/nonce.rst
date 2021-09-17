@@ -3,6 +3,15 @@ Using the generated CSP nonce
 ==============================
 When ``CSP_INCLUDE_NONCE_IN`` is configured, the nonce value is returned in the CSP header. To actually make the browser do anything with this value, you will need to include it in the attributes of the tags that you wish to mark as safe.
 
+
+.. Note::
+
+   Use view source on a page to see nonce values. **Nonce values are
+   not visible in browser developer tools.** To prevent malicious CSS
+   selectors leaking the values, `they are not exposed to the DOM
+   <https://github.com/whatwg/html/pull/2373>`_.
+
+
 ``Middleware``
 ==============
 Installing the middleware creates a lazily evaluated property ``csp_nonce`` and attaches it to all incoming requests.
