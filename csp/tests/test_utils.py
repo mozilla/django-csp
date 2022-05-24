@@ -5,7 +5,12 @@ from django.conf import settings
 from django.test.utils import override_settings
 from django.utils.functional import lazy
 
-from csp.utils import build_policy
+import pytest
+
+from csp.utils import (
+    build_policy,
+    _policies_from_names_and_kwargs,
+)
 
 
 def policy_eq(
@@ -301,3 +306,8 @@ def test_nonce_include_in_absent():
     del settings.CSP_INCLUDE_NONCE_IN
     policy = build_policy(nonce='abc123')
     policy_eq("default-src 'self' 'nonce-abc123'", policy)
+
+
+def test_policies_from_names_and_kwargs():
+    with pytest.raises(ValueError):
+        _policies_from_names_and_kwargs(None, {})
