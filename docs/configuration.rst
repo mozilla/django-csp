@@ -42,7 +42,7 @@ These settings affect the policy in the header. The defaults are in *italics*.
     defining an order on those policies. *['default']*
 
 
-.. deprecated-policy-settings:
+.. _deprecated-policy-settings:
 
 Deprecated Policy Settings
 --------------------------
@@ -177,7 +177,7 @@ the deprecation period is over.  It will be populated with a single policy under
     See: block-all-mixed-content_
 
 
-.. deprecated-pseudo-directives:
+.. _deprecated-pseudo-directives:
 
 Pseudo-Directives
 ^^^^^^^^^^^^^^^^^

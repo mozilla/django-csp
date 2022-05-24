@@ -101,6 +101,7 @@ Avoid using indices in this cases.
 For named policies it will fallback to ``CSP_POLICY_DEFINITIONS`` even if they
 don't appear in the current policy, so use with care
 ::
+
     from csp.decorators import csp_select
 
     # Using default settings
