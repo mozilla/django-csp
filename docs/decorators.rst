@@ -54,6 +54,7 @@ The arguments to the decorator the same as the :ref:`settings
 or tuples.
 
 ::
+
     from csp.decorators import csp_update
 
     # Will allow images from imgsrv.com.
@@ -71,6 +72,7 @@ decorator will be used verbatim. (See the note under ``@csp_update``.)
 
 The arguments and values are the same as ``@csp_update``
 ::
+
     from csp.decorators import csp_replace
 
     # settings.CSP_IMG_SRC = ['imgsrv.com']
@@ -119,6 +121,7 @@ If you need to set the entire policy on a view, ignoring all the
 settings, you can use the ``@csp`` decorator. The arguments and values
 are as above
 ::
+
     from csp.decorators import csp
 
     @csp(DEFAULT_SRC=["'self'"], IMG_SRC=['imgsrv.com'],
