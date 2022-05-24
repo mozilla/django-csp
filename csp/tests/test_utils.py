@@ -8,22 +8,25 @@ from django.utils.functional import lazy
 from csp.utils import build_policy
 
 
-def policy_eq(a, b, msg='%r != %r', report_only=False):
+def policy_eq(
+    a, b, msg='%r != %r', report_only=False, exclude_url_prefixes=(),
+):
     if not isinstance(a, list):
-        a = [(a, report_only)]
+        a = [(a, report_only, exclude_url_prefixes)]
     if not isinstance(a, list):
-        b = [(b, report_only)]
+        b = [(b, report_only, exclude_url_prefixes)]
 
     for csp_a, csp_b in zip(a, b):
+        assert csp_a[1] == csp_b[1]
+        assert sorted(csp_a[2]) == sorted(csp_b[2])
         parts_a = sorted(csp_a[0].split('; '))
         parts_b = sorted(csp_b[0].split('; '))
-        assert csp_a[1] == csp_b[1]
         assert parts_a == parts_b, msg % (a, b)
 
 
 def test_empty_policy():
     policy = build_policy()
-    assert [("default-src 'self'", False)] == policy
+    policy_eq("default-src 'self'", policy)
 
 
 def literal(s):
@@ -36,7 +39,7 @@ lazy_literal = lazy(literal, six.text_type)
 @override_settings(CSP_DEFAULT_SRC=['example.com', 'example2.com'])
 def test_default_src():
     policy = build_policy()
-    assert [('default-src example.com example2.com', False)] == policy
+    policy_eq('default-src example.com example2.com', policy)
 
 
 @override_settings(CSP_SCRIPT_SRC=['example.com'])
