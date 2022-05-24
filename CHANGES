@@ -10,6 +10,9 @@ Next
 - Drop support for EOL Python <3.6 and Django <2.2 versions
 - Rename default branch to main
 - Fix capturing brackets in script template tags
+- Add support for multiple content security policies
+- Deprecate single policy settings.  Policies are now
+  configured through two settings: CSP_POLICIES and CSP_POLICY_DEFINITIONS.
 
 3.7
 ===
