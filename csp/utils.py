@@ -8,11 +8,7 @@ from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.utils.encoding import force_str
 
-try:
-    from django.utils.six.moves import http_client
-except ImportError:
-    # django 3.x removed six
-    import http.client as http_client
+import http.client as http_client
 
 from .conf import (
     defaults,

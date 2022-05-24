@@ -6,17 +6,8 @@ from collections import defaultdict
 from functools import partial
 
 from django.conf import settings
+from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
-
-try:
-    from django.utils.deprecation import MiddlewareMixin
-except ImportError:
-    class MiddlewareMixin(object):
-        """
-        If this middleware doesn't exist, this is an older version of django
-        and we don't need it.
-        """
-        pass
 
 from .utils import (
     build_policy, EXEMPTED_DEBUG_CODES, HTTP_HEADERS,

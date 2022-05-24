@@ -38,7 +38,6 @@ test_requires = [
     'pytest-pep8==1.0.6',
     'pep8==1.4.6',
     'mock==1.0.1',
-    'six==1.12.0',
 ]
 
 test_requires += jinja2_requires
