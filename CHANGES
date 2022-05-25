@@ -13,6 +13,10 @@ Next
 - Add support for multiple content security policies
 - Deprecate single policy settings.  Policies are now
   configured through two settings: CSP_POLICIES and CSP_POLICY_DEFINITIONS.
+- Fix CSP_EXCLUDE_URL_PREFIXES: previously this would error unless it was a
+  single string. NOTE: Like other settings, CSP_EXCLUDE_URL_PREFIXES is now
+  configured per policy in CSP_POLICY_DEFINITIONS under the key
+  exclude_url_prefixes.
 
 3.7
 ===
