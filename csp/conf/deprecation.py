@@ -41,7 +41,7 @@ def _handle_legacy_settings(csp, allow_legacy):
 
     if not allow_legacy:
         raise ImproperlyConfigured(
-            "Settings CSP_POLICY_DEFINITIONS is not allowed with following "
+            "Setting CSP_POLICY_DEFINITIONS is not allowed with the following "
             "deprecated settings: %s" % ", ".join(legacy_names)
         )
 
