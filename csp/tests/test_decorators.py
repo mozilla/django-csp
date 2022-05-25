@@ -6,7 +6,7 @@ from csp.decorators import (
     csp, csp_append, csp_replace, csp_select, csp_update, csp_exempt,
 )
 from csp.middleware import CSPMiddleware
-from csp.tests.utils import response
+from csp.tests.utils import override_legacy_settings, response
 from csp.utils import policy_names, HTTP_HEADERS
 
 
@@ -47,7 +47,7 @@ def test_csp_select():
     assert response[REPORT_ONLY_HEADER] == "default-src 'self'"
 
 
-@override_settings(CSP_IMG_SRC=['foo.com'])
+@override_legacy_settings(CSP_IMG_SRC=['foo.com'])
 def test_csp_update():
     def view_without_decorator(request):
         return HttpResponse()
@@ -91,7 +91,7 @@ def test_csp_update_multiple():
     assert policy_list == ["default-src 'self'", "font-src foo.com"]
 
 
-@override_settings(CSP_IMG_SRC=['foo.com'])
+@override_legacy_settings(CSP_IMG_SRC=['foo.com'])
 def test_csp_replace():
     def view_without_decorator(request):
         return HttpResponse()

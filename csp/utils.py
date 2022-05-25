@@ -42,7 +42,7 @@ def get_declared_policy_definitions():
     )
     deprecation._handle_legacy_settings(
         custom_definitions['default'],
-        allow_legacy=True  # not hasattr(settings, 'CSP_POLICY_DEFINITIONS'),
+        allow_legacy=not hasattr(settings, 'CSP_POLICY_DEFINITIONS'),
     )
     definitions = csp_definitions_update(
         {},

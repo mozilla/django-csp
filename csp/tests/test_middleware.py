@@ -10,7 +10,7 @@ from django.test.utils import override_settings
 import pytest
 
 from csp.middleware import CSPMiddleware
-from csp.tests.utils import response
+from csp.tests.utils import override_legacy_settings, response
 from csp.utils import HTTP_HEADERS
 
 HEADER_SET = set(HTTP_HEADERS)
@@ -54,7 +54,7 @@ def test_exclude():
     settings.CSP_POLICY_DEFINITIONS['default']['exclude_url_prefixes'] = ()
 
 
-@override_settings(CSP_REPORT_ONLY=True)
+@override_legacy_settings(CSP_REPORT_ONLY=True)
 def test_report_only():
     request = rf.get('/')
     response = HttpResponse()
@@ -160,7 +160,7 @@ def test_use_update():
     assert REPORT_ONLY_HEADER not in response
 
 
-@override_settings(CSP_IMG_SRC=['foo.com'])
+@override_legacy_settings(CSP_IMG_SRC=['foo.com'])
 def test_use_replace():
     request = rf.get('/')
     response = HttpResponse()
@@ -170,7 +170,7 @@ def test_use_replace():
     assert policy_list == ["default-src 'self'", "img-src bar.com"]
 
 
-@override_settings(CSP_IMG_SRC=['foo.com'])
+@override_legacy_settings(CSP_IMG_SRC=['foo.com'])
 def test_use_complex_replace():
     request = rf.get('/')
     response = HttpResponse()
@@ -262,7 +262,7 @@ def test_nonce_regenerated_on_new_request():
         assert nonce2 not in response1[header]
 
 
-@override_settings(
+@override_legacy_settings(
     CSP_INCLUDE_NONCE_IN=[],
 )
 def test_no_nonce_when_disabled_by_settings():
