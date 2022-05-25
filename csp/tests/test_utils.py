@@ -20,11 +20,14 @@ def policy_eq(
     if not isinstance(a, list):
         b = [(b, report_only, exclude_url_prefixes)]
 
-    for csp_a, csp_b in zip(a, b):
-        assert csp_a[1] == csp_b[1]
-        assert sorted(csp_a[2]) == sorted(csp_b[2])
-        parts_a = sorted(csp_a[0].split('; '))
-        parts_b = sorted(csp_b[0].split('; '))
+    for (
+        (csp_a, report_only_a, exclude_prefixes_a),
+        (csp_b, report_only_b, exclude_prefixes_b),
+     ) in zip(a, b):
+        assert report_only_a == report_only_b
+        assert sorted(exclude_prefixes_a) == sorted(exclude_prefixes_b)
+        parts_a = sorted(csp_a.split('; '))
+        parts_b = sorted(csp_b.split('; '))
         assert parts_a == parts_b, msg % (a, b)
 
 
@@ -301,11 +304,11 @@ def test_nonce_include_in():
                "style-src 'nonce-abc123'"), policy)
 
 
-@override_settings()
+@override_settings(CSP_POLICIES=('report',))
 def test_nonce_include_in_absent():
-    del settings.CSP_INCLUDE_NONCE_IN
+    assert 'include_nonce_in' not in settings.CSP_POLICY_DEFINITIONS['report']
     policy = build_policy(nonce='abc123')
-    policy_eq("default-src 'self' 'nonce-abc123'", policy)
+    policy_eq("default-src 'self' 'nonce-abc123'", policy, report_only=True)
 
 
 def test_policies_from_names_and_kwargs():

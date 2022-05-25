@@ -224,7 +224,7 @@ def test_csp_and_csp_select():
     response = view_with_decorator(REQUEST)
     mw.process_response(REQUEST, response)
     assert response._csp_select == ('new_policy', 'default')
-    assert response[HEADER] == "font-src bar.com; default-src 'self'"
+    assert response[HEADER] == "font-src bar.com, default-src 'self'"
     assert REPORT_ONLY_HEADER not in response
 
 

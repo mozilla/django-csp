@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import (
     HttpResponse,
     HttpResponseServerError,
@@ -40,14 +41,17 @@ def test_exempt():
 
 @override_settings(
     CSP_POLICIES=('default', 'report'),
-    CSP_EXCLUDE_URL_PREFIXES=('/inlines-r-us',),
 )
 def test_exclude():
+    settings.CSP_POLICY_DEFINITIONS['default']['exclude_url_prefixes'] = (
+        '/inlines-r-us',
+    )
     request = rf.get('/inlines-r-us/foo')
     response = HttpResponse()
     mw.process_response(request, response)
     assert HEADER not in response
     assert response[REPORT_ONLY_HEADER] == "default-src 'self'"
+    settings.CSP_POLICY_DEFINITIONS['default']['exclude_url_prefixes'] = ()
 
 
 @override_settings(CSP_REPORT_ONLY=True)
@@ -107,7 +111,7 @@ def test_use_complex_config():
     assert response[REPORT_ONLY_HEADER] == 'img-src test.example.com'
 
 
-def test_use_order():
+def test_use_select():
     request = rf.get('/')
     response = HttpResponse()
     response._csp_config = {
@@ -124,12 +128,12 @@ def test_use_order():
     }
     response._csp_select = ('child', 'default', 'report_test')
     mw.process_response(request, response)
-    policy_list = sorted(response[HEADER].split('; '))
-    assert policy_list == ["child-src child.example.com", "default-src 'self'"]
+    policies = sorted(response[HEADER].split(', '))
+    assert policies == ["child-src child.example.com", "default-src 'self'"]
     assert response[REPORT_ONLY_HEADER] == 'img-src test.example.com'
 
 
-def test_use_order_dne():
+def test_use_select_dne():
     request = rf.get('/')
     response = HttpResponse()
     response._csp_select = ('does_not_exist',)
@@ -259,9 +263,8 @@ def test_nonce_regenerated_on_new_request():
 
 
 @override_settings(
-    CSP_POLICIES=("default", "report"),
+    CSP_INCLUDE_NONCE_IN=[],
 )
-@override_settings(CSP_INCLUDE_NONCE_IN=[])
 def test_no_nonce_when_disabled_by_settings():
     request = rf.get('/')
     mw.process_request(request)
@@ -269,5 +272,3 @@ def test_no_nonce_when_disabled_by_settings():
     response = HttpResponse()
     mw.process_response(request, response)
     assert nonce not in response[HEADER]
-    # Legacy settings only apply to default
-    assert nonce in response[REPORT_ONLY_HEADER]
