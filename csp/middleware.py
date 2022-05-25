@@ -70,7 +70,9 @@ class CSPMiddleware(MiddlewareMixin):
                 headers[header].append(csp)
 
         for header, policies in headers.items():
-            response[header] = '; '.join(policies)
+            # Multiple policies are joined by a comma and should be treated by
+            # the browser as though they were delivered under multiple headers.
+            response[header] = ', '.join(policies)
         return response
 
     def build_policy(self, request, response):
