@@ -18,7 +18,7 @@ def policy_eq(
 ):
     if not isinstance(a, list):
         a = [(a, report_only, exclude_url_prefixes)]
-    if not isinstance(a, list):
+    if not isinstance(b, list):
         b = [(b, report_only, exclude_url_prefixes)]
 
     for (
