@@ -60,7 +60,7 @@ def test_csp_update():
     def view_with_decorator(request):
         return HttpResponse()
     response = view_with_decorator(REQUEST)
-    assert dict(response._csp_update) == {'default': {'img-src': ['bar.com']}}
+    assert response._csp_update == {'default': {'img-src': ['bar.com']}}
     mw.process_response(REQUEST, response)
     policy_list = sorted(response[HEADER].split("; "))
     assert policy_list == ["default-src 'self'", "img-src foo.com bar.com"]
@@ -104,7 +104,7 @@ def test_csp_replace():
     def view_with_decorator(request):
         return HttpResponse()
     response = view_with_decorator(REQUEST)
-    assert dict(response._csp_replace) == {'default': {'img-src': ['bar.com']}}
+    assert response._csp_replace == {'default': {'img-src': ['bar.com']}}
     mw.process_response(REQUEST, response)
     policy_list = sorted(response[HEADER].split("; "))
     assert policy_list == ["default-src 'self'", "img-src bar.com"]
@@ -234,7 +234,7 @@ def test_csp_string_values():
     def view_with_decorator(request):
         return HttpResponse()
     response = view_with_decorator(REQUEST)
-    assert dict(response._csp_config) == {
+    assert response._csp_config == {
         policy_names.last_policy_name: {
             'img-src': ['foo.com'],
             'font-src': ['bar.com'],
