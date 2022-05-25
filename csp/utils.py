@@ -1,5 +1,6 @@
 import copy
 import re
+import warnings
 
 from collections import OrderedDict
 from itertools import chain
@@ -166,6 +167,12 @@ def _compile_policy(csp, nonce=None):
             pass
         else:  # directives with many values like src lists
             policy_parts[key] = ' '.join(value)
+
+        if key == 'block-all-mixed-content':
+            warnings.warn(
+                deprecation.BLOCK_ALL_MIXED_CONTENT_DEPRECATION_WARNING,
+                DeprecationWarning,
+            )
 
     if report_uri:
         report_uri = map(force_str, report_uri)

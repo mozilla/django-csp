@@ -17,6 +17,7 @@ Next
   single string. NOTE: Like other settings, CSP_EXCLUDE_URL_PREFIXES is now
   configured per policy in CSP_POLICY_DEFINITIONS under the key
   exclude_url_prefixes.
+- The block-all-mixed-content directive has been deprecated as it's now obsolete.
 
 3.7
 ===

@@ -10,6 +10,11 @@ from . import (
 )
 
 
+BLOCK_ALL_MIXED_CONTENT_DEPRECATION_WARNING = (
+    "block-all-mixed-content is obsolete. "
+    "All mixed content is now blocked if it can't be autoupgraded."
+)
+
 LEGACY_SETTINGS_NAMES_DEPRECATION_WARNING = (
     'The following settings are deprecated: %s. '
     'Use CSP_POLICY_DEFINITIONS and CSP_POLICIES instead.'

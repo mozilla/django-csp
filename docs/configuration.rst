@@ -173,7 +173,7 @@ the deprecation period is over.  It will be populated with a single policy under
 
 ``CSP_BLOCK_ALL_MIXED_CONTENT``
     Include ``block-all-mixed-content`` directive. A ``boolean``. *False*
-
+    Note: Obsolete. All mixed content is now blocked if it can't be autoupgraded.
     See: block-all-mixed-content_
 
 
@@ -225,4 +225,4 @@ the :ref:`decorator documentation <decorator-chapter>` for more details.
 .. _spec: Content-Security-Policy_
 .. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
 .. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
-.. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/
+.. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/#strict-checking

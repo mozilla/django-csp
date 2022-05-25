@@ -36,7 +36,7 @@ POLICY = {
     'trusted-types': None,
     # Other Directives
     'upgrade-insecure-requests': False,
-    'block-all-mixed-content': False,
+    'block-all-mixed-content': False,  # Obsolete
     # Pseudo Directives
     'report_only': False,
     'include_nonce_in': ('default-src',),

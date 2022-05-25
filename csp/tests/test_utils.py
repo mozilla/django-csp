@@ -283,7 +283,8 @@ def test_upgrade_insecure_requests():
 
 @override_settings(CSP_BLOCK_ALL_MIXED_CONTENT=True)
 def test_block_all_mixed_content():
-    policy = build_policy()
+    with pytest.warns(DeprecationWarning):
+        policy = build_policy()
     policy_eq("default-src 'self'; block-all-mixed-content", policy)
 
 
