@@ -3,7 +3,9 @@ import django
 
 CSP_POLICY_DEFINITIONS = {
     'default': {
+        'default-src': ("'self'",),
         'report_only': False,
+        'include_nonce_in': ('default-src',),
     },
     'report': {
         'report_only': True,
