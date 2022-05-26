@@ -10,8 +10,18 @@ you may need to tweak here.
 It's worth reading the latest CSP spec_ and making sure you understand it
 before configuring django-csp.
 
+Multiple policies can be configured using the below settings. There are two
+reasons to do this:
+
+1. To configure one policy as report-only and another to be enforced.
+
+2. To have multiple policies enforced simultaneously for a directive, e.g
+a ``{'include_nonce_in': ['default-src']}`` and ``{'default-src': ['self']}``.
+
+Multiple policies for the same header will be separated by a ``,`` in the header.
+
 .. note::
-   Many settings require a ``tuple`` or ``list``. You may get very strange
+   Many directives require a ``tuple`` or ``list``. You may get very strange
    policies and even errors when mistakenly configuring them as a ``string``.
 
 
@@ -32,14 +42,19 @@ These settings affect the policy in the header. The defaults are in *italics*.
     `default_policy` uses the defaults for each directive as shown in :ref:`deprecated-policy-settings`
     and :ref:`deprecated-pseudo-directives` below.
 
-    The policy directives are lower-case and use dashes (``-``) rather than (``_``) used by the old
-    settings, with the exception of the :ref:`deprecated-pseudo-directives` (``report_only``,
-    ``exclude_url_prefixes``, and ``include_nonce_in``) which are specified with underscores rather
-    than dashes to distinguish them visually from the csp directives.
+    The policy directives are lower-case and use dashes (``-``) rather than (``_``) used by the
+    :ref:`old settings<deprecated-policy-settings>`, with the exception of the
+    :ref:`deprecated-pseudo-directives` (``report_only``, ``exclude_url_prefixes``, and
+    ``include_nonce_in``) which are specified with underscores rather than dashes to distinguish
+    them visually from the csp directives and for forwards compatibility.
 
 ``CSP_POLICIES``
     A list or tuple specifying which definitions will be applied by default and
     defining an order on those policies. *['default']*
+
+    Note that not all policies defined in ``CSP_POLICY_DEFINITIONS`` need to be used here.  Those that
+    aren't can be selected for a particular view using the ``@csp_select``
+    :ref:`decorator <csp-select-decorator>`.
 
 
 .. _deprecated-policy-settings:
