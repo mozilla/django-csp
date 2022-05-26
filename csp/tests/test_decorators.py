@@ -170,6 +170,22 @@ def test_csp():
     assert policy_list == ["default-src 'self'"]
 
 
+def test_csp_case_insensitive():
+    @csp(img_src=['foo.com'], font_src=['bar.com'])
+    def view_with_decorator(request):
+        return HttpResponse()
+    response = view_with_decorator(REQUEST)
+    assert response._csp_config == {
+        policy_names.last_policy_name: {
+            'img-src': ['foo.com'],
+            'font-src': ['bar.com'],
+        }
+    }
+    mw.process_response(REQUEST, response)
+    policy_list = sorted(response[HEADER].split("; "))
+    assert policy_list == ["font-src bar.com", "img-src foo.com"]
+
+
 def test_csp_with_args():
     @csp(
         {'img-src': ['foo.com']},
