@@ -316,5 +316,5 @@ def test_nonce_include_in_absent():
 
 
 def test_policies_from_names_and_kwargs():
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         _policies_from_names_and_kwargs(None, {})
