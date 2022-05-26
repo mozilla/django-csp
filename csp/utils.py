@@ -13,8 +13,11 @@ import http.client as http_client
 from .conf import (
     defaults,
     deprecation,
+    directive_to_setting,
+    get_declared_policies,
+    get_declared_policy_definitions,
     setting_to_directive,
-    LEGACY_KWARGS,
+    DIRECTIVES,
 )
 
 
@@ -194,15 +197,6 @@ def kwarg_to_directive(kwarg, value=None):
     return setting_to_directive(kwarg, prefix='', value=value)
 
 
-def csp_definitions_update(csp_definitions, other):
-    """ Update one csp definitions dictionary with another """
-    if isinstance(other, dict):
-        other = other.items()
-    for name, csp in other:
-        csp_definitions.setdefault(name, {}).update(csp)
-    return csp_definitions
-
-
 class PolicyNames:
     length = 20
     last_policy_name = None
@@ -221,75 +215,57 @@ policy_names = PolicyNames()
 def _clean_input_policy(policy):
     return dict(
         kwarg_to_directive(in_directive, value=value)
-        if in_directive.isupper() else (in_directive, value)
         for in_directive, value in policy.items()
     )
 
 
-def iter_policies(policies, name_generator=policy_names):
-    """
-    Accepts the following formats:
-    - a policy dictionary (formatted like in settings.CSP_POLICY_DEFINITIONS)
-    - an iterable of policies: (item, item, item,...)
-
-    item can be any of the following:
-        - subscriptable two-tuple: (name, csp)
-        - csp dictionary which will be assigned a random name
-
-    Yields a tuple: (name, csp)
-    """
-    if isinstance(policies, dict):
-        yield from (
-            (name, _clean_input_policy(policy))
-            for name, policy in policies.items()
-        )
-        return
-
-    for policy in policies:
-        if isinstance(policy, (list, tuple)):
-            yield (policy[0], _clean_input_policy(policy[1]))
-        else:  # dictionary containing a single csp
-            yield (next(name_generator), _clean_input_policy(policy))
-
-
-def _kwargs_are_directives(kwargs):
-    keys = set(kwargs)
-    if keys.intersection(LEGACY_KWARGS):  # Legacy settings
+def _kwargs_to_directives(kwargs, name_generator):
+    keys = {key.upper() for key in kwargs}
+    if keys.intersection(SINGLE_POLICY_KWARGS):
         # Single-policy kwargs is the legacy behaviour (deprecate?)
-        if keys.difference(LEGACY_KWARGS):
-            raise ValueError(
-                "If legacy settings are passed to the csp decorator, all "
-                "kwargs must be legacy settings."
+        invalid_keys = keys.difference(SINGLE_POLICY_KWARGS)
+        if invalid_keys:
+            raise TypeError(  # Python uses a type error in this case
+                "got unexpected keyword arguments %s."
+                % ", ".join(invalid_keys)
+                + " If legacy settings are passed to a csp decorator, all "
+                + "kwargs must be legacy settings.",
             )
-        return False
+        return {
+            name: _clean_input_policy(kwargs)
+            for name in name_generator
+        }
     # else: a dictionary of named policies
-    return True
+    return kwargs
 
 
 def _policies_from_names_and_kwargs(csp_names, kwargs):
     """
     Helper used in csp_update and csp_replace to process args
     """
-    if kwargs:
-        if not _kwargs_are_directives(kwargs):
-            policy = _clean_input_policy(kwargs)
-            return {name: policy for name in csp_names}
-        return dict(iter_policies(kwargs))
-    else:
-        raise ValueError("kwargs must not be empty.")
+    if not kwargs:
+        raise TypeError("missing required keyword arguments.")
+
+    return _kwargs_to_directives(kwargs, csp_names)
 
 
 def _policies_from_args_and_kwargs(args, kwargs):
-    all_definitions = []
+    all_definitions = {}
     if args:  # A list of policy dictionaries
-        all_definitions.append(iter_policies(args))
+        all_definitions.update({
+            next(policy_names): policy
+            for policy in args
+        })
 
     if kwargs:
-        if not _kwargs_are_directives(kwargs):
-            kwargs = [kwargs]
-        all_definitions.append(iter_policies(kwargs))
+        all_definitions.update(
+            _kwargs_to_directives(
+                kwargs,
+                (next(policy_names) for _ in range(1))
+            ),
+        )
 
-    return dict(chain(*all_definitions))
+    return all_definitions
 
 
 def _default_attr_mapper(attr_name, val):
