@@ -75,12 +75,15 @@ class CSPMiddleware(MiddlewareMixin):
             response[header] = ', '.join(policies)
         return response
 
-    def build_policy(self, request, response):
+    def get_build_kwargs(self, request, response):
         build_kwargs = {
             key: getattr(response, '_csp_%s' % key, None)
             for key in ('config', 'update', 'replace', 'select')
         }
+        build_kwargs["nonce"] = getattr(request, '_csp_nonce', None)
+        return build_kwargs
+
+    def build_policy(self, request, response):
         return build_policy(
-            nonce=getattr(request, '_csp_nonce', None),
-            **build_kwargs,
+            **self.get_build_kwargs(request, response),
         )
