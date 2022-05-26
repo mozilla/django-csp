@@ -1,7 +1,9 @@
 ==============================
 Using the generated CSP nonce
 ==============================
-When ``CSP_INCLUDE_NONCE_IN`` is configured, the nonce value is returned in the CSP header. To actually make the browser do anything with this value, you will need to include it in the attributes of the tags that you wish to mark as safe.
+When ``CSP_INCLUDE_NONCE_IN`` is configured, the nonce value is returned in the CSP headers **if it is used**.
+To actually make the browser do anything with this value, you will need to include it in the attributes of
+the tags that you wish to mark as safe.
 
 
 .. Note::
@@ -33,6 +35,10 @@ This value can be accessed directly on the request object in any view or templat
 	</script>
 
 Assuming the ``CSP_INCLUDE_NONCE_IN`` list contains the ``script-src`` directive, this will result in the above script being allowed.
+
+.. Note::
+
+   The nonce will only be added to the CSP headers if it is used.
 
 
 ``Context Processor``
