@@ -32,31 +32,7 @@ EXEMPTED_DEBUG_CODES = {
     http_client.NOT_FOUND,
 }
 
-
-def get_declared_policy_definitions():
-    custom_definitions = csp_definitions_update(
-        {},
-        getattr(
-            settings,
-            'CSP_POLICY_DEFINITIONS',
-            {'default': {}},
-        ),
-    )
-    deprecation._handle_legacy_settings(
-        custom_definitions['default'],
-        allow_legacy=not hasattr(settings, 'CSP_POLICY_DEFINITIONS'),
-    )
-    definitions = csp_definitions_update(
-        {},
-        {name: defaults.POLICY for name in custom_definitions}
-    )
-    for name, csp in custom_definitions.items():
-        definitions.setdefault(name, {}).update(csp)
-    return definitions
-
-
-def get_declared_policies():
-    return getattr(settings, 'CSP_POLICIES', defaults.POLICIES)
+SINGLE_POLICY_KWARGS = {directive_to_setting(d, prefix='') for d in DIRECTIVES}
 
 
 def _normalize_config(config, key='default'):
