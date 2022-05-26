@@ -42,3 +42,6 @@ POLICY = {
     'include_nonce_in': ('default-src',),
     'exclude_url_prefixes': (),
 }
+
+DIRECTIVES = set(POLICY)
+PSEUDO_DIRECTIVES = {d for d in DIRECTIVES if '_' in d}

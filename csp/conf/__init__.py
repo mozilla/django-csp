@@ -1,26 +1,57 @@
+__all__ = [
+    'defaults',
+    'deprecation',
+    'directive_to_setting',
+    'get_declared_policies',
+    'get_declared_policy_definitions',
+    'setting_to_directive',
+    'DIRECTIVES',
+]
+
+from django.conf import settings
+
 from . import defaults
+from .deprecation import (
+    directive_to_setting,
+    setting_to_directive,
+    _handle_legacy_settings,
+)
 
 
-DIRECTIVES = set(defaults.POLICY)
-PSEUDO_DIRECTIVES = {d for d in DIRECTIVES if '_' in d}
+DIRECTIVES = defaults.DIRECTIVES
+PSEUDO_DIRECTIVES = defaults.PSEUDO_DIRECTIVES
 
 
-def setting_to_directive(setting, value, prefix='CSP_'):
-    setting = setting[len(prefix):].lower()
-    if setting not in PSEUDO_DIRECTIVES:
-        setting = setting.replace('_', '-')
-    assert setting in DIRECTIVES
-    if isinstance(value, str):
-        value = [value]
-    return setting, value
+def _csp_definitions_update(csp_definitions, other):
+    """ Update one csp definitions dictionary with another """
+    if isinstance(other, dict):
+        other = other.items()
+    for name, csp in other:
+        csp_definitions.setdefault(name, {}).update(csp)
+    return csp_definitions
 
 
-def directive_to_setting(directive, prefix='CSP_'):
-    setting = '{}{}'.format(
-        prefix,
-        directive.replace('-', '_').upper()
+def get_declared_policy_definitions():
+    custom_definitions = _csp_definitions_update(
+        {},
+        getattr(
+            settings,
+            'CSP_POLICY_DEFINITIONS',
+            {'default': {}},
+        ),
     )
-    return setting
+    _handle_legacy_settings(
+        custom_definitions['default'],
+        allow_legacy=not hasattr(settings, 'CSP_POLICY_DEFINITIONS'),
+    )
+    definitions = _csp_definitions_update(
+        {},
+        {name: defaults.POLICY for name in custom_definitions}
+    )
+    for name, csp in custom_definitions.items():
+        definitions.setdefault(name, {}).update(csp)
+    return definitions
 
 
-LEGACY_KWARGS = {directive_to_setting(d, prefix='') for d in DIRECTIVES}
+def get_declared_policies():
+    return getattr(settings, 'CSP_POLICIES', defaults.POLICIES)

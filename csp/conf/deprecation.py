@@ -3,11 +3,7 @@ import warnings
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-from . import (
-    setting_to_directive,
-    directive_to_setting,
-    DIRECTIVES,
-)
+from . import defaults
 
 
 BLOCK_ALL_MIXED_CONTENT_DEPRECATION_WARNING = (
@@ -21,8 +17,26 @@ LEGACY_SETTINGS_NAMES_DEPRECATION_WARNING = (
 )
 
 
+def setting_to_directive(setting, value, prefix='CSP_'):
+    setting = setting[len(prefix):].lower()
+    if setting not in defaults.PSEUDO_DIRECTIVES:
+        setting = setting.replace('_', '-')
+    assert setting in defaults.DIRECTIVES
+    if isinstance(value, str):
+        value = [value]
+    return setting, value
+
+
+def directive_to_setting(directive, prefix='CSP_'):
+    setting = '{}{}'.format(
+        prefix,
+        directive.replace('-', '_').upper()
+    )
+    return setting
+
+
 _LEGACY_SETTINGS = {
-    directive_to_setting(directive) for directive in DIRECTIVES
+    directive_to_setting(directive) for directive in defaults.DIRECTIVES
 }
 
 
