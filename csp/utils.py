@@ -5,7 +5,6 @@ import warnings
 from collections import OrderedDict
 from itertools import chain
 
-from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.utils.encoding import force_str
 
