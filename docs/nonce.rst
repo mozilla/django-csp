@@ -1,7 +1,7 @@
 ==============================
 Using the generated CSP nonce
 ==============================
-When ``CSP_INCLUDE_NONCE_IN`` is configured, the nonce value is returned in the CSP headers **if it is used**.
+When ``CSP_INCLUDE_NONCE_IN`` is configured, the nonce value is returned in the CSP headers **if it is used**, e.g. by evaluating the nonce in your template.
 To actually make the browser do anything with this value, you will need to include it in the attributes of
 the tags that you wish to mark as safe.
 
