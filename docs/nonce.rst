@@ -20,7 +20,7 @@ Installing the middleware creates a lazily evaluated property ``csp_nonce`` and 
 
 .. code-block:: python
 
-	MIDDLEWARE_CLASSES = (
+    MIDDLEWARE = (
     	#...
     	'csp.middleware.CSPMiddleware',
     	#...
