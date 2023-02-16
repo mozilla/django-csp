@@ -16,11 +16,11 @@ the tags that you wish to mark as safe.
 
 ``Middleware``
 ==============
-Installing the middleware creates a lazily evaluated property ``csp_nonce`` and attaches it to all incoming requests.
+Installing the middleware creates a lazily evaluated property ``csp_nonce`` and attaches it to all incoming requests. In earlier versions of Django, the MIDDLEWARE setting was called MIDDLEWARE_CLASSES.
 
 .. code-block:: python
 
-	MIDDLEWARE_CLASSES = (
+	MIDDLEWARE = (
     	#...
     	'csp.middleware.CSPMiddleware',
     	#...
