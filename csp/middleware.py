@@ -7,11 +7,7 @@ from functools import partial
 from django.conf import settings
 from django.utils.functional import SimpleLazyObject
 
-try:
-    from django.utils.six.moves import http_client
-except ImportError:
-    # django 3.x removed six
-    import http.client as http_client
+import http.client as http_client
 
 try:
     from django.utils.deprecation import MiddlewareMixin
