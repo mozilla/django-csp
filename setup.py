@@ -31,14 +31,13 @@ jinja2_requires = [
 ]
 
 test_requires = [
-    'pytest<4.0',
+    'pytest<8.0',
     'pytest-cov',
     'pytest-django',
-    'pytest-flakes==1.0.1',
-    'pytest-pep8==1.0.6',
-    'pep8==1.4.6',
+    'pytest-flakes==4.0.5',
+    'pytest-pycodestyle==2.2.1',
+    'pycodestyle==2.8.0',
     'mock==1.0.1',
-    'six==1.12.0',
 ]
 
 test_requires += jinja2_requires

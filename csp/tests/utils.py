@@ -1,8 +1,20 @@
+from contextlib import contextmanager
+
+from django.conf import settings
 from django.http import HttpResponse
 from django.template import engines, Template, Context
-from django.test import RequestFactory
+from django.test import override_settings, RequestFactory
 
 from csp.middleware import CSPMiddleware
+
+
+@contextmanager
+def override_legacy_settings(**overrides):
+    with override_settings():
+        del settings.CSP_POLICY_DEFINITIONS
+        for key, value in overrides.items():
+            setattr(settings, key, value)
+        yield
 
 
 def response(*args, headers=None, **kwargs):

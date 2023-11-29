@@ -1,9 +1,8 @@
 from django.http import HttpResponse
 from django.test import RequestFactory
-from django.test.utils import override_settings
 
 from csp.contrib.rate_limiting import RateLimitedCSPMiddleware
-from csp.tests.utils import response
+from csp.tests.utils import override_legacy_settings, response
 
 
 HEADER = 'Content-Security-Policy'
@@ -11,7 +10,7 @@ mw = RateLimitedCSPMiddleware(response())
 rf = RequestFactory()
 
 
-@override_settings(CSP_REPORT_PERCENTAGE=0.1, CSP_REPORT_URI='x')
+@override_legacy_settings(CSP_REPORT_PERCENTAGE=0.1, CSP_REPORT_URI='x')
 def test_report_percentage():
     times_seen = 0
     for _ in range(5000):

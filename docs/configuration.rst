@@ -10,8 +10,18 @@ you may need to tweak here.
 It's worth reading the latest CSP spec_ and making sure you understand it
 before configuring django-csp.
 
+Multiple policies can be configured using the below settings. There are two
+reasons to do this:
+
+1. To configure one policy as report-only and another to be enforced.
+
+2. To have multiple policies enforced simultaneously for a directive, e.g
+a ``{'include_nonce_in': ['default-src']}`` and ``{'default-src': ['self']}``.
+
+Multiple policies for the same header will be separated by a ``,`` in the header.
+
 .. note::
-   Many settings require a ``tuple`` or ``list``. You may get very strange
+   Many directives require a ``tuple`` or ``list``. You may get very strange
    policies and even errors when mistakenly configuring them as a ``string``.
 
 
@@ -25,6 +35,37 @@ These settings affect the policy in the header. The defaults are in *italics*.
    ``'unsafe-eval'``, ``'none'`` and hash-source (``'sha256-...'``) must be
    quoted! e.g.: ``CSP_DEFAULT_SRC = ("'self'",)``. Without quotes they will
    not work as intended.
+
+``CSP_POLICY_DEFINITIONS``
+    A dictionary of dictionaries of directives or pseudo-directives. *{'default': default_policy}*
+
+    `default_policy` uses the defaults for each directive as shown in :ref:`deprecated-policy-settings`
+    and :ref:`deprecated-pseudo-directives` below.
+
+    The policy directives are lower-case and use dashes (``-``) rather than (``_``) used by the
+    :ref:`old settings<deprecated-policy-settings>`, with the exception of the
+    :ref:`deprecated-pseudo-directives` (``report_only``, ``exclude_url_prefixes``, and
+    ``include_nonce_in``) which are specified with underscores rather than dashes to distinguish
+    them visually from the csp directives and for forwards compatibility.
+
+``CSP_POLICIES``
+    A list or tuple specifying which definitions will be applied by default and
+    defining an order on those policies. *['default']*
+
+    Note that not all policies defined in ``CSP_POLICY_DEFINITIONS`` need to be used here.  Those that
+    aren't can be selected for a particular view using the ``@csp_select``
+    :ref:`decorator <csp-select-decorator>`.
+
+
+.. _deprecated-policy-settings:
+
+Deprecated Policy Settings
+--------------------------
+
+With the introduction of multi-policy support, the following settings are deprecated.
+If ``CSP_POLICY_DEFINITIONS`` is not defined, they will be used to populate it until
+the deprecation period is over.  It will be populated with a single policy under the
+``default`` key.
 
 ``CSP_DEFAULT_SRC``
     Set the ``default-src`` directive. A ``tuple`` or ``list`` of values,
@@ -147,8 +188,17 @@ These settings affect the policy in the header. The defaults are in *italics*.
 
 ``CSP_BLOCK_ALL_MIXED_CONTENT``
     Include ``block-all-mixed-content`` directive. A ``boolean``. *False*
-
+    Note: Obsolete. All mixed content is now blocked if it can't be autoupgraded.
     See: block-all-mixed-content_
+
+
+.. _deprecated-pseudo-directives:
+
+Pseudo-Directives
+^^^^^^^^^^^^^^^^^
+
+These settings affect how the policy is applied, but do not correspond with a single
+csp directive.
 
 ``CSP_INCLUDE_NONCE_IN``
     Include dynamically generated nonce in all listed directives.
@@ -158,20 +208,6 @@ These settings affect the policy in the header. The defaults are in *italics*.
 
     Note: The nonce value will only be generated if ``request.csp_nonce``
     is accessed during the request/response cycle.
-
-
-Changing the Policy
--------------------
-
-The policy can be changed on a per-view (or even per-request) basis. See
-the :ref:`decorator documentation <decorator-chapter>` for more details.
-
-
-Other Settings
-==============
-
-These settings control the behavior of django-csp. Defaults are in
-*italics*.
 
 ``CSP_REPORT_ONLY``
     Send "report-only" headers instead of real headers.
@@ -192,9 +228,16 @@ These settings control the behavior of django-csp. Defaults are in
    on, e.g., ``excluded-page/`` can therefore be leveraged to access
    everything on the same origin.
 
+Changing the Policy
+-------------------
+
+The policy can be changed on a per-view (or even per-request) basis. See
+the :ref:`decorator documentation <decorator-chapter>` for more details.
+
+
 .. _Content-Security-Policy: https://www.w3.org/TR/CSP/
 .. _Content-Security-Policy-L3: https://w3c.github.io/webappsec-csp/
 .. _spec: Content-Security-Policy_
 .. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
 .. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
-.. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/
+.. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/#strict-checking
