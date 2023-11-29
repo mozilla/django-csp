@@ -69,6 +69,7 @@ or tuples.
 The ``@csp_replace`` decorator allows you to **replace** a source list
 specified in settings. If there is no setting, the value passed to the
 decorator will be used verbatim. (See the note under ``@csp_update``.)
+If the specified value is None, the corresponding key will not be included.
 
 The arguments and values are the same as ``@csp_update``::
 
