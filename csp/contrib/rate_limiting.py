@@ -11,6 +11,7 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
     to report-uri by excluding it from some requests."""
 
     def build_policy(self, request, response):
+        clear = getattr(response, '_csp_clear', None)
         config = getattr(response, '_csp_config', None)
         update = getattr(response, '_csp_update', None)
         replace = getattr(response, '_csp_replace', {})
@@ -21,5 +22,10 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
         if not include_report_uri:
             replace['report-uri'] = None
 
-        return build_policy(config=config, update=update, replace=replace,
-                            nonce=nonce)
+        return build_policy(
+            clear=clear,
+            config=config,
+            update=update,
+            replace=replace,
+            nonce=nonce,
+        )

@@ -1,6 +1,19 @@
 from functools import wraps
 
 
+def csp_clear(*args):
+    clear = set(value.lower().replace('_', '-') for value in args)
+
+    def decorator(f):
+        @wraps(f)
+        def _wrapped(*a, **kw):
+            r = f(*a, **kw)
+            r._csp_clear = clear
+            return r
+        return _wrapped
+    return decorator
+
+
 def csp_exempt(f):
     @wraps(f)
     def _wrapped(*a, **kw):
