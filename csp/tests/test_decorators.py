@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
-from csp.decorators import csp, csp_replace, csp_update, csp_exempt
+from csp.decorators import csp, csp_replace, csp_update, csp_exempt, csp_clear
 from csp.middleware import CSPMiddleware
 from csp.tests.utils import response
 
@@ -110,3 +110,11 @@ def test_csp_string_values():
     mw.process_response(REQUEST, response)
     policy_list = sorted(response['Content-Security-Policy'].split("; "))
     assert policy_list == ["font-src bar.com", "img-src foo.com"]
+
+
+def test_csp_clear():
+    @csp_clear("IMG_SRC", "frame-ancestors")
+    def view(request):
+        return HttpResponse()
+    response = view(REQUEST)
+    assert response._csp_clear == set(["img-src", "frame-ancestors"])

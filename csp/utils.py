@@ -53,13 +53,15 @@ def from_settings():
     }
 
 
-def build_policy(config=None, update=None, replace=None, nonce=None):
+def build_policy(
+        clear=None, config=None, update=None, replace=None, nonce=None):
     """Builds the policy as a string from the settings."""
 
     if config is None:
         config = from_settings()
         # Be careful, don't mutate config as it could be from settings
 
+    clear = clear if clear is not None else set()
     update = update if update is not None else {}
     replace = replace if replace is not None else {}
     csp = {}
@@ -83,6 +85,9 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
                 csp[k] = v
             else:
                 csp[k] += tuple(v)
+
+    for value in clear:
+        csp.pop(value, None)
 
     report_uri = csp.pop('report-uri', None)
 

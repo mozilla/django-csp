@@ -10,6 +10,7 @@ Next
 - Drop support for EOL Python <3.6 and Django <2.2 versions
 - Rename default branch to main
 - Fix capturing brackets in script template tags
+- Add support for csp_clear decorator to clear directives per view (#201)
 
 3.7
 ===

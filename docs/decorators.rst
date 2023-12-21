@@ -82,6 +82,28 @@ The arguments and values are the same as ``@csp_update``::
         return render(...)
 
 
+``@csp_clear``
+================
+
+The ``@csp_clear`` decorator allows you to **clear** a CSP directive. Clearing
+a directive will take priority over any of the other options.
+
+The values to the decorator are the same as the :ref:`settings
+<configuration-chapter>` without the ``CSP_`` prefix, e.g. ``IMG_SRC``.
+(They are also case-insensitive.)::
+
+    from csp.decorators import csp_clear
+
+    # By default only allow responses to be served in an iframe
+    # from imgsrv.com
+    # settings.CSP_FRAME_ANCESTORS = ['imgsrv.com']
+    # Will allow this particular view to be served in an iframe from any\
+    # domain, including imgsrv.com.
+    @csp_clear('frame-ancestors')
+    def myview(request):
+        return render(...)
+
+
 ``@csp``
 ========
 

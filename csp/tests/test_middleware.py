@@ -71,6 +71,18 @@ def test_use_update():
     assert response[HEADER] == "default-src 'self' example.com"
 
 
+def test_use_clear():
+    request = rf.get('/')
+    response = HttpResponse()
+    response._csp_update = {
+        'default-src': ['example.com'],
+        'frame-ancestors': ['example.com'],
+    }
+    response._csp_clear = set(["frame-ancestors"])
+    mw.process_response(request, response)
+    assert response[HEADER] == "default-src 'self' example.com"
+
+
 @override_settings(CSP_IMG_SRC=['foo.com'])
 def test_use_replace():
     request = rf.get('/')

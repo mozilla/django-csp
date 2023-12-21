@@ -81,9 +81,15 @@ class CSPMiddleware(MiddlewareMixin):
         return response
 
     def build_policy(self, request, response):
+        clear = getattr(response, '_csp_clear', None)
         config = getattr(response, '_csp_config', None)
         update = getattr(response, '_csp_update', None)
         replace = getattr(response, '_csp_replace', None)
         nonce = getattr(request, '_csp_nonce', None)
-        return build_policy(config=config, update=update, replace=replace,
-                            nonce=nonce)
+        return build_policy(
+            clear=clear,
+            config=config,
+            update=update,
+            replace=replace,
+            nonce=nonce,
+        )
