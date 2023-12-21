@@ -26,7 +26,7 @@ test those features thoroughly.
 To run the tests, install the requirements (probably into a virtualenv_)::
 
     pip install -e .
-    pip install -e .[tests]
+    pip install -e ".[tests]"
 
 Then just `py.test`_ to run the tests::
 
