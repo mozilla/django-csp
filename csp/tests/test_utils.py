@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 
-import six
 from django.conf import settings
 from django.test.utils import override_settings
 from django.utils.functional import lazy
@@ -23,7 +22,7 @@ def literal(s):
     return s
 
 
-lazy_literal = lazy(literal, six.text_type)
+lazy_literal = lazy(literal)
 
 
 @override_settings(CSP_DEFAULT_SRC=["example.com", "example2.com"])
