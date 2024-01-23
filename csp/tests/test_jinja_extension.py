@@ -2,7 +2,6 @@ from csp.tests.utils import ScriptExtensionTestBase
 
 
 class TestJinjaExtension(ScriptExtensionTestBase):
-
     def test_script_tag_injects_nonce(self):
         tpl = """
             {% script %}
@@ -10,7 +9,7 @@ class TestJinjaExtension(ScriptExtensionTestBase):
             {% endscript %}
         """
 
-        expected = ("""<script nonce="{}">var hello='world';</script>""")
+        expected = """<script nonce="{}">var hello='world';</script>"""
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
     def test_script_with_src_ignores_body(self):
@@ -43,9 +42,7 @@ class TestJinjaExtension(ScriptExtensionTestBase):
                 var hello='world';
             {% endscript %}"""
 
-        expected = ('<script nonce="{}" id="jeff" async=false>'
-                    'var hello=\'world\';'
-                    '</script>')
+        expected = '<script nonce="{}" id="jeff" async=false>' "var hello='world';" "</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -55,15 +52,13 @@ class TestJinjaExtension(ScriptExtensionTestBase):
                 var hello='world';
             {% endscript %}"""
 
-        expected = ('<script nonce="{}" id="jeff" async>'
-                    'var hello=\'world\';'
-                    '</script>')
+        expected = '<script nonce="{}" id="jeff" async>' "var hello='world';" "</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
     def test_nested_script_tags_are_removed(self):
         """Let users wrap their code in script tags for the sake of their
-           development environment"""
+        development environment"""
         tpl = """
             {% script type="application/javascript" id="jeff" defer=True%}
                 <script type="text/javascript">
@@ -71,10 +66,7 @@ class TestJinjaExtension(ScriptExtensionTestBase):
                 </script>
             {% endscript %}"""
 
-        expected = (
-            '<script'
-            ' nonce="{}" id="jeff" type="application/javascript" defer>'
-            'var hello=\'world\';</script>')
+        expected = "<script" ' nonce="{}" id="jeff" type="application/javascript" defer>' "var hello='world';</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -90,9 +82,6 @@ class TestJinjaExtension(ScriptExtensionTestBase):
             {% endscript %}
             """
 
-        expected = (
-            '<script nonce="{}">'
-            'let capture_text = "<script></script>"'
-            '</script>')
+        expected = '<script nonce="{}">' 'let capture_text = "<script></script>"' "</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))

@@ -2,7 +2,6 @@ from csp.tests.utils import ScriptTagTestBase
 
 
 class TestDjangoTemplateTag(ScriptTagTestBase):
-
     def test_script_tag_injects_nonce(self):
         tpl = """
             {% load csp %}
@@ -13,11 +12,11 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
     def test_script_with_src_ignores_body(self):
-        tpl = ("""
+        tpl = """
             {% load csp %}
             {% script src="foo" %}
                 var hello='world';
-            {% endscript %}""")
+            {% endscript %}"""
 
         expected = """<script nonce="{}" src="foo"></script>"""
 
@@ -30,10 +29,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
                 var hello='world';
             {% endscript %}"""
 
-        expected = (
-            '<script'
-            ' nonce="{}" id="jeff" type="application/javascript" defer>'
-            'var hello=\'world\';</script>')
+        expected = "<script" ' nonce="{}" id="jeff" type="application/javascript" defer>' "var hello='world';</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -43,8 +39,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
             {% script src="foo.com/bar.js" async=False %}
             {% endscript %}"""
 
-        expected = ('<script nonce="{}" src="foo.com/bar.js" async=false>'
-                    '</script>')
+        expected = '<script nonce="{}" src="foo.com/bar.js" async=false>' "</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -61,7 +56,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
 
     def test_nested_script_tags_are_removed(self):
         """Lets end users wrap their code in script tags for the sake of their
-           development environment"""
+        development environment"""
         tpl = """
             {% load csp %}
             {% script type="application/javascript" id="jeff" defer=True%}
@@ -70,10 +65,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
                 </script>
             {% endscript %}"""
 
-        expected = (
-            '<script'
-            ' nonce="{}" id="jeff" type="application/javascript" defer>'
-            'var hello=\'world\';</script>')
+        expected = "<script" ' nonce="{}" id="jeff" type="application/javascript" defer>' "var hello='world';</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -90,9 +82,6 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
             {% endscript %}
             """
 
-        expected = (
-            '<script nonce="{}">'
-            'let capture_text = "<script></script>"'
-            '</script>')
+        expected = '<script nonce="{}">' 'let capture_text = "<script></script>"' "</script>"
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
