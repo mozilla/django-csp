@@ -11,15 +11,14 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
     to report-uri by excluding it from some requests."""
 
     def build_policy(self, request, response):
-        config = getattr(response, '_csp_config', None)
-        update = getattr(response, '_csp_update', None)
-        replace = getattr(response, '_csp_replace', {})
-        nonce = getattr(request, '_csp_nonce', None)
+        config = getattr(response, "_csp_config", None)
+        update = getattr(response, "_csp_update", None)
+        replace = getattr(response, "_csp_replace", {})
+        nonce = getattr(request, "_csp_nonce", None)
 
-        report_percentage = getattr(settings, 'CSP_REPORT_PERCENTAGE')
+        report_percentage = getattr(settings, "CSP_REPORT_PERCENTAGE")
         include_report_uri = random.random() < report_percentage
         if not include_report_uri:
-            replace['report-uri'] = None
+            replace["report-uri"] = None
 
-        return build_policy(config=config, update=update, replace=replace,
-                            nonce=nonce)
+        return build_policy(config=config, update=update, replace=replace, nonce=nonce)
