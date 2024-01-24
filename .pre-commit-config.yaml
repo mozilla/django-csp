@@ -1,0 +1,24 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+# Global excludes, override per repo below if different excludes required.
+# exclude: >
+#   (?x)^(
+#     DIRNAME_OR_FILENAME_HERE
+#     | DIRNAME_OR_FILENAME_HERE
+#     | DIRNAME_OR_FILENAME_HERE
+#   )
+repos:
+  # Note: hooks that add content must run before ones which check formatting, lint, etc
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0  # Use the ref you want to point at
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.1.14
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]

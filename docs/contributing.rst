@@ -15,6 +15,8 @@ Style
 Patches should follow PEP8_ and should not introduce any new violations
 as detected by the ruff_ tool.
 
+To help stay on top of this, install pre-commit_, and then run ``pre-commit install-hooks``. Now you'll be set up
+to auto-format your code according to our style and check for errors for every commit.
 
 Tests
 =====
@@ -37,3 +39,4 @@ Then just `pytest`_ to run the tests::
 .. _ruff: https://pypi.org/project/ruff/
 .. _virtualenv: http://www.virtualenv.org/
 .. _pytest: https://pytest.org/latest/usage.html
+.. _pre-commit: https://pre-commit.com/#install
