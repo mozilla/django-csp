@@ -23,7 +23,7 @@ def read(*parts):
 
 
 install_requires = [
-    "Django>=2.2",
+    "Django>=3.2",
 ]
 
 jinja2_requires = [
@@ -47,8 +47,8 @@ setup(
     long_description=read("README.rst"),
     author="James Socol",
     author_email="me@jamessocol.com",
-    maintainer="Christopher Grebs",
-    maintainer_email="cg@webshox.org",
+    maintainer="Mozilla MEAO team",
+    maintainer_email="meao-backend@mozilla.com",
     url="http://github.com/mozilla/django-csp",
     license="BSD",
     packages=find_packages(),
@@ -76,14 +76,15 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Programming Language :: Python :: Implementation :: CPython",
-        "Framework :: Django",
+        "Framework :: Django :: 3.2",
+        "Framework :: Django :: 4.2",
+        "Framework :: Django :: 5.0",
     ],
 )
