@@ -7,9 +7,10 @@ Next
 
 - Remove deprecation warning for child-src
 - Fix capturing brackets in script template tags
-- Move to hatch
-- Move to pyproject.toml
+- Move to Hatch for packaging
+- Move project to pyproject.toml
   - Add project urls
+- Set up coverage badge
 
 Unreleased
 ==========

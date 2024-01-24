@@ -4,9 +4,6 @@
 .. image:: https://github.com/mozilla/django-csp/actions/workflows/run-tests.yaml/badge.svg
    :target: https://github.com/mozilla/django-csp/actions/workflows/run-tests.yaml
 
-.. image:: https://coveralls.io/repos/github/mozilla/django-csp/badge.svg?branch=main
-   :target: https://coveralls.io/github/mozilla/django-csp?branch=main
-
 ==========
 Django-CSP
 ==========
