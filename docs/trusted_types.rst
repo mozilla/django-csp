@@ -119,7 +119,7 @@ dangerous sink that requires Trusted Types.
 ``Step 3: Enforce Trusted Types``
 =================================
 Once you have addressed all of the Trusted Types violations present in your
-application, you can begin enforcing Trusted Types to prevent DOM XSS. 
+application, you can begin enforcing Trusted Types to prevent DOM XSS.
 
 Configure django-csp so that ``CSP_REPORT_ONLY`` is set to *False*.
 

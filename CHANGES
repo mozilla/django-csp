@@ -6,10 +6,19 @@ Next
 ====
 
 - Remove deprecation warning for child-src
-- Add project urls to setup.py
-- Drop support for EOL Python <3.6 and Django <2.2 versions
-- Rename default branch to main
 - Fix capturing brackets in script template tags
+- Move to Hatch for packaging
+- Move project to pyproject.toml
+  - Add project urls
+- Set up coverage badge
+
+Unreleased
+==========
+
+- Drop support for EOL Python <3.8 and Django <2.2 versions
+- Switch to ruff instead of pep8 and flake8
+- Move from CircleCI to Github Actions for CI
+- Add support for using pre-commit with the project
 
 3.7
 ===
@@ -50,12 +59,12 @@ Next
 3.2
 ===
 
-- Add manifest-src fetch directive - https://w3c.github.io/webappsec-csp/#directive-manifest-src
-- Add worker-src fetch directive - https://w3c.github.io/webappsec-csp/#directive-worker-src
-- Add plugin-types document directive - https://w3c.github.io/webappsec-csp/#directive-plugin-types
-- Add require-sri-for https://www.w3.org/TR/CSP/#directives-elsewhere - https://w3c.github.io/webappsec-subresource-integrity/#request-verification-algorithms
-- Add upgrade-insecure-requests - https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
-- Add block-all-mixed-content - https://w3c.github.io/webappsec-mixed-content/
+- Add manifest-src fetch directive - <https://w3c.github.io/webappsec-csp/#directive-manifest-src>
+- Add worker-src fetch directive - <https://w3c.github.io/webappsec-csp/#directive-worker-src>
+- Add plugin-types document directive - <https://w3c.github.io/webappsec-csp/#directive-plugin-types>
+- Add require-sri-for <https://www.w3.org/TR/CSP/#directives-elsewhere> - <https://w3c.github.io/webappsec-subresource-integrity/#request-verification-algorithms>
+- Add upgrade-insecure-requests - <https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery>
+- Add block-all-mixed-content - <https://w3c.github.io/webappsec-mixed-content/>
 - Add deprecation warning for child-src (#80)
 
 3.1
@@ -76,7 +85,7 @@ v3.0
 
 Please note that this is a big release that touches quite a few parts so please
 make sure you're testing thoroughly and report any issues to
-https://github.com/mozilla/django-csp/issues
+<https://github.com/mozilla/django-csp/issues>
 
 v2.0.3
 ======
