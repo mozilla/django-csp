@@ -10,12 +10,12 @@ Next
 - Move to hatch
 - Move to pyproject.toml
   - Add project urls
-- Rename default branch to main
 
 Unreleased
 ==========
 
 - Drop support for EOL Python <3.8 and Django <2.2 versions
+- Switch to ruff instead of pep8 and flake8
 
 3.7
 ===
