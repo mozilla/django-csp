@@ -1,8 +1,8 @@
 .. image:: https://badge.fury.io/py/django-csp.svg
    :target: https://pypi.python.org/pypi/django_csp
 
-.. image:: https://github.com/mozilla/django-csp/actions/workflows/run-tests.yaml/badge.svg
-   :target: https://github.com/mozilla/django-csp/actions/workflows/run-tests.yaml
+.. image:: https://github.com/mozilla/django-csp/actions/workflows/ci.yaml/badge.svg
+   :target: https://github.com/mozilla/django-csp/actions/workflows/ci.yaml
 
 ==========
 Django-CSP
