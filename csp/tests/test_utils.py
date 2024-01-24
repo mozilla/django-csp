@@ -22,7 +22,7 @@ def literal(s):
     return s
 
 
-lazy_literal = lazy(literal)
+lazy_literal = lazy(literal, str)
 
 
 @override_settings(CSP_DEFAULT_SRC=["example.com", "example2.com"])
