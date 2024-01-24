@@ -251,7 +251,7 @@ def test_require_trusted_types_for():
 def test_trusted_types():
     policy = build_policy()
     policy_eq(
-        "default-src 'self'; trusted-types strictPolicy laxPolicy " + "default 'allow-duplicates'",
+        "default-src 'self'; trusted-types strictPolicy laxPolicy default 'allow-duplicates'",
         policy,
     )
 
@@ -277,7 +277,7 @@ def test_nonce():
 def test_nonce_include_in():
     policy = build_policy(nonce="abc123")
     policy_eq(
-        ("default-src 'self'; " "script-src 'nonce-abc123'; " "style-src 'nonce-abc123'"),
+        "default-src 'self'; script-src 'nonce-abc123'; style-src 'nonce-abc123'",
         policy,
     )
 

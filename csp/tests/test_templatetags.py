@@ -29,7 +29,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
                 var hello='world';
             {% endscript %}"""
 
-        expected = "<script" ' nonce="{}" id="jeff" type="application/javascript" defer>' "var hello='world';</script>"
+        expected = '<script nonce="{}" id="jeff" type="application/javascript" defer>var hello=\'world\';</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -65,7 +65,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
                 </script>
             {% endscript %}"""
 
-        expected = "<script" ' nonce="{}" id="jeff" type="application/javascript" defer>' "var hello='world';</script>"
+        expected = '<script nonce="{}" id="jeff" type="application/javascript" defer>var hello=\'world\';</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -82,6 +82,6 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
             {% endscript %}
             """
 
-        expected = '<script nonce="{}">' 'let capture_text = "<script></script>"' "</script>"
+        expected = '<script nonce="{}">let capture_text = "<script></script>"</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))

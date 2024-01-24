@@ -42,7 +42,7 @@ class TestJinjaExtension(ScriptExtensionTestBase):
                 var hello='world';
             {% endscript %}"""
 
-        expected = '<script nonce="{}" id="jeff" async=false>' "var hello='world';" "</script>"
+        expected = '<script nonce="{}" id="jeff" async=false>var hello=\'world\';</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -52,7 +52,7 @@ class TestJinjaExtension(ScriptExtensionTestBase):
                 var hello='world';
             {% endscript %}"""
 
-        expected = '<script nonce="{}" id="jeff" async>' "var hello='world';" "</script>"
+        expected = '<script nonce="{}" id="jeff" async>var hello=\'world\';</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -66,7 +66,7 @@ class TestJinjaExtension(ScriptExtensionTestBase):
                 </script>
             {% endscript %}"""
 
-        expected = "<script" ' nonce="{}" id="jeff" type="application/javascript" defer>' "var hello='world';</script>"
+        expected = '<script nonce="{}" id="jeff" type="application/javascript" defer>var hello=\'world\';</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
@@ -82,6 +82,6 @@ class TestJinjaExtension(ScriptExtensionTestBase):
             {% endscript %}
             """
 
-        expected = '<script nonce="{}">' 'let capture_text = "<script></script>"' "</script>"
+        expected = '<script nonce="{}">let capture_text = "<script></script>"</script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
