@@ -41,7 +41,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Django-CSP"
-copyright = "2016 Mozilla Foundation"
+copyright = "2016-2024 Mozilla"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -181,7 +181,13 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "Django-CSP.tex", "Django-CSP Documentation", "James Socol, Mozilla", "manual"),
+    (
+        "index",
+        "Django-CSP.tex",
+        "Django-CSP Documentation",
+        "James Socol, Mozilla",
+        "manual",
+    ),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -209,7 +215,9 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [("index", "django-csp", "Django-CSP Documentation", ["James Socol, Mozilla"], 1)]
+man_pages = [
+    ("index", "django-csp", "Django-CSP Documentation", ["James Socol, Mozilla"], 1)
+]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -221,7 +229,15 @@ man_pages = [("index", "django-csp", "Django-CSP Documentation", ["James Socol, 
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ("index", "Django-CSP", "Django-CSP Documentation", "James Socol, Mozilla", "Django-CSP", "One line description of project.", "Miscellaneous"),
+    (
+        "index",
+        "Django-CSP",
+        "Django-CSP Documentation",
+        "James Socol, Mozilla",
+        "Django-CSP",
+        "CSP header-generation and reporting for Django applications",
+        "Miscellaneous",
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.
