@@ -22,3 +22,5 @@ python:
   install:
     - method: pip
       path: .
+    - method: pip
+      path: sphinx_rtd_theme
