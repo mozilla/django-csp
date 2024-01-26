@@ -21,6 +21,9 @@ Policy Settings
 These settings affect the policy in the header. The defaults are in *italics*.
 
 .. note::
+    Deprecated features of CSP in general have been moved to the bottom of this list.
+
+.. warning::
    The "special" source values of ``'self'``, ``'unsafe-inline'``,
    ``'unsafe-eval'``, ``'none'`` and hash-source (``'sha256-...'``) must be
    quoted! e.g.: ``CSP_DEFAULT_SRC = ("'self'",)``. Without quotes they will
@@ -44,9 +47,6 @@ These settings affect the policy in the header. The defaults are in *italics*.
 
 ``CSP_OBJECT_SRC``
     Set the ``object-src`` directive. A ``tuple`` or ``list``. *None*
-
-``CSP_PREFETCH_SRC``
-    Set the ``prefetch-src`` directive. A ``tuple`` or ``list``. *None*
 
 ``CSP_MEDIA_SRC``
     Set the ``media-src`` directive. A ``tuple`` or ``list``. *None*
@@ -109,28 +109,25 @@ These settings affect the policy in the header. The defaults are in *italics*.
 
     See Section 1.2: https://w3c.github.io/reporting/#group
 
+    Also `see this MDN note on <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri>`_ ``report-uri`` and ``report-to``.
+
 ``CSP_MANIFEST_SRC``
     Set the ``manifest-src`` directive. A ``tuple`` or ``list``. *None*
 
 ``CSP_WORKER_SRC``
     Set the ``worker-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_PLUGIN_TYPES``
-    Set the ``plugin-types`` directive. A ``tuple`` or ``list``. *None*
-
-    Note: This doesn't use ``default-src`` as a fall-back.
-
 ``CSP_REQUIRE_SRI_FOR``
     Set the ``require-sri-for`` directive. A ``tuple`` or ``list``. *None*
 
     Valid values: a ``list`` containing ``'script'``, ``'style'``, or both.
 
-    See: require-sri-for-known-tokens_
+    Spec: require-sri-for-known-tokens_
 
 ``CSP_UPGRADE_INSECURE_REQUESTS``
     Include ``upgrade-insecure-requests`` directive. A ``boolean``. *False*
 
-    See: upgrade-insecure-requests_
+    Spec: upgrade-insecure-requests_
 
 ``CSP_REQUIRE_TRUSTED_TYPES_FOR``
     Include ``require-trusted-types-for`` directive.
@@ -145,11 +142,6 @@ These settings affect the policy in the header. The defaults are in *italics*.
     Valid values: a ``list`` of allowed policy names that may include
     ``default`` and/or ``'allow-duplicates'``
 
-``CSP_BLOCK_ALL_MIXED_CONTENT``
-    Include ``block-all-mixed-content`` directive. A ``boolean``. *False*
-
-    See: block-all-mixed-content_
-
 ``CSP_INCLUDE_NONCE_IN``
     Include dynamically generated nonce in all listed directives.
     A ``tuple`` or ``list``, e.g.: ``CSP_INCLUDE_NONCE_IN = ['script-src']``
@@ -159,9 +151,37 @@ These settings affect the policy in the header. The defaults are in *italics*.
     Note: The nonce value will only be generated if ``request.csp_nonce``
     is accessed during the request/response cycle.
 
+Deprecated CSP settings
+-----------------------
+The following settings are still configurable, but are considered deprecated
+in terms of the latest implementation of the relevant spec.
+
+
+``CSP_BLOCK_ALL_MIXED_CONTENT``
+    Include ``block-all-mixed-content`` directive. A ``boolean``. *False*
+
+    Related `note on MDN <block-all-mixed-content_mdn_>`_.
+
+    Spec: block-all-mixed-content_
+
+
+
+``CSP_PLUGIN_TYPES``
+    Set the ``plugin-types`` directive. A ``tuple`` or ``list``. *None*
+
+    Note: This doesn't use ``default-src`` as a fall-back.
+
+    Related `note on MDN <plugin_types_mdn_>`_.
+
+
+``CSP_PREFETCH_SRC``
+    Set the ``prefetch-src`` directive. A ``tuple`` or ``list``. *None*
+
+    Related `note on MDN <prefetch_src_mdn_>`_.
+
 
 Changing the Policy
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 The policy can be changed on a per-view (or even per-request) basis. See
 the :ref:`decorator documentation <decorator-chapter>` for more details.
@@ -198,3 +218,6 @@ These settings control the behavior of django-csp. Defaults are in
 .. _require-sri-for-known-tokens: https://w3c.github.io/webappsec-subresource-integrity/#opt-in-require-sri-for
 .. _upgrade-insecure-requests: https://w3c.github.io/webappsec-upgrade-insecure-requests/#delivery
 .. _block-all-mixed-content: https://w3c.github.io/webappsec-mixed-content/
+.. _block-all-mixed-content_mdn: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/block-all-mixed-content
+.. _plugin_types_mdn: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/plugin-types
+.. _prefetch_src_mdn: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/prefetch-src
