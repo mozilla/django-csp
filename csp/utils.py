@@ -99,7 +99,7 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
         include_nonce_in = getattr(settings, "CSP_INCLUDE_NONCE_IN", ["default-src"])
         for section in include_nonce_in:
             policy = policy_parts.get(section, "")
-            policy_parts[section] = ("%s %s" % (policy, "'nonce-%s'" % nonce)).strip()
+            policy_parts[section] = ("{} {}".format(policy, "'nonce-%s'" % nonce)).strip()
 
     return "; ".join([f"{k} {val}".strip() for k, val in policy_parts.items()])
 
