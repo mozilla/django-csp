@@ -21,7 +21,7 @@ mw = CSPMiddleware(response())
 rf = RequestFactory()
 
 
-class ScriptTestBase(object):
+class ScriptTestBase:
     def assert_template_eq(self, tpl1, tpl2):
         aaa = tpl1.replace("\n", "").replace("  ", "")
         bbb = tpl2.replace("\n", "").replace("  ", "")
