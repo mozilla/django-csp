@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import base64
 import http.client as http_client
 import os
