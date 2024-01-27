@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Django-CSP documentation build configuration file, created by
 # sphinx-quickstart on Wed Oct 31 13:02:27 2012.
