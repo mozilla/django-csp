@@ -6,7 +6,7 @@ from csp.utils import SCRIPT_ATTRS, build_script_tag
 
 class NoncedScript(Extension):
     # a set of names that trigger the extension.
-    tags = set(["script"])
+    tags = {"script"}
 
     def parse(self, parser):
         # the first token is the token that started the tag.  In our case
