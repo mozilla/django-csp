@@ -101,12 +101,12 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
             policy = policy_parts.get(section, "")
             policy_parts[section] = ("%s %s" % (policy, "'nonce-%s'" % nonce)).strip()
 
-    return "; ".join(["{} {}".format(k, val).strip() for k, val in policy_parts.items()])
+    return "; ".join([f"{k} {val}".strip() for k, val in policy_parts.items()])
 
 
 def _default_attr_mapper(attr_name, val):
     if val:
-        return ' {}="{}"'.format(attr_name, val)
+        return f' {attr_name}="{val}"'
     else:
         return ""
 
@@ -115,7 +115,7 @@ def _bool_attr_mapper(attr_name, val):
     # Only return the bare word if the value is truthy
     # ie - defer=False should actually return an empty string
     if val:
-        return " {}".format(attr_name)
+        return f" {attr_name}"
     else:
         return ""
 
@@ -125,9 +125,9 @@ def _async_attr_mapper(attr_name, val):
     attributes. It can be set explicitly to `false` with no surrounding quotes
     according to the spec."""
     if val in [False, "False"]:
-        return " {}=false".format(attr_name)
+        return f" {attr_name}=false"
     elif val:
-        return " {}".format(attr_name)
+        return f" {attr_name}"
     else:
         return ""
 
@@ -144,7 +144,7 @@ SCRIPT_ATTRS["integrity"] = _default_attr_mapper
 SCRIPT_ATTRS["nomodule"] = _bool_attr_mapper
 
 # Generates an interpolatable string of valid attrs eg - '{nonce}{id}...'
-ATTR_FORMAT_STR = "".join(["{{{}}}".format(a) for a in SCRIPT_ATTRS])
+ATTR_FORMAT_STR = "".join([f"{{{a}}}" for a in SCRIPT_ATTRS])
 
 
 _script_tag_contents_re = re.compile(
@@ -176,4 +176,4 @@ def build_script_tag(content=None, **kwargs):
     # Don't render block contents if the script has a 'src' attribute
     c = _unwrap_script(content) if content and not kwargs.get("src") else ""
     attrs = ATTR_FORMAT_STR.format(**data).rstrip()
-    return "<script{}>{}</script>".format(attrs, c).strip()
+    return f"<script{attrs}>{c}</script>".strip()
