@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from jinja2 import nodes
 from jinja2.ext import Extension
 
@@ -8,7 +6,7 @@ from csp.utils import SCRIPT_ATTRS, build_script_tag
 
 class NoncedScript(Extension):
     # a set of names that trigger the extension.
-    tags = set(["script"])
+    tags = {"script"}
 
     def parse(self, parser):
         # the first token is the token that started the tag.  In our case
