@@ -2,24 +2,25 @@
 CHANGES
 =======
 
-Next
-====
-
-- Remove deprecation warning for child-src
-- Fix capturing brackets in script template tags
-- Move to Hatch for packaging
-- Move project to pyproject.toml
-  - Add project urls
-- Set up coverage badge
-
 Unreleased
 ==========
 
+- Nothing, currently
+
+3.8rc
+=====
+
+Please note: this release folds in a number of fixups, upgrades and documentation tweaks,
+but is functionally the same as 3.7. New features will come with 3.9+
+
 - Update Python syntax for modern versions with pyupgrade
-- Drop support for EOL Python <3.8 and Django <2.2 versions
+- Drop support for EOL Python <3.8 and Django <2.2 version; add support up to Django 5 on Python 3.12
 - Switch to ruff instead of pep8 and flake8
 - Move from CircleCI to Github Actions for CI
 - Add support for using pre-commit with the project
+- Remove deprecation warning for child-src
+- Fix capturing brackets in script template tags
+- Update docs to clarify when nonce will not be added to headers
 
 3.7
 ===

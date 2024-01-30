@@ -4,7 +4,7 @@ import sys
 
 from setuptools import find_packages, setup
 
-version = "3.7"
+version = "3.8rc"
 
 
 if sys.argv[-1] == "publish":
