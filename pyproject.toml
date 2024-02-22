@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django_csp"
+version = "3.8rc"
+description = "Django Content Security Policy support."
+readme = "README.rst"
+authors = [{name = "James Socol", email = "me@jamessocol.com"}]
+maintainers = [{name = "Mozilla MEAO team", email = "meao-backend@mozilla.com"}]
+license = {text = "BSD"}
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Web Environment",
+    "Environment :: Web Environment :: Mozilla",
+    "Programming Language :: Python",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+]
+dependencies = ["Django>=3.2"]
+
+[project.urls]
+Homepage = "http://github.com/mozilla/django-csp"
+Documentation = "http://django-csp.readthedocs.org/"
+Changelog = "https://github.com/mozilla/django-csp/blob/main/CHANGES"
+"Bug Tracker" = "https://github.com/mozilla/django-csp/issues"
+"Source Code" = "https://github.com/mozilla/django-csp"
+
+[project.optional-dependencies]
+tests = [
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-ruff",
+    "jinja2>=2.9.6",
+]
+jinja2 = ["jinja2>=2.9.6"]
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+
+[tool.setuptools.packages]
+find = {namespaces = false}
+
+[tool.pytest.ini_options]
+addopts = "-vs --tb=short --ruff --ruff-format"
+DJANGO_SETTINGS_MODULE = "csp.tests.settings"
