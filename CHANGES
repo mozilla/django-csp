@@ -7,6 +7,10 @@ Unreleased
 
 - Nothing, currently
 
+3.8rc1
+======
+- Move from setup.py and setup.cfg to pyproject.toml (#209)
+
 3.8rc
 =====
 
