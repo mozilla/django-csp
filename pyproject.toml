@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "django_csp"
-version = "3.8rc1"
+version = "3.8"
 description = "Django Content Security Policy support."
 readme = "README.rst"
 authors = [{name = "James Socol", email = "me@jamessocol.com"}]
