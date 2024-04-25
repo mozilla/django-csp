@@ -5,7 +5,7 @@ CHANGES
 Unreleased
 ==========
 
-- Nothing, currently
+- Add pyproject-fmt to pre-commit, and update pre-commit versions.
 
 3.8
 ===
