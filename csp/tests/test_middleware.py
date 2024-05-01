@@ -6,10 +6,10 @@ from django.http import (
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
+from csp.constants import HEADER, HEADER_REPORT_ONLY
 from csp.middleware import CSPMiddleware
 from csp.tests.utils import response
 
-HEADER = "Content-Security-Policy"
 mw = CSPMiddleware(response())
 rf = RequestFactory()
 
@@ -21,6 +21,18 @@ def test_add_header():
     assert HEADER in response
 
 
+@override_settings(
+    CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": ["example.com"]}},
+    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": ["'self'"]}},
+)
+def test_both_headers():
+    request = rf.get("/")
+    response = HttpResponse()
+    mw.process_response(request, response)
+    assert HEADER in response
+    assert HEADER_REPORT_ONLY in response
+
+
 def test_exempt():
     request = rf.get("/")
     response = HttpResponse()
@@ -29,7 +41,7 @@ def test_exempt():
     assert HEADER not in response
 
 
-@override_settings(CSP_EXCLUDE_URL_PREFIXES=("/inlines-r-us"))
+@override_settings(CONTENT_SECURITY_POLICY={"EXCLUDE_URL_PREFIXES": ["/inlines-r-us"]})
 def text_exclude():
     request = rf.get("/inlines-r-us/foo")
     response = HttpResponse()
@@ -37,7 +49,10 @@ def text_exclude():
     assert HEADER not in response
 
 
-@override_settings(CSP_REPORT_ONLY=True)
+@override_settings(
+    CONTENT_SECURITY_POLICY=None,
+    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": ["'self'"]}},
+)
 def test_report_only():
     request = rf.get("/")
     response = HttpResponse()
@@ -70,7 +85,7 @@ def test_use_update():
     assert response[HEADER] == "default-src 'self' example.com"
 
 
-@override_settings(CSP_IMG_SRC=["foo.com"])
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"img-src": ["foo.com"]}})
 def test_use_replace():
     request = rf.get("/")
     response = HttpResponse()
@@ -130,7 +145,7 @@ def test_nonce_regenerated_on_new_request():
     assert nonce2 not in response1[HEADER]
 
 
-@override_settings(CSP_INCLUDE_NONCE_IN=[])
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"include-nonce-in": []}})
 def test_no_nonce_when_disabled_by_settings():
     request = rf.get("/")
     mw.process_request(request)

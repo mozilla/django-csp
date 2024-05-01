@@ -7,56 +7,78 @@ from django.conf import settings
 from django.utils.encoding import force_str
 
 
-def from_settings():
-    return {
-        # Fetch Directives
-        "child-src": getattr(settings, "CSP_CHILD_SRC", None),
-        "connect-src": getattr(settings, "CSP_CONNECT_SRC", None),
-        "default-src": getattr(settings, "CSP_DEFAULT_SRC", ["'self'"]),
-        "script-src": getattr(settings, "CSP_SCRIPT_SRC", None),
-        "script-src-attr": getattr(settings, "CSP_SCRIPT_SRC_ATTR", None),
-        "script-src-elem": getattr(settings, "CSP_SCRIPT_SRC_ELEM", None),
-        "object-src": getattr(settings, "CSP_OBJECT_SRC", None),
-        "style-src": getattr(settings, "CSP_STYLE_SRC", None),
-        "style-src-attr": getattr(settings, "CSP_STYLE_SRC_ATTR", None),
-        "style-src-elem": getattr(settings, "CSP_STYLE_SRC_ELEM", None),
-        "font-src": getattr(settings, "CSP_FONT_SRC", None),
-        "frame-src": getattr(settings, "CSP_FRAME_SRC", None),
-        "img-src": getattr(settings, "CSP_IMG_SRC", None),
-        "manifest-src": getattr(settings, "CSP_MANIFEST_SRC", None),
-        "media-src": getattr(settings, "CSP_MEDIA_SRC", None),
-        "prefetch-src": getattr(settings, "CSP_PREFETCH_SRC", None),
-        "worker-src": getattr(settings, "CSP_WORKER_SRC", None),
-        # Document Directives
-        "base-uri": getattr(settings, "CSP_BASE_URI", None),
-        "plugin-types": getattr(settings, "CSP_PLUGIN_TYPES", None),
-        "sandbox": getattr(settings, "CSP_SANDBOX", None),
-        # Navigation Directives
-        "form-action": getattr(settings, "CSP_FORM_ACTION", None),
-        "frame-ancestors": getattr(settings, "CSP_FRAME_ANCESTORS", None),
-        "navigate-to": getattr(settings, "CSP_NAVIGATE_TO", None),
-        # Reporting Directives
-        "report-uri": getattr(settings, "CSP_REPORT_URI", None),
-        "report-to": getattr(settings, "CSP_REPORT_TO", None),
-        "require-sri-for": getattr(settings, "CSP_REQUIRE_SRI_FOR", None),
-        # trusted Types Directives
-        "require-trusted-types-for": getattr(settings, "CSP_REQUIRE_TRUSTED_TYPES_FOR", None),
-        "trusted-types": getattr(settings, "CSP_TRUSTED_TYPES", None),
-        # Other Directives
-        "upgrade-insecure-requests": getattr(settings, "CSP_UPGRADE_INSECURE_REQUESTS", False),
-        "block-all-mixed-content": getattr(settings, "CSP_BLOCK_ALL_MIXED_CONTENT", False),
-    }
+DEFAULT_DIRECTIVES = {
+    # Fetch Directives
+    "child-src": None,
+    "connect-src": None,
+    "default-src": ["'self'"],
+    "script-src": None,
+    "script-src-attr": None,
+    "script-src-elem": None,
+    "object-src": None,
+    "style-src": None,
+    "style-src-attr": None,
+    "style-src-elem": None,
+    "font-src": None,
+    "frame-src": None,
+    "img-src": None,
+    "manifest-src": None,
+    "media-src": None,
+    "prefetch-src": None,  # Deprecated.
+    # Document Directives
+    "base-uri": None,
+    "plugin-types": None,  # Deprecated.
+    "sandbox": None,
+    # Navigation Directives
+    "form-action": None,
+    "frame-ancestors": None,
+    "navigate-to": None,
+    # Reporting Directives
+    "report-uri": None,
+    "report-to": None,
+    "require-sri-for": None,
+    # Trusted Types Directives
+    "require-trusted-types-for": None,
+    "trusted-types": None,
+    # Other Directives
+    "webrtc": None,
+    "worker-src": None,
+    # Directives Defined in Other Documents
+    "upgrade-insecure-requests": None,
+    "block-all-mixed-content": None,  # Deprecated.
+    # Pseudo-directive that affects other directives.
+    "include-nonce-in": None,
+}
 
 
-def build_policy(config=None, update=None, replace=None, nonce=None):
+def default_config(csp):
+    if csp is None:
+        return None
+    # Make a copy of the passed in config to avoid mutating it, and also to drop any unknown keys.
+    config = {}
+    for key, value in DEFAULT_DIRECTIVES.items():
+        config[key] = csp.get(key, value)
+    return config
+
+
+def build_policy(config=None, update=None, replace=None, nonce=None, report_only=False):
     """Builds the policy as a string from the settings."""
 
     if config is None:
-        config = from_settings()
-        # Be careful, don't mutate config as it could be from settings
+        if report_only:
+            config = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", {})
+            config = default_config(config.get("DIRECTIVES", {})) if config else None
+        else:
+            config = getattr(settings, "CONTENT_SECURITY_POLICY", {})
+            config = default_config(config.get("DIRECTIVES", {})) if config else None
+
+    # If config is still `None`, return empty policy.
+    if config is None:
+        return ""
 
     update = update if update is not None else {}
     replace = replace if replace is not None else {}
+
     csp = {}
 
     for k in set(chain(config, replace)):
@@ -80,8 +102,10 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
                 csp[k] += tuple(v)
 
     report_uri = csp.pop("report-uri", None)
+    include_nonce_in = csp.pop("include-nonce-in", [])
 
     policy_parts = {}
+
     for key, value in csp.items():
         # flag directives with an empty directive value
         if len(value) and value[0] is True:
@@ -96,10 +120,9 @@ def build_policy(config=None, update=None, replace=None, nonce=None):
         policy_parts["report-uri"] = " ".join(report_uri)
 
     if nonce:
-        include_nonce_in = getattr(settings, "CSP_INCLUDE_NONCE_IN", ["default-src"])
         for section in include_nonce_in:
             policy = policy_parts.get(section, "")
-            policy_parts[section] = ("{} {}".format(policy, "'nonce-%s'" % nonce)).strip()
+            policy_parts[section] = f"{policy} 'nonce-{nonce}'".strip()
 
     return "; ".join([f"{k} {val}".strip() for k, val in policy_parts.items()])
 

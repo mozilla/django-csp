@@ -7,3 +7,4 @@
 .tox
 dist
 build
+docs/_build

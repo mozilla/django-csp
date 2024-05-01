@@ -1,9 +1,10 @@
 ==============================
 Using the generated CSP nonce
 ==============================
-When ``CSP_INCLUDE_NONCE_IN`` is configured, the nonce value is returned in the CSP headers **if it is used**, e.g. by evaluating the nonce in your template.
-To actually make the browser do anything with this value, you will need to include it in the attributes of
-the tags that you wish to mark as safe.
+When ``include-nonce-in`` is configured, the nonce value is returned in the CSP headers **if it is
+used**, e.g. by evaluating the nonce in your template.  To actually make the browser do anything
+with this value, you will need to include it in the attributes of the tags that you wish to mark as
+safe.
 
 
 .. Note::
@@ -16,17 +17,19 @@ the tags that you wish to mark as safe.
 
 ``Middleware``
 ==============
-Installing the middleware creates a lazily evaluated property ``csp_nonce`` and attaches it to all incoming requests.
+Installing the middleware creates a lazily evaluated property ``csp_nonce`` and attaches it to all
+incoming requests.
 
 .. code-block:: python
 
     MIDDLEWARE = (
-    	#...
-    	'csp.middleware.CSPMiddleware',
-    	#...
+        # ...
+        "csp.middleware.CSPMiddleware",
+        # ...
     )
 
-This value can be accessed directly on the request object in any view or template and manually appended to any script element like so -
+This value can be accessed directly on the request object in any view or template and manually
+appended to any script element like so -
 
 .. code-block:: html
 
@@ -34,7 +37,8 @@ This value can be accessed directly on the request object in any view or templat
 		var hello="world";
 	</script>
 
-Assuming the ``CSP_INCLUDE_NONCE_IN`` list contains the ``script-src`` directive, this will result in the above script being allowed.
+Assuming the ``include-nonce-in`` list contains the ``script-src`` directive, this will result in
+the above script being allowed.
 
 .. Note::
 
@@ -43,7 +47,10 @@ Assuming the ``CSP_INCLUDE_NONCE_IN`` list contains the ``script-src`` directive
 
 ``Context Processor``
 =====================
-This library contains an optional context processor, adding ``csp.context_processors.nonce`` to your configured context processors exposes a variable called ``CSP_NONCE`` into the global template context. This is simple shorthand for ``request.csp_nonce``, but can be useful if you have many occurrences of script tags.
+This library contains an optional context processor, adding ``csp.context_processors.nonce`` to your
+configured context processors exposes a variable called ``CSP_NONCE`` into the global template
+context. This is simple shorthand for ``request.csp_nonce``, but can be useful if you have many
+occurrences of script tags.
 
 .. code-block:: jinja
 
@@ -57,12 +64,18 @@ This library contains an optional context processor, adding ``csp.context_proces
 
 .. note::
 
-   If you're making use of ``csp.extensions.NoncedScript`` you need to have ``jinja2>=2.9.6`` installed, so please make sure to either use ``django-csp[jinja2]`` in your requirements or define it yourself.
+   If you're making use of ``csp.extensions.NoncedScript`` you need to have ``jinja2>=2.9.6``
+   installed, so please make sure to either use ``django-csp[jinja2]`` in your requirements or
+   define it yourself.
 
 
-It can be easy to forget to include the ``nonce`` property in a script tag, so there is also a ``script`` template tag available for both Django templates and Jinja environments.
+It can be easy to forget to include the ``nonce`` property in a script tag, so there is also a
+``script`` template tag available for both Django templates and Jinja environments.
 
-This tag will output a properly nonced script every time. For the sake of syntax highlighting, you can wrap the content inside of the ``script`` tag in ``<script>`` html tags, which will be subsequently removed in the rendered output. Any valid script tag attributes can be specified and will be forwarded into the rendered html.
+This tag will output a properly nonced script every time. For the sake of syntax highlighting, you
+can wrap the content inside of the ``script`` tag in ``<script>`` html tags, which will be
+subsequently removed in the rendered output. Any valid script tag attributes can be specified and
+will be forwarded into the rendered html.
 
 
 Django Templates
@@ -72,15 +85,15 @@ Add the CSP template tags to the TEMPLATES section of your settings file:
 
 .. code-block:: python
 
-	TEMPLATES = [
-	    {
-		"OPTIONS": {
-		    'libraries':          {
-			'csp': 'csp.templatetags.csp',
-		    }
-		},
-	    }
-	]
+    TEMPLATES = [
+        {
+            "OPTIONS": {
+                "libraries": {
+                    "csp": "csp.templatetags.csp",
+                }
+            }
+        }
+    ]
 
 Then load the ``csp`` template tags and use ``script`` in the template:
 
@@ -101,16 +114,16 @@ Add ``csp.extensions.NoncedScript`` to the TEMPLATES section of your settings fi
 
 .. code-block:: python
 
-          TEMPLATES = [
-              {
-                  'BACKEND':'django.template.backends.jinja2.Jinja2',
-                  'OPTIONS': {
-                      'extensions': [
-                          'csp.extensions.NoncedScript',
-                      ],
-                  }
-             }
-          ]
+    TEMPLATES = [
+        {
+            "BACKEND": "django.template.backends.jinja2.Jinja2",
+            "OPTIONS": {
+                "extensions": [
+                    "csp.extensions.NoncedScript",
+                ],
+            },
+        }
+    ]
 
 
 .. code-block:: jinja

@@ -34,6 +34,10 @@ Then just `pytest`_ to run the tests::
 
     pytest
 
+To run the tests with coverage and get a report, use the following command::
+
+    pytest --cov=csp --cov-config=.coveragerc
+
 
 .. _PEP8: http://www.python.org/dev/peps/pep-0008/
 .. _ruff: https://pypi.org/project/ruff/
