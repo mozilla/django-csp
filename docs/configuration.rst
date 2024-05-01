@@ -15,149 +15,234 @@ before configuring django-csp.
    policies and even errors when mistakenly configuring them as a ``string``.
 
 
+Migrating from django-csp <= 3.8
+================================
+
+Version 4.0 of django-csp introduces a new configuration format that breaks compatibility with
+previous versions.  If you are migrating from django-csp 3.8 or lower, you will need to update your
+settings to the new format. See the :ref:`migration guide <migration-guide-chapter>` for more
+information.
+
+Configuration
+=============
+
+All configuration of django-csp is done in your Django settings file with the
+``CONTENT_SECURITY_POLICY`` setting or the ``CONTENT_SECURITY_POLICY_REPORT_ONLY`` setting. Each of these
+settings expects a dictionary representing a policy.
+
+The ``CONTENT_SECURITY_POLICY`` setting is your enforcable policy.
+
+The ``CONTENT_SECURITY_POLICY_REPORT_ONLY`` setting is your report-only policy. This policy is
+used to test the policy without breaking the site. It is useful when setting this policy to be
+slightly more strict than the default policy to see what would be blocked if the policy was enforced.
+
+The following is an example of a policy configuration with a default policy and a report-only
+policy. The default policy is considered a "relaxed" policy that allows for the most flexibility
+while still providing a good level of security. The report-only policy is considered a step towards
+a more slightly strict policy and is used to test the policy without breaking the site.
+
+.. code-block:: python
+
+    CONTENT_SECURITY_POLICY = {
+        "EXCLUDE_URL_PREFIXES": ["/excluded-path/"],
+        "DIRECTIVES": {
+            "default-src": ["'self'", "cdn.example.net"],
+            "frame-ancestors": ["'self'"],
+            "form-action": ["'self'"],
+            "report-uri": "/csp-report/",
+        },
+    }
+
+    CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+        "EXCLUDE_URL_PREFIXES": ["/excluded-path/"],
+        "DIRECTIVES": {
+            "default-src": ["'none'"],
+            "connect-src": ["'self'"],
+            "img-src": ["'self'"],
+            "form-action": ["'self'"],
+            "frame-ancestors": ["'self'"],
+            "script-src": ["'self'"],
+            "style-src": ["'self'"],
+            "upgrade-insecure-requests": True,
+            "report-uri": "/csp-report/",
+        },
+    }
+
+
 Policy Settings
 ===============
 
-These settings affect the policy in the header. The defaults are in *italics*.
+At the top level of the policy dictionary, these are the keys that can be used to configure the
+policy.
 
-.. note::
-    Deprecated features of CSP in general have been moved to the bottom of this list.
+``EXCLUDE_URL_PREFIXES``
+    A ``tuple`` of URL prefixes. URLs beginning with any of these will not get the CSP headers.
+    *()*
 
-.. warning::
-   The "special" source values of ``'self'``, ``'unsafe-inline'``,
-   ``'unsafe-eval'``, ``'none'`` and hash-source (``'sha256-...'``) must be
-   quoted! e.g.: ``CSP_DEFAULT_SRC = ("'self'",)``. Without quotes they will
-   not work as intended.
+    .. warning::
 
-``CSP_DEFAULT_SRC``
-    Set the ``default-src`` directive. A ``tuple`` or ``list`` of values,
-    e.g.: ``("'self'", 'cdn.example.net')``. *["'self'"]*
+       Excluding any path on your site will eliminate the benefits of CSP everywhere on your site.
+       The typical browser security model for JavaScript considers all paths alike. A Cross-Site
+       Scripting flaw on, e.g., ``excluded-page/`` can therefore be leveraged to access everything
+       on the same origin.
 
-``CSP_SCRIPT_SRC``
-    Set the ``script-src`` directive. A ``tuple`` or ``list``. *None*
+       # TODO: I can't find any documentation on the above warning.
 
-``CSP_SCRIPT_SRC_ATTR``
-    Set the ``script-src-attr`` directive. A ``tuple`` or ``list``. *None*
+``REPORT_PERCENTAGE``
+    Percentage of requests that should see the ``report-uri`` directive.
+    Use this to throttle the number of CSP violation reports made to your
+    ``report-uri``. An **integer** between 0 and 100 (0 = no reports at all).
+    Ignored if ``report-uri`` isn't set.
 
-``CSP_SCRIPT_SRC_ELEM``
-    Set the ``script-src-elem`` directive. A ``tuple`` or ``list``. *None*
+``DIRECTIVES``
+    A dictionary of policy directives. Each key in the dictionary is a directive and the value is a
+    list of sources for that directive. The following is a list of all the directives that can be
+    configured.
 
-``CSP_IMG_SRC``
-    Set the ``img-src`` directive. A ``tuple`` or ``list``. *None*
+    .. note::
+       The "special" source values of ``'self'``, ``'unsafe-inline'``, ``'unsafe-eval'``,
+       ``'none'`` and hash-source (``'sha256-...'``) must be quoted!
+       e.g.: ``"default-src": ["'self'"]``. Without quotes they will not work as intended.
 
-``CSP_OBJECT_SRC``
-    Set the ``object-src`` directive. A ``tuple`` or ``list``. *None*
+    .. note::
+       Deprecated features of CSP in general have been moved to the bottom of this list.
 
-``CSP_MEDIA_SRC``
-    Set the ``media-src`` directive. A ``tuple`` or ``list``. *None*
+    .. warning::
+       The ``'unsafe-inline'`` and ``'unsafe-eval'`` sources are considered harmful and should be
+       avoided. They are included here for completeness, but should not be used in production.
 
-``CSP_FRAME_SRC``
-    Set the ``frame-src`` directive. A ``tuple`` or ``list``. *None*
+    ``default-src``
+        Set the ``default-src`` directive. A ``tuple`` or ``list`` of values,
+        e.g.: ``("'self'", 'cdn.example.net')``. *["'self'"]*
 
-``CSP_FONT_SRC``
-    Set the ``font-src`` directive. A ``tuple`` or ``list``. *None*
+    ``script-src``
+        Set the ``script-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_CONNECT_SRC``
-    Set the ``connect-src`` directive. A ``tuple`` or ``list``. *None*
+    ``script-src-attr``
+        Set the ``script-src-attr`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_STYLE_SRC``
-    Set the ``style-src`` directive. A ``tuple`` or ``list``. *None*
+    ``script-src-elem``
+        Set the ``script-src-elem`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_STYLE_SRC_ATTR``
-    Set the ``style-src-attr`` directive. A ``tuple`` or ``list``. *None*
+    ``img-src``
+        Set the ``img-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_STYLE_SRC_ELEM``
-    Set the ``style-src-elem`` directive. A ``tuple`` or ``list``. *None*
+    ``object-src``
+        Set the ``object-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_BASE_URI``
-    Set the ``base-uri`` directive. A ``tuple`` or ``list``. *None*
+    ``media-src``
+        Set the ``media-src`` directive. A ``tuple`` or ``list``. *None*
 
-    Note: This doesn't use ``default-src`` as a fall-back.
+    ``frame-src``
+        Set the ``frame-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_CHILD_SRC``
-    Set the ``child-src`` directive. A ``tuple`` or ``list``. *None*
+    ``font-src``
+        Set the ``font-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_FRAME_ANCESTORS``
-    Set the ``frame-ancestors`` directive. A ``tuple`` or ``list``. *None*
+    ``connect-src``
+        Set the ``connect-src`` directive. A ``tuple`` or ``list``. *None*
 
-    Note: This doesn't use ``default-src`` as a fall-back.
+    ``style-src``
+        Set the ``style-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_NAVIGATE_TO``
-    Set the ``navigate-to`` directive. A ``tuple`` or ``list``. *None*
+    ``style-src-attr``
+        Set the ``style-src-attr`` directive. A ``tuple`` or ``list``. *None*
 
-    Note: This doesn't use ``default-src`` as a fall-back.
+    ``style-src-elem``
+        Set the ``style-src-elem`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_FORM_ACTION``
-    Set the ``FORM_ACTION`` directive. A ``tuple`` or ``list``. *None*
+    ``base-uri``
+        Set the ``base-uri`` directive. A ``tuple`` or ``list``. *None*
 
-    Note: This doesn't use ``default-src`` as a fall-back.
+        Note: This doesn't use ``default-src`` as a fall-back.
 
-``CSP_SANDBOX``
-    Set the ``sandbox`` directive. A ``tuple`` or ``list``. *None*
+    ``child-src``
+        Set the ``child-src`` directive. A ``tuple`` or ``list``. *None*
 
-    Note: This doesn't use ``default-src`` as a fall-back.
+    ``frame-ancestors``
+        Set the ``frame-ancestors`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_REPORT_URI``
-    Set the ``report-uri`` directive. A ``tuple`` or ``list`` of URIs.
-    Each URI can be a full or relative URI. *None*
+        Note: This doesn't use ``default-src`` as a fall-back.
 
-    Note: This doesn't use ``default-src`` as a fall-back.
+    ``navigate-to``
+        Set the ``navigate-to`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_REPORT_TO``
-    Set the ``report-to`` directive. A ``string`` describing a reporting
-    group. *None*
+        Note: This doesn't use ``default-src`` as a fall-back.
 
-    See Section 1.2: https://w3c.github.io/reporting/#group
+    ``form-action``
+        Set the ``FORM_ACTION`` directive. A ``tuple`` or ``list``. *None*
 
-    Also `see this MDN note on <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri>`_ ``report-uri`` and ``report-to``.
+        Note: This doesn't use ``default-src`` as a fall-back.
 
-``CSP_MANIFEST_SRC``
-    Set the ``manifest-src`` directive. A ``tuple`` or ``list``. *None*
+    ``sandbox``
+        Set the ``sandbox`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_WORKER_SRC``
-    Set the ``worker-src`` directive. A ``tuple`` or ``list``. *None*
+        Note: This doesn't use ``default-src`` as a fall-back.
 
-``CSP_REQUIRE_SRI_FOR``
-    Set the ``require-sri-for`` directive. A ``tuple`` or ``list``. *None*
+    ``report-uri``
+        Set the ``report-uri`` directive. A ``tuple`` or ``list`` of URIs.
+        Each URI can be a full or relative URI. *None*
 
-    Valid values: a ``list`` containing ``'script'``, ``'style'``, or both.
+        Note: This doesn't use ``default-src`` as a fall-back.
 
-    Spec: require-sri-for-known-tokens_
+    ``report-to``
+        Set the ``report-to`` directive. A ``string`` describing a reporting
+        group. *None*
 
-``CSP_UPGRADE_INSECURE_REQUESTS``
-    Include ``upgrade-insecure-requests`` directive. A ``boolean``. *False*
+        See Section 1.2: https://w3c.github.io/reporting/#group
 
-    Spec: upgrade-insecure-requests_
+        Also `see this MDN note on <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri>`_ ``report-uri`` and ``report-to``.
 
-``CSP_REQUIRE_TRUSTED_TYPES_FOR``
-    Include ``require-trusted-types-for`` directive.
-    A ``tuple`` or ``list``. *None*
+    ``manifest-src``
+        Set the ``manifest-src`` directive. A ``tuple`` or ``list``. *None*
 
-    Valid values: ``["'script'"]``
+    ``worker-src``
+        Set the ``worker-src`` directive. A ``tuple`` or ``list``. *None*
 
-``CSP_TRUSTED_TYPES``
-    Include ``trusted-types`` directive.
-    A ``tuple`` or ``list``. *None*
+    ``require-sri-for``
+        Set the ``require-sri-for`` directive. A ``tuple`` or ``list``. *None*
 
-    Valid values: a ``list`` of allowed policy names that may include
-    ``default`` and/or ``'allow-duplicates'``
+        Valid values: a ``list`` containing ``'script'``, ``'style'``, or both.
 
-``CSP_INCLUDE_NONCE_IN``
-    Include dynamically generated nonce in all listed directives.
-    A ``tuple`` or ``list``, e.g.: ``CSP_INCLUDE_NONCE_IN = ['script-src']``
-    will add ``'nonce-<b64-value>'`` to the ``script-src`` directive.
-    *['default-src']*
+        Spec: require-sri-for-known-tokens_
 
-    Note: The nonce value will only be generated if ``request.csp_nonce``
-    is accessed during the request/response cycle.
+    ``upgrade-insecure-requests``
+        Include ``upgrade-insecure-requests`` directive. A ``boolean``. *False*
+
+        Spec: upgrade-insecure-requests_
+
+    ``require-trusted-types-for``
+        Include ``require-trusted-types-for`` directive.
+        A ``tuple`` or ``list``. *None*
+
+        Valid values: ``["'script'"]``
+
+    ``trusted-types``
+        Include ``trusted-types`` directive.
+        A ``tuple`` or ``list``. *None*
+
+        Valid values: a ``list`` of allowed policy names that may include
+        ``default`` and/or ``'allow-duplicates'``
+
+    ``include-nonce-in``
+        A ``tuple`` of directives to include a nonce in. *['default-src']*  Any directive that is 
+        included in this list will have a nonce value added to it of the form ``'nonce-{nonce-value}'``.
+
+        Note: This is a bit of a "pseudo"-directive. It's not a real CSP directive as defined by the
+        spec, but it's used to determine which directives should include a nonce value. This is
+        useful for adding nonces to scripts and styles.
+
+        Note: The nonce value will only be generated if ``request.csp_nonce`` is accessed during the
+        request/response cycle.
+
 
 Deprecated CSP settings
 -----------------------
-The following settings are still configurable, but are considered deprecated
+The following ``DIRECTIVES`` settings are still configurable, but are considered deprecated
 in terms of the latest implementation of the relevant spec.
 
 
-``CSP_BLOCK_ALL_MIXED_CONTENT``
+``block-all-mixed-content``
     Include ``block-all-mixed-content`` directive. A ``boolean``. *False*
 
     Related `note on MDN <block-all-mixed-content_mdn_>`_.
@@ -165,8 +250,7 @@ in terms of the latest implementation of the relevant spec.
     Spec: block-all-mixed-content_
 
 
-
-``CSP_PLUGIN_TYPES``
+``plugin-types``
     Set the ``plugin-types`` directive. A ``tuple`` or ``list``. *None*
 
     Note: This doesn't use ``default-src`` as a fall-back.
@@ -174,7 +258,7 @@ in terms of the latest implementation of the relevant spec.
     Related `note on MDN <plugin_types_mdn_>`_.
 
 
-``CSP_PREFETCH_SRC``
+``prefetch-src``
     Set the ``prefetch-src`` directive. A ``tuple`` or ``list``. *None*
 
     Related `note on MDN <prefetch_src_mdn_>`_.
@@ -187,31 +271,6 @@ The policy can be changed on a per-view (or even per-request) basis. See
 the :ref:`decorator documentation <decorator-chapter>` for more details.
 
 
-Other Settings
-==============
-
-These settings control the behavior of django-csp. Defaults are in
-*italics*.
-
-``CSP_REPORT_ONLY``
-    Send "report-only" headers instead of real headers.
-    A ``boolean``. *False*
-
-    See the spec_ and the chapter on :ref:`reports <reports-chapter>` for
-    more info.
-
-``CSP_EXCLUDE_URL_PREFIXES``
-    A ``tuple`` (*not* a ``list``) of URL prefixes. URLs beginning with any
-    of these will not get the CSP headers. *()*
-
-.. warning::
-
-   Excluding any path on your site will eliminate the benefits of CSP
-   everywhere on your site. The typical browser security model for
-   JavaScript considers all paths alike. A Cross-Site Scripting flaw
-   on, e.g., ``excluded-page/`` can therefore be leveraged to access
-   everything on the same origin.
-
 .. _Content-Security-Policy: https://www.w3.org/TR/CSP/
 .. _Content-Security-Policy-L3: https://w3c.github.io/webappsec-csp/
 .. _spec: Content-Security-Policy_
@@ -221,3 +280,4 @@ These settings control the behavior of django-csp. Defaults are in
 .. _block-all-mixed-content_mdn: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/block-all-mixed-content
 .. _plugin_types_mdn: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/plugin-types
 .. _prefetch_src_mdn: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/prefetch-src
+.. _strict-csp: https://csp.withgoogle.com/docs/strict-csp.html

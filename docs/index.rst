@@ -21,6 +21,7 @@ Contents:
 
    installation
    configuration
+   migration-guide
    decorators
    nonce
    trusted_types

@@ -7,6 +7,7 @@ from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 
+from csp.constants import HEADER, HEADER_REPORT_ONLY
 from csp.utils import build_policy
 
 
@@ -21,8 +22,7 @@ class CSPMiddleware(MiddlewareMixin):
     """
 
     def _make_nonce(self, request):
-        # Ensure that any subsequent calls to request.csp_nonce return the
-        # same value
+        # Ensure that any subsequent calls to request.csp_nonce return the same value
         if not getattr(request, "_csp_nonce", None):
             request._csp_nonce = base64.b64encode(os.urandom(16)).decode("ascii")
         return request._csp_nonce
@@ -32,32 +32,33 @@ class CSPMiddleware(MiddlewareMixin):
         request.csp_nonce = SimpleLazyObject(nonce)
 
     def process_response(self, request, response):
-        if getattr(response, "_csp_exempt", False):
-            return response
-
-        # Check for ignored path prefix.
-        prefixes = getattr(settings, "CSP_EXCLUDE_URL_PREFIXES", ())
-        if request.path_info.startswith(prefixes):
-            return response
-
         # Check for debug view
-        status_code = response.status_code
         exempted_debug_codes = (
             http_client.INTERNAL_SERVER_ERROR,
             http_client.NOT_FOUND,
         )
-        if status_code in exempted_debug_codes and settings.DEBUG:
+        if response.status_code in exempted_debug_codes and settings.DEBUG:
             return response
 
-        header = "Content-Security-Policy"
-        if getattr(settings, "CSP_REPORT_ONLY", False):
-            header += "-Report-Only"
+        csp = self.build_policy(request, response)
+        if csp:
+            # Only set header if not already set and not an excluded prefix and not exempted.
+            is_not_exempt = getattr(response, "_csp_exempt", False) is False
+            no_header = HEADER not in response
+            prefixes = getattr(settings, "CONTENT_SECURITY_POLICY", {}).get("EXCLUDE_URL_PREFIXES", ())
+            is_not_excluded = not request.path_info.startswith(prefixes)
+            if all((no_header, is_not_exempt, is_not_excluded)):
+                response[HEADER] = csp
 
-        if header in response:
-            # Don't overwrite existing headers.
-            return response
-
-        response[header] = self.build_policy(request, response)
+        csp_ro = self.build_policy_ro(request, response)
+        if csp_ro:
+            # Only set header if not already set and not an excluded prefix and not exempted.
+            is_not_exempt = getattr(response, "_csp_exempt_ro", False) is False
+            no_header = HEADER_REPORT_ONLY not in response
+            prefixes = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", {}).get("EXCLUDE_URL_PREFIXES", ())
+            is_not_excluded = not request.path_info.startswith(prefixes)
+            if all((no_header, is_not_exempt, is_not_excluded)):
+                response[HEADER_REPORT_ONLY] = csp_ro
 
         return response
 
@@ -67,3 +68,10 @@ class CSPMiddleware(MiddlewareMixin):
         replace = getattr(response, "_csp_replace", None)
         nonce = getattr(request, "_csp_nonce", None)
         return build_policy(config=config, update=update, replace=replace, nonce=nonce)
+
+    def build_policy_ro(self, request, response):
+        config = getattr(response, "_csp_config_ro", None)
+        update = getattr(response, "_csp_update_ro", None)
+        replace = getattr(response, "_csp_replace_ro", None)
+        nonce = getattr(request, "_csp_nonce", None)
+        return build_policy(config=config, update=update, replace=replace, nonce=nonce, report_only=True)

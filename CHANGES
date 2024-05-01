@@ -2,10 +2,17 @@
 CHANGES
 =======
 
-Unreleased
-==========
+4.x - Unreleased
+================
 
-- Add pyproject-fmt to pre-commit, and update pre-commit versions.
+BACKWARDS INCOMPATIBLE changes:
+- Move to dict-based configuration which allows for setting policies for both enforced and
+  report-only. See the migration guide in the docs for migrating your settings.
+
+Other changes:
+- Add pyproject-fmt to pre-commit, and update pre-commit versions
+- Fixes #36: Add support for enforced and report-only policies simultaneously
+- Drop support for Django <=3.2, end of extended support
 
 3.8
 ===
