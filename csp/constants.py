@@ -1,2 +1,12 @@
 HEADER = "Content-Security-Policy"
 HEADER_REPORT_ONLY = "Content-Security-Policy-Report-Only"
+
+NONE = "'none'"
+REPORT_SAMPLE = "'report-sample'"
+SELF = "'self'"
+STRICT_DYNAMIC = "'strict-dynamic'"
+UNSAFE_ALLOW_REDIRECTS = "'unsafe-allow-redirects'"
+UNSAFE_EVAL = "'unsafe-eval'"
+UNSAFE_HASHES = "'unsafe-hashes'"
+UNSAFE_INLINE = "'unsafe-inline'"
+WASM_UNSAFE_EVAL = "'wasm-unsafe-eval'"

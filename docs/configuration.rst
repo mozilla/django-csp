@@ -43,12 +43,14 @@ a more slightly strict policy and is used to test the policy without breaking th
 
 .. code-block:: python
 
+    from csp.constants import NONE, SELF
+
     CONTENT_SECURITY_POLICY = {
         "EXCLUDE_URL_PREFIXES": ["/excluded-path/"],
         "DIRECTIVES": {
-            "default-src": ["'self'", "cdn.example.net"],
-            "frame-ancestors": ["'self'"],
-            "form-action": ["'self'"],
+            "default-src": [SELF, "cdn.example.net"],
+            "frame-ancestors": [SELF],
+            "form-action": [SELF],
             "report-uri": "/csp-report/",
         },
     }
@@ -56,17 +58,35 @@ a more slightly strict policy and is used to test the policy without breaking th
     CONTENT_SECURITY_POLICY_REPORT_ONLY = {
         "EXCLUDE_URL_PREFIXES": ["/excluded-path/"],
         "DIRECTIVES": {
-            "default-src": ["'none'"],
-            "connect-src": ["'self'"],
-            "img-src": ["'self'"],
-            "form-action": ["'self'"],
-            "frame-ancestors": ["'self'"],
-            "script-src": ["'self'"],
-            "style-src": ["'self'"],
+            "default-src": [NONE],
+            "connect-src": [SELF],
+            "img-src": [SELF],
+            "form-action": [SELF],
+            "frame-ancestors": [SELF],
+            "script-src": [SELF],
+            "style-src": [SELF],
             "upgrade-insecure-requests": True,
             "report-uri": "/csp-report/",
         },
     }
+
+.. note::
+
+    In the above example, the constant ``NONE`` is converted to the CSP keyword ``"'none'"`` and
+    is distinct from Python's ``None`` value. The CSP keyword ``'none'`` is a special value that
+    signifies that you do not want any sources for this directive. The ``None`` value is a
+    Python keyword that represents the absence of a value and when used as the value of a directive,
+    it will remove the directive from the policy, e.g. the following will remove the
+    ``frame-ancestors`` directive from the policy:
+
+    .. code-block:: python
+
+        CONTENT_SECURITY_POLICY = {
+            "DIRECTIVES": {
+                # ...
+                "frame-ancestors": None,
+            }
+        }
 
 
 Policy Settings
@@ -101,8 +121,11 @@ policy.
 
     .. note::
        The "special" source values of ``'self'``, ``'unsafe-inline'``, ``'unsafe-eval'``,
-       ``'none'`` and hash-source (``'sha256-...'``) must be quoted!
-       e.g.: ``"default-src": ["'self'"]``. Without quotes they will not work as intended.
+       ``'strict-dynamic'``, ``'none'``, etc. must be quoted!  e.g.: ``"default-src": ["'self'"]``.
+       Without quotes they will not work as intended.
+       
+       Consider using the ``csp.constants`` module to get these values to help avoiding quoting
+       errors or typos, e.g., ``from csp.constants import SELF, STRICT_DYNAMIC``.
 
     .. note::
        Deprecated features of CSP in general have been moved to the bottom of this list.

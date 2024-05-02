@@ -1,6 +1,7 @@
 from django.test.utils import override_settings
 from django.utils.functional import lazy
 
+from csp.constants import NONE, SELF
 from csp.utils import build_policy, default_config, DEFAULT_DIRECTIVES
 
 
@@ -182,7 +183,7 @@ def test_replace_missing_setting():
 
 
 def test_config():
-    policy = build_policy(config={"default-src": ["'none'"], "img-src": ["'self'"]})
+    policy = build_policy(config={"default-src": [NONE], "img-src": [SELF]})
     policy_eq("default-src 'none'; img-src 'self'", policy)
 
 

@@ -99,18 +99,19 @@ If you need to set the entire policy on a view, ignoring all the settings, you c
 decorator. This, and the other decorators, can be stacked to update both policies if both are in
 use, as shown below. The arguments and values are as above::
 
+    from csp.constants import SELF, UNSAFE_INLINE
     from csp.decorators import csp
 
     @csp({
-        "default_src": ["'self'"],
+        "default_src": [SELF],
         "img-src": ["imgsrv.com"],
-        "script-src": ["scriptsrv.com", "googleanalytics.com", "'unsafe-inline'"]}
+        "script-src": ["scriptsrv.com", "googleanalytics.com", UNSAFE_INLINE]}
     })
     @csp({
-        "default_src": ["'self'"],
+        "default_src": [SELF],
         "img-src": ["imgsrv.com"],
         "script-src": ["scriptsrv.com", "googleanalytics.com"]},
-        "frame-src": ["'self'"],
+        "frame-src": [SELF],
         REPORT_ONLY=True
     })
     def myview(request):

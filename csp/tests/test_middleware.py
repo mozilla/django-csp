@@ -6,7 +6,7 @@ from django.http import (
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
-from csp.constants import HEADER, HEADER_REPORT_ONLY
+from csp.constants import HEADER, HEADER_REPORT_ONLY, SELF
 from csp.middleware import CSPMiddleware
 from csp.tests.utils import response
 
@@ -23,7 +23,7 @@ def test_add_header():
 
 @override_settings(
     CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": ["example.com"]}},
-    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": ["'self'"]}},
+    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": [SELF]}},
 )
 def test_both_headers():
     request = rf.get("/")
@@ -51,7 +51,7 @@ def text_exclude():
 
 @override_settings(
     CONTENT_SECURITY_POLICY=None,
-    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": ["'self'"]}},
+    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": [SELF]}},
 )
 def test_report_only():
     request = rf.get("/")
