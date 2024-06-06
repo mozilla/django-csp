@@ -6,12 +6,13 @@ from itertools import chain
 from django.conf import settings
 from django.utils.encoding import force_str
 
+from csp.constants import SELF
 
 DEFAULT_DIRECTIVES = {
     # Fetch Directives
     "child-src": None,
     "connect-src": None,
-    "default-src": ["'self'"],
+    "default-src": [SELF],
     "script-src": None,
     "script-src-attr": None,
     "script-src-elem": None,
