@@ -137,7 +137,7 @@ decorators now accept a dictionary containing the CSP directives as an argument.
     @csp_update({"default-src": ["another-url.com"]})
     def my_view(request): ...
 
-Additionally, each decorator now takes an optional ``report_only`` argument to specify whether the
+Additionally, each decorator now takes an optional ``REPORT_ONLY`` argument to specify whether the
 policy should be enforced or only report violations. For example:
 
 .. code-block:: python
@@ -145,10 +145,10 @@ policy should be enforced or only report violations. For example:
     from csp.decorators import csp
 
 
-    @csp({"default-src": ["'self'"]}, report_only=True)
+    @csp({"default-src": ["'self'"]}, REPORT_ONLY=True)
     def my_view(request): ...
 
-Due to the addition of the ``report_only`` argument and for consistency, the ``csp_exempt``
+Due to the addition of the ``REPORT_ONLY`` argument and for consistency, the ``csp_exempt``
 decorator now requires parentheses when used with and without arguments. For example:
 
 .. code-block:: python
@@ -157,7 +157,7 @@ decorator now requires parentheses when used with and without arguments. For exa
 
 
     @csp_exempt()
-    @csp_exempt(report_only=True)
+    @csp_exempt(REPORT_ONLY=True)
     def my_view(request): ...
 
 Look for uses of the following decorators in your code: ``@csp``, ``@csp_update``, ``@csp_replace``,
