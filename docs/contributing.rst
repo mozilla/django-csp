@@ -25,16 +25,22 @@ Patches fixing bugs should include regression tests (ideally tests that
 fail without the rest of the patch). Patches adding new features should
 test those features thoroughly.
 
-To run the tests, install the requirements (probably into a virtualenv_)::
+To run the tests, install the requirements (probably into a virtualenv_):
+
+.. code-block:: bash
 
     pip install -e .
     pip install -e ".[tests]"
 
-Then just `pytest`_ to run the tests::
+Then just `pytest`_ to run the tests:
+
+.. code-block:: bash
 
     pytest
 
-To run the tests with coverage and get a report, use the following command::
+To run the tests with coverage and get a report, use the following command:
+
+.. code-block:: bash
 
     pytest --cov=csp --cov-config=.coveragerc
 
