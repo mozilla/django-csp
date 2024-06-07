@@ -8,11 +8,14 @@ CHANGES
 BACKWARDS INCOMPATIBLE changes:
 - Move to dict-based configuration which allows for setting policies for both enforced and
   report-only. See the migration guide in the docs for migrating your settings.
+- Switch from specifying which directives should contain the nonce as a separate list, and instead
+  use a sentinel `NONCE` in the directive itself.
 
 Other changes:
 - Add pyproject-fmt to pre-commit, and update pre-commit versions
 - Fixes #36: Add support for enforced and report-only policies simultaneously
 - Drop support for Django <=3.2, end of extended support
+- Add CSP keyword constants in `csp.constants`, e.g. to replace `"'self'"` with `SELF`
 
 3.8
 ===

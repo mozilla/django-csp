@@ -10,3 +10,18 @@ UNSAFE_EVAL = "'unsafe-eval'"
 UNSAFE_HASHES = "'unsafe-hashes'"
 UNSAFE_INLINE = "'unsafe-inline'"
 WASM_UNSAFE_EVAL = "'wasm-unsafe-eval'"
+
+
+class Nonce:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __repr__(self):
+        return "csp.constants.NONCE"
+
+
+NONCE = Nonce()

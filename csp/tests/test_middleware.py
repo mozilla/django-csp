@@ -143,13 +143,3 @@ def test_nonce_regenerated_on_new_request():
     mw.process_response(request2, response2)
     assert nonce1 not in response2[HEADER]
     assert nonce2 not in response1[HEADER]
-
-
-@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"include-nonce-in": []}})
-def test_no_nonce_when_disabled_by_settings():
-    request = rf.get("/")
-    mw.process_request(request)
-    nonce = str(request.csp_nonce)
-    response = HttpResponse()
-    mw.process_response(request, response)
-    assert nonce not in response[HEADER]

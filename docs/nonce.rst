@@ -1,7 +1,7 @@
 ==============================
 Using the generated CSP nonce
 ==============================
-When ``include-nonce-in`` is configured, the nonce value is returned in the CSP headers **if it is
+When ``NONCE`` is included in a directive, the nonce value is returned in the CSP headers **if it is
 used**, e.g. by evaluating the nonce in your template.  To actually make the browser do anything
 with this value, you will need to include it in the attributes of the tags that you wish to mark as
 safe.
@@ -37,8 +37,8 @@ appended to any script element like so -
 		var hello="world";
 	</script>
 
-Assuming the ``include-nonce-in`` list contains the ``script-src`` directive, this will result in
-the above script being allowed.
+Assuming the ``NONCE`` sentinel is included in the ``script-src`` directive, this will result in the
+above script being allowed.
 
 .. Note::
 

@@ -3,6 +3,8 @@ import pprint
 from django.conf import settings
 from django.core.checks import Error
 
+from csp.constants import NONCE
+
 
 OUTDATED_SETTINGS = [
     "CSP_CHILD_SRC",
@@ -35,7 +37,6 @@ OUTDATED_SETTINGS = [
     "CSP_BLOCK_ALL_MIXED_CONTENT",
     "CSP_REPORT_URI",
     "CSP_REPORT_TO",
-    "CSP_INCLUDE_NONCE_IN",
 ]
 
 
@@ -55,12 +56,16 @@ def migrate_settings():
     if hasattr(settings, "CSP_REPORT_PERCENTAGE"):
         config["REPORT_PERCENTAGE"] = round(settings.CSP_REPORT_PERCENTAGE * 100)
 
+    include_nonce_in = getattr(settings, "CSP_INCLUDE_NONCE_IN", [])
+
     for setting in OUTDATED_SETTINGS:
         if hasattr(settings, setting):
             directive = setting[4:].replace("_", "-").lower()
             value = getattr(settings, setting)
             if value:
                 config["DIRECTIVES"][directive] = value
+            if directive in include_nonce_in:
+                config["DIRECTIVES"][directive].append(NONCE)
 
     return config, REPORT_ONLY
 

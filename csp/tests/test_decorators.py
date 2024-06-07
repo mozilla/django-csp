@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
-from csp.constants import HEADER, HEADER_REPORT_ONLY
+from csp.constants import HEADER, HEADER_REPORT_ONLY, NONCE
 from csp.decorators import csp, csp_exempt, csp_replace, csp_update
 from csp.middleware import CSPMiddleware
 from csp.tests.utils import response
@@ -44,12 +44,12 @@ def test_csp_update():
     policy_list = sorted(response[HEADER].split("; "))
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
-    @csp_update({"img-src": ["bar.com"], "include-nonce-in": ["img-src"]})
+    @csp_update({"img-src": ["bar.com", NONCE]})
     def view_with_decorator(request):
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_update == {"img-src": ["bar.com"], "include-nonce-in": ["img-src"]}
+    assert response._csp_update == {"img-src": ["bar.com", NONCE]}
     mw.process_request(request)
     assert request.csp_nonce  # Here to trigger the nonce creation.
     mw.process_response(request, response)
@@ -77,12 +77,12 @@ def test_csp_update_ro():
     policy_list = sorted(response[HEADER_REPORT_ONLY].split("; "))
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
-    @csp_update({"img-src": ["bar.com"], "include-nonce-in": ["img-src"]}, REPORT_ONLY=True)
+    @csp_update({"img-src": ["bar.com", NONCE]}, REPORT_ONLY=True)
     def view_with_decorator(request):
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_update_ro == {"img-src": ["bar.com"], "include-nonce-in": ["img-src"]}
+    assert response._csp_update_ro == {"img-src": ["bar.com", NONCE]}
     mw.process_request(request)
     assert request.csp_nonce  # Here to trigger the nonce creation.
     mw.process_response(request, response)
