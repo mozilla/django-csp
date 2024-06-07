@@ -1,7 +1,7 @@
 from django.test.utils import override_settings
 from django.utils.functional import lazy
 
-from csp.constants import NONE, SELF
+from csp.constants import NONCE, NONE, SELF
 from csp.utils import build_policy, default_config, DEFAULT_DIRECTIVES
 
 
@@ -42,6 +42,12 @@ def test_default_config():
 def test_empty_policy():
     policy = build_policy()
     policy_eq("default-src 'self'", policy)
+
+
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": None}})
+def test_default_src_none():
+    policy = build_policy()
+    policy_eq("", policy)
 
 
 @override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": ["example.com", "example2.com"]}})
@@ -292,18 +298,19 @@ def test_nonce():
     policy_eq("default-src 'self' 'nonce-abc123'", policy)
 
 
-@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"include-nonce-in": ["script-src", "style-src"]}})
-def test_nonce_include_in():
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": [SELF], "script-src": [SELF, NONCE], "style-src": [SELF, NONCE]}})
+def test_nonce_in_value():
     policy = build_policy(nonce="abc123")
     policy_eq(
-        "default-src 'self'; script-src 'nonce-abc123'; style-src 'nonce-abc123'",
+        "default-src 'self'; script-src 'self' 'nonce-abc123'; style-src 'self' 'nonce-abc123'",
         policy,
     )
 
 
-def test_nonce_include_in_absent():
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": [NONCE]}})
+def test_only_nonce_in_value():
     policy = build_policy(nonce="abc123")
-    policy_eq("default-src 'self' 'nonce-abc123'", policy)
+    policy_eq("default-src 'nonce-abc123'", policy)
 
 
 def test_boolean_directives():

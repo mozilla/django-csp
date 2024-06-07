@@ -1,6 +1,7 @@
 from django.test.utils import override_settings
 
 from csp.checks import check_django_csp_lt_4_0, migrate_settings
+from csp.constants import NONCE
 
 
 @override_settings(
@@ -30,8 +31,7 @@ def test_migrate_settings_report_only():
     assert config == {
         "DIRECTIVES": {
             "default-src": ["'self'", "example.com"],
-            "script-src": ["'self'", "example.com", "'unsafe-inline'"],
-            "include-nonce-in": ["script-src"],
+            "script-src": ["'self'", "example.com", "'unsafe-inline'", NONCE],
         }
     }
     assert report_only is True

@@ -121,12 +121,37 @@ policy.
     configured.
 
     .. note::
-       The "special" source values of ``'self'``, ``'unsafe-inline'``, ``'unsafe-eval'``,
-       ``'strict-dynamic'``, ``'none'``, etc. must be quoted!  e.g.: ``"default-src": ["'self'"]``.
-       Without quotes they will not work as intended.
+
+       The CSP keyword values of ``'self'``, ``'unsafe-inline'``, ``'strict-dynamic'``, etc. must be
+       quoted!  e.g.: ``"default-src": ["'self'"]``.  Without quotes they will not work as intended.
        
-       Consider using the ``csp.constants`` module to get these values to help avoiding quoting
-       errors or typos, e.g., ``from csp.constants import SELF, STRICT_DYNAMIC``.
+       New in version 4.0 are CSP keyword constants. Use these to minimize quoting mistakes and typos.
+       
+       The following CSP keywords are available:
+
+           * ``NONE`` = ``"'none'"``
+           * ``REPORT_SAMPLE`` = ``"'report-sample'"``
+           * ``SELF`` = ``"'self'"``
+           * ``STRICT_DYNAMIC`` = ``"'strict-dynamic'"``
+           * ``UNSAFE_ALLOW_REDIRECTS`` = ``"'unsafe-allow-redirects'"``
+           * ``UNSAFE_EVAL`` = ``"'unsafe-eval'"``
+           * ``UNSAFE_HASHES`` = ``"'unsafe-hashes'"``
+           * ``UNSAFE_INLINE`` = ``"'unsafe-inline'"``
+           * ``WASM_UNSAFE_EVAL`` = ``"'wasm-unsafe-eval'"``
+
+       Example usage:
+       
+       .. code-block:: python
+       
+            from csp.constants import SELF, STRICT_DYNAMIC
+
+            CONTENT_SECURITY_POLICY = {
+                "DIRECTIVES": {
+                    "default-src": [SELF, "cdn.example.net"],
+                    "script-src": [SELF, STRICT_DYNAMIC],
+                    "style-src": [SELF],
+                }
+            }
 
     .. note::
        Deprecated features of CSP in general have been moved to the bottom of this list.
@@ -247,17 +272,6 @@ policy.
 
         Valid values: a ``list`` of allowed policy names that may include
         ``default`` and/or ``'allow-duplicates'``
-
-    ``include-nonce-in``
-        A ``tuple`` of directives to include a nonce in. *['default-src']*  Any directive that is 
-        included in this list will have a nonce value added to it of the form ``'nonce-{nonce-value}'``.
-
-        Note: This is a bit of a "pseudo"-directive. It's not a real CSP directive as defined by the
-        spec, but it's used to determine which directives should include a nonce value. This is
-        useful for adding nonces to scripts and styles.
-
-        Note: The nonce value will only be generated if ``request.csp_nonce`` is accessed during the
-        request/response cycle.
 
 
 Deprecated CSP settings

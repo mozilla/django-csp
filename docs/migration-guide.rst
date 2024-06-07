@@ -87,12 +87,14 @@ The new settings would be:
 
 .. code-block:: python
 
+    from csp.constants import SELF
+
     CONTENT_SECURITY_POLICY = {
         "EXCLUDE_URL_PREFIXES": ["/admin"],
         "DIRECTIVES": {
-            "default-src": ["'self'", "*.example.com"],
-            "script-src": ["'self'", "js.cdn.com/example/"],
-            "img-src": ["'self'", "data:", "example.com"],
+            "default-src": [SELF, "*.example.com"],
+            "script-src": [SELF, "js.cdn.com/example/"],
+            "img-src": [SELF, "data:", "example.com"],
         },
     }
 
@@ -100,6 +102,31 @@ The new settings would be:
 
     The keys in the ``DIRECTIVES`` dictionary, the directive names, are in lowercase and use dashes
     instead of underscores to match the CSP specification.
+
+.. note::
+
+    If you were using the ``CSP_INCLUDE_NONCE_IN`` setting, this has been removed in the new settings
+    format. 
+    
+    **Previously:** You could use the ``CSP_INCLUDE_NONCE_IN`` setting to specify which directives in
+    your Content Security Policy (CSP) should include a nonce.
+    
+    **Now:** You can include a nonce in any directive by adding the ``NONCE`` constant from the
+    ``csp.constants`` module to the list of sources for that directive.
+
+    For example, if you had ``CSP_INCLUDE_NONCE_IN = ["script-src"]``, this should be updated to
+    include the `NONCE` sentinel in the `script-src` directive values:
+
+    .. code-block:: python
+
+        from csp.constants import NONCE, SELF
+
+        CONTENT_SECURITY_POLICY = {
+            "DIRECTIVES": {
+                "script-src": [SELF, NONCE],
+                # ...
+            },
+        }
 
 .. note::
 
@@ -142,10 +169,11 @@ policy should be enforced or only report violations. For example:
 
 .. code-block:: python
 
+    from csp.constants import SELF
     from csp.decorators import csp
 
 
-    @csp({"default-src": ["'self'"]}, REPORT_ONLY=True)
+    @csp({"default-src": [SELF]}, REPORT_ONLY=True)
     def my_view(request): ...
 
 Due to the addition of the ``REPORT_ONLY`` argument and for consistency, the ``csp_exempt``

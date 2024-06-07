@@ -1,6 +1,9 @@
+from csp.constants import NONCE, SELF
+
+
 CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
-        "include-nonce-in": ["default-src"],
+        "default-src": [SELF, NONCE],
     }
 }
 

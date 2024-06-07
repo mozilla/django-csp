@@ -6,7 +6,7 @@ from itertools import chain
 from django.conf import settings
 from django.utils.encoding import force_str
 
-from csp.constants import SELF
+from csp.constants import NONCE, SELF
 
 DEFAULT_DIRECTIVES = {
     # Fetch Directives
@@ -47,8 +47,6 @@ DEFAULT_DIRECTIVES = {
     # Directives Defined in Other Documents
     "upgrade-insecure-requests": None,
     "block-all-mixed-content": None,  # Deprecated.
-    # Pseudo-directive that affects other directives.
-    "include-nonce-in": None,
 }
 
 
@@ -103,27 +101,27 @@ def build_policy(config=None, update=None, replace=None, nonce=None, report_only
                 csp[k] += tuple(v)
 
     report_uri = csp.pop("report-uri", None)
-    include_nonce_in = csp.pop("include-nonce-in", [])
 
     policy_parts = {}
 
     for key, value in csp.items():
-        # flag directives with an empty directive value
-        if len(value) and value[0] is True:
-            policy_parts[key] = ""
-        elif len(value) and value[0] is False:
-            pass
-        else:  # directives with many values like src lists
-            policy_parts[key] = " ".join(value)
+        # Check for boolean directives.
+        if len(value) == 1 and isinstance(value[0], bool):
+            if value[0] is True:
+                policy_parts[key] = ""
+            continue
+        if NONCE in value:
+            if nonce:
+                value = [f"'nonce-{nonce}'" if v == NONCE else v for v in value]
+            else:
+                # Strip the `NONCE` sentinel value if no nonce is provided.
+                value = [v for v in value if v != NONCE]
+
+        policy_parts[key] = " ".join(value)
 
     if report_uri:
         report_uri = map(force_str, report_uri)
         policy_parts["report-uri"] = " ".join(report_uri)
-
-    if nonce:
-        for section in include_nonce_in:
-            policy = policy_parts.get(section, "")
-            policy_parts[section] = f"{policy} 'nonce-{nonce}'".strip()
 
     return "; ".join([f"{k} {val}".strip() for k, val in policy_parts.items()])
 
