@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "django-csp"
-version = "3.8"
+version = "4.0b1"
 description = "Django Content Security Policy support."
 readme = "README.rst"
 license = { text = "BSD" }
