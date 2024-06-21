@@ -11,7 +11,7 @@ rf = RequestFactory()
 
 
 @override_settings(CONTENT_SECURITY_POLICY={"REPORT_PERCENTAGE": 10, "DIRECTIVES": {"report-uri": "x"}})
-def test_report_percentage():
+def test_report_percentage() -> None:
     times_seen = 0
     for _ in range(5000):
         request = rf.get("/")
@@ -24,7 +24,7 @@ def test_report_percentage():
 
 
 @override_settings(CONTENT_SECURITY_POLICY_REPORT_ONLY={"REPORT_PERCENTAGE": 10, "DIRECTIVES": {"report-uri": "x"}})
-def test_report_percentage_report_only():
+def test_report_percentage_report_only() -> None:
     times_seen = 0
     for _ in range(5000):
         request = rf.get("/")
@@ -37,7 +37,7 @@ def test_report_percentage_report_only():
 
 
 @override_settings(CONTENT_SECURITY_POLICY=None)
-def test_no_csp():
+def test_no_csp() -> None:
     request = rf.get("/")
     response = HttpResponse()
     mw.process_response(request, response)
@@ -45,7 +45,7 @@ def test_no_csp():
 
 
 @override_settings(CONTENT_SECURITY_POLICY_REPORT_ONLY=None)
-def test_no_csp_ro():
+def test_no_csp_ro() -> None:
     request = rf.get("/")
     response = HttpResponse()
     mw.process_response(request, response)

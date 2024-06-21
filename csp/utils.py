@@ -2,6 +2,7 @@ import copy
 import re
 from collections import OrderedDict
 from itertools import chain
+from typing import Any, Dict, Optional, Union, Callable
 
 from django.conf import settings
 from django.utils.encoding import force_str
@@ -49,8 +50,10 @@ DEFAULT_DIRECTIVES = {
     "block-all-mixed-content": None,  # Deprecated.
 }
 
+_DIRECTIVES = Dict[str, Any]
 
-def default_config(csp):
+
+def default_config(csp: Optional[_DIRECTIVES]) -> Optional[_DIRECTIVES]:
     if csp is None:
         return None
     # Make a copy of the passed in config to avoid mutating it, and also to drop any unknown keys.
@@ -60,7 +63,13 @@ def default_config(csp):
     return config
 
 
-def build_policy(config=None, update=None, replace=None, nonce=None, report_only=False):
+def build_policy(
+    config: Optional[_DIRECTIVES] = None,
+    update: Optional[_DIRECTIVES] = None,
+    replace: Optional[_DIRECTIVES] = None,
+    nonce: Optional[str] = None,
+    report_only: bool = False,
+) -> str:
     """Builds the policy as a string from the settings."""
 
     if config is None:
@@ -126,14 +135,14 @@ def build_policy(config=None, update=None, replace=None, nonce=None, report_only
     return "; ".join([f"{k} {val}".strip() for k, val in policy_parts.items()])
 
 
-def _default_attr_mapper(attr_name, val):
+def _default_attr_mapper(attr_name: str, val: str) -> str:
     if val:
         return f' {attr_name}="{val}"'
     else:
         return ""
 
 
-def _bool_attr_mapper(attr_name, val):
+def _bool_attr_mapper(attr_name: str, val: bool) -> str:
     # Only return the bare word if the value is truthy
     # ie - defer=False should actually return an empty string
     if val:
@@ -142,7 +151,7 @@ def _bool_attr_mapper(attr_name, val):
         return ""
 
 
-def _async_attr_mapper(attr_name, val):
+def _async_attr_mapper(attr_name: str, val: Union[str, bool]) -> str:
     """The `async` attribute works slightly different than the other bool
     attributes. It can be set explicitly to `false` with no surrounding quotes
     according to the spec."""
@@ -155,7 +164,7 @@ def _async_attr_mapper(attr_name, val):
 
 
 # Allow per-attribute customization of returned string template
-SCRIPT_ATTRS = OrderedDict()
+SCRIPT_ATTRS: Dict[str, Callable[[str, Any], str]] = OrderedDict()
 SCRIPT_ATTRS["nonce"] = _default_attr_mapper
 SCRIPT_ATTRS["id"] = _default_attr_mapper
 SCRIPT_ATTRS["src"] = _default_attr_mapper
@@ -179,7 +188,7 @@ _script_tag_contents_re = re.compile(
 )
 
 
-def _unwrap_script(text):
+def _unwrap_script(text: str) -> str:
     """Extract content defined between script tags"""
     matches = re.search(_script_tag_contents_re, text)
     if matches and len(matches.groups()):
@@ -188,7 +197,7 @@ def _unwrap_script(text):
     return text
 
 
-def build_script_tag(content=None, **kwargs):
+def build_script_tag(content: Optional[str] = None, **kwargs: Any) -> str:
     data = {}
     # Iterate all possible script attrs instead of kwargs to make
     # interpolation as easy as possible below

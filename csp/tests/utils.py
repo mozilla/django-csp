@@ -1,12 +1,21 @@
-from django.http import HttpResponse
+from __future__ import annotations
+
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple
+
+from django.http import HttpResponse, HttpResponseBase
 from django.template import Context, Template, engines
 from django.test import RequestFactory
+from django.utils.functional import SimpleLazyObject
 
 from csp.middleware import CSPMiddleware
 
+if TYPE_CHECKING:
+    from django.http import HttpRequest
 
-def response(*args, headers=None, **kwargs):
-    def get_response(req):
+
+def response(*args: Any, headers: Optional[Dict[str, str]] = None, **kwargs: Any) -> Callable[[HttpRequest], HttpResponseBase]:
+    def get_response(req: HttpRequest) -> HttpResponseBase:
         response = HttpResponse(*args, **kwargs)
         if headers:
             for k, v in headers.items():
@@ -21,33 +30,32 @@ mw = CSPMiddleware(response())
 rf = RequestFactory()
 
 
-class ScriptTestBase:
-    def assert_template_eq(self, tpl1, tpl2):
+class ScriptTestBase(ABC):
+    def assert_template_eq(self, tpl1: str, tpl2: str) -> None:
         aaa = tpl1.replace("\n", "").replace("  ", "")
         bbb = tpl2.replace("\n", "").replace("  ", "")
         assert aaa == bbb, f"{aaa} != {bbb}"
 
-    def process_templates(self, tpl, expected):
+    def process_templates(self, tpl: str, expected: str) -> Tuple[str, str]:
         request = rf.get("/")
         mw.process_request(request)
-        ctx = self.make_context(request)
-        return (
-            self.make_template(tpl).render(ctx).strip(),
-            expected.format(request.csp_nonce),
-        )
+        nonce = getattr(request, "csp_nonce")
+        assert isinstance(nonce, SimpleLazyObject)
+        return (self.render(tpl, request).strip(), expected.format(nonce))
+
+    @abstractmethod
+    def render(self, template_string: str, request: HttpRequest) -> str: ...
 
 
 class ScriptTagTestBase(ScriptTestBase):
-    def make_context(self, request):
-        return Context({"request": request})
-
-    def make_template(self, tpl):
-        return Template(tpl)
+    def render(self, template_string: str, request: HttpRequest) -> str:
+        context = Context({"request": request})
+        template = Template(template_string)
+        return template.render(context)
 
 
 class ScriptExtensionTestBase(ScriptTestBase):
-    def make_context(self, request):
-        return {"request": request}
-
-    def make_template(self, tpl):
-        return JINJA_ENV.from_string(tpl)
+    def render(self, template_string: str, request: HttpRequest) -> str:
+        context = {"request": request}
+        template = JINJA_ENV.from_string(template_string)
+        return template.render(context)

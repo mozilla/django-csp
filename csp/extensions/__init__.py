@@ -1,14 +1,20 @@
+from __future__ import annotations
+from typing import Callable, TYPE_CHECKING, Any
+
 from jinja2 import nodes
 from jinja2.ext import Extension
 
 from csp.utils import SCRIPT_ATTRS, build_script_tag
+
+if TYPE_CHECKING:
+    from jinja2.parser import Parser
 
 
 class NoncedScript(Extension):
     # a set of names that trigger the extension.
     tags = {"script"}
 
-    def parse(self, parser):
+    def parse(self, parser: Parser) -> nodes.Node:
         # the first token is the token that started the tag.  In our case
         # we only listen to ``'script'`` so this will be a name token with
         # `script` as value.  We get the line number so that we can give
@@ -26,13 +32,13 @@ class NoncedScript(Extension):
 
         # now we parse the body of the script block up to `endscript` and
         # drop the needle (which would always be `endscript` in that case)
-        body = parser.parse_statements(["name:endscript"], drop_needle=True)
+        body = parser.parse_statements(("name:endscript",), drop_needle=True)
 
         # now return a `CallBlock` node that calls our _render_script
         # helper method on this extension.
         return nodes.CallBlock(self.call_method("_render_script", kwargs=kwargs), [], [], body).set_lineno(lineno)
 
-    def _render_script(self, caller, **kwargs):
+    def _render_script(self, caller: Callable[[], str], **kwargs: Any) -> str:
         ctx = kwargs.pop("ctx")
         request = ctx.get("request")
         kwargs["nonce"] = request.csp_nonce

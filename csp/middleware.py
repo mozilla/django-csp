@@ -1,7 +1,9 @@
+from __future__ import annotations
 import base64
 import http.client as http_client
 import os
 from functools import partial
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
@@ -9,6 +11,9 @@ from django.utils.functional import SimpleLazyObject
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY
 from csp.utils import build_policy
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponseBase
 
 
 class CSPMiddleware(MiddlewareMixin):
@@ -21,17 +26,20 @@ class CSPMiddleware(MiddlewareMixin):
 
     """
 
-    def _make_nonce(self, request):
+    def _make_nonce(self, request: HttpRequest) -> str:
         # Ensure that any subsequent calls to request.csp_nonce return the same value
-        if not getattr(request, "_csp_nonce", None):
-            request._csp_nonce = base64.b64encode(os.urandom(16)).decode("ascii")
-        return request._csp_nonce
+        stored_nonce = getattr(request, "_csp_nonce", None)
+        if isinstance(stored_nonce, str):
+            return stored_nonce
+        nonce = base64.b64encode(os.urandom(16)).decode("ascii")
+        setattr(request, "_csp_nonce", nonce)
+        return nonce
 
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
-        request.csp_nonce = SimpleLazyObject(nonce)
+        setattr(request, "csp_nonce", SimpleLazyObject(nonce))
 
-    def process_response(self, request, response):
+    def process_response(self, request: HttpRequest, response: HttpResponseBase) -> HttpResponseBase:
         # Check for debug view
         exempted_debug_codes = (
             http_client.INTERNAL_SERVER_ERROR,
@@ -45,8 +53,9 @@ class CSPMiddleware(MiddlewareMixin):
             # Only set header if not already set and not an excluded prefix and not exempted.
             is_not_exempt = getattr(response, "_csp_exempt", False) is False
             no_header = HEADER not in response
-            prefixes = getattr(settings, "CONTENT_SECURITY_POLICY", {}).get("EXCLUDE_URL_PREFIXES", ())
-            is_not_excluded = not request.path_info.startswith(prefixes)
+            policy = getattr(settings, "CONTENT_SECURITY_POLICY", None) or {}
+            prefixes = policy.get("EXCLUDE_URL_PREFIXES", None) or ()
+            is_not_excluded = not request.path_info.startswith(tuple(prefixes))
             if all((no_header, is_not_exempt, is_not_excluded)):
                 response[HEADER] = csp
 
@@ -55,21 +64,22 @@ class CSPMiddleware(MiddlewareMixin):
             # Only set header if not already set and not an excluded prefix and not exempted.
             is_not_exempt = getattr(response, "_csp_exempt_ro", False) is False
             no_header = HEADER_REPORT_ONLY not in response
-            prefixes = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", {}).get("EXCLUDE_URL_PREFIXES", ())
-            is_not_excluded = not request.path_info.startswith(prefixes)
+            policy = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", None) or {}
+            prefixes = policy.get("EXCLUDE_URL_PREFIXES", None) or ()
+            is_not_excluded = not request.path_info.startswith(tuple(prefixes))
             if all((no_header, is_not_exempt, is_not_excluded)):
                 response[HEADER_REPORT_ONLY] = csp_ro
 
         return response
 
-    def build_policy(self, request, response):
+    def build_policy(self, request: HttpRequest, response: HttpResponseBase) -> str:
         config = getattr(response, "_csp_config", None)
         update = getattr(response, "_csp_update", None)
         replace = getattr(response, "_csp_replace", None)
         nonce = getattr(request, "_csp_nonce", None)
         return build_policy(config=config, update=update, replace=replace, nonce=nonce)
 
-    def build_policy_ro(self, request, response):
+    def build_policy_ro(self, request: HttpRequest, response: HttpResponseBase) -> str:
         config = getattr(response, "_csp_config_ro", None)
         update = getattr(response, "_csp_update_ro", None)
         replace = getattr(response, "_csp_replace_ro", None)
