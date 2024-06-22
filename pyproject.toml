@@ -50,6 +50,14 @@ optional-dependencies.tests = [
   "pytest-django",
   "pytest-ruff",
 ]
+optional-dependencies.typing = [
+  "jinja2>=2.9.6",
+  "pytest",
+  "pytest-django",
+  "mypy",
+  "types-setuptools",
+  "django-stubs[compatible-mypy]",
+]
 urls."Bug Tracker" = "https://github.com/mozilla/django-csp/issues"
 urls.Changelog = "https://github.com/mozilla/django-csp/blob/main/CHANGES"
 urls.Documentation = "http://django-csp.readthedocs.org/"
@@ -66,3 +74,10 @@ find = { namespaces = false }
 [tool.pytest.ini_options]
 addopts = "-vs --tb=short --ruff --ruff-format"
 DJANGO_SETTINGS_MODULE = "csp.tests.settings"
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+exclude = ['^build/lib']
+
+[tool.django-stubs]
+django_settings_module = "csp.tests.settings"
