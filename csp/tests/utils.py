@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Dict, Optional, TYPE_CHECKING, Callable, Any, Tuple, Union
+from typing import Dict, Optional, TYPE_CHECKING, Callable, Any, Tuple
 
 from django.http import HttpResponse
 from django.template import Context, Template, engines
@@ -11,7 +11,6 @@ from csp.middleware import CSPMiddleware
 
 if TYPE_CHECKING:
     from django.http import HttpRequest
-    from django.template.backends.base import _EngineTemplate
 
 
 def response(*args: Any, headers: Optional[Dict[str, str]] = None, **kwargs: Any) -> Callable[[HttpRequest], HttpResponse]:
@@ -41,30 +40,21 @@ class ScriptTestBase(ABC):
         mw.process_request(request)
         nonce = getattr(request, "csp_nonce")
         assert isinstance(nonce, SimpleLazyObject)
-        ctx = self.make_context(request)
-        return (
-            self.make_template(tpl).render(ctx).strip(),  # type: ignore
-            expected.format(nonce),
-        )
+        return (self.render(tpl, request).strip(), expected.format(nonce))
 
     @abstractmethod
-    def make_context(self, request: HttpRequest) -> Union[dict[str, Any], Context]: ...
-
-    @abstractmethod
-    def make_template(self, tpl: str) -> Union[_EngineTemplate, Template]: ...
+    def render(self, template_string: str, request: HttpRequest) -> str: ...
 
 
 class ScriptTagTestBase(ScriptTestBase):
-    def make_context(self, request: HttpRequest) -> Context:
-        return Context({"request": request})
-
-    def make_template(self, tpl: str) -> Template:
-        return Template(tpl)
+    def render(self, template_string: str, request: HttpRequest) -> str:
+        context = Context({"request": request})
+        template = Template(template_string)
+        return template.render(context)
 
 
 class ScriptExtensionTestBase(ScriptTestBase):
-    def make_context(self, request: HttpRequest) -> dict[str, HttpRequest]:
-        return {"request": request}
-
-    def make_template(self, tpl: str) -> _EngineTemplate:
-        return JINJA_ENV.from_string(tpl)
+    def render(self, template_string: str, request: HttpRequest) -> str:
+        context = {"request": request}
+        template = JINJA_ENV.from_string(template_string)
+        return template.render(context)
