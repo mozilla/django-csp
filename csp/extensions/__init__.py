@@ -26,7 +26,7 @@ class NoncedScript(Extension):
 
         # now we parse the body of the script block up to `endscript` and
         # drop the needle (which would always be `endscript` in that case)
-        body = parser.parse_statements(["name:endscript"], drop_needle=True)
+        body = parser.parse_statements(("name:endscript",), drop_needle=True)
 
         # now return a `CallBlock` node that calls our _render_script
         # helper method on this extension.
