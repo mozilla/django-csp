@@ -74,16 +74,19 @@ def csp(config=None, REPORT_ONLY=False, **kwargs):
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp"))
 
-    config = {k: [v] if isinstance(v, str) else v for k, v in config.items()}
+    if config is None:
+        processed_config = {}
+    else:
+        processed_config = {k: [v] if isinstance(v, str) else v for k, v in config.items()}
 
     def decorator(f):
         @wraps(f)
         def _wrapped(*a, **kw):
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_config_ro = config
+                resp._csp_config_ro = processed_config
             else:
-                resp._csp_config = config
+                resp._csp_config = processed_config
             return resp
 
         return _wrapped
