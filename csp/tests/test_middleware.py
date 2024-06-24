@@ -72,7 +72,7 @@ def test_dont_replace():
 def test_use_config():
     request = rf.get("/")
     response = HttpResponse()
-    response._csp_config = {"default-src": ["example.com"]}
+    setattr(response, "_csp_config", {"default-src": ["example.com"]})
     mw.process_response(request, response)
     assert response[HEADER] == "default-src example.com"
 
@@ -80,7 +80,7 @@ def test_use_config():
 def test_use_update():
     request = rf.get("/")
     response = HttpResponse()
-    response._csp_update = {"default-src": ["example.com"]}
+    setattr(response, "_csp_update", {"default-src": ["example.com"]})
     mw.process_response(request, response)
     assert response[HEADER] == "default-src 'self' example.com"
 
@@ -89,7 +89,7 @@ def test_use_update():
 def test_use_replace():
     request = rf.get("/")
     response = HttpResponse()
-    response._csp_replace = {"img-src": ["bar.com"]}
+    setattr(response, "_csp_replace", {"img-src": ["bar.com"]})
     mw.process_response(request, response)
     policy_list = sorted(response[HEADER].split("; "))
     assert policy_list == ["default-src 'self'", "img-src bar.com"]
@@ -114,7 +114,7 @@ def test_debug_notfound_exempt():
 def test_nonce_created_when_accessed():
     request = rf.get("/")
     mw.process_request(request)
-    nonce = str(request.csp_nonce)
+    nonce = str(getattr(request, "csp_nonce"))
     response = HttpResponse()
     mw.process_response(request, response)
     assert nonce in response[HEADER]
@@ -133,9 +133,9 @@ def test_nonce_regenerated_on_new_request():
     request2 = rf.get("/")
     mw.process_request(request1)
     mw.process_request(request2)
-    nonce1 = str(request1.csp_nonce)
-    nonce2 = str(request2.csp_nonce)
-    assert request1.csp_nonce != request2.csp_nonce
+    nonce1 = str(getattr(request1, "csp_nonce"))
+    nonce2 = str(getattr(request2, "csp_nonce"))
+    assert nonce1 != nonce2
 
     response1 = HttpResponse()
     response2 = HttpResponse()

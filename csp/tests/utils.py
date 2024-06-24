@@ -33,7 +33,7 @@ class ScriptTestBase:
         ctx = self.make_context(request)
         return (
             self.make_template(tpl).render(ctx).strip(),
-            expected.format(request.csp_nonce),
+            expected.format(getattr(request, "csp_nonce")),
         )
 
 

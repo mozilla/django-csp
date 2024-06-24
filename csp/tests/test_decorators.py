@@ -17,7 +17,7 @@ def test_csp_exempt():
         return HttpResponse()
 
     response = view(RequestFactory().get("/"))
-    assert response._csp_exempt is True
+    assert getattr(response, "_csp_exempt") is True
     assert not hasattr(response, "_csp_exempt_ro")
 
 
@@ -28,7 +28,7 @@ def test_csp_exempt_ro():
 
     response = view(RequestFactory().get("/"))
     assert not hasattr(response, "_csp_exempt")
-    assert response._csp_exempt_ro is True
+    assert getattr(response, "_csp_exempt_ro") is True
 
 
 @override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"img-src": ["foo.com"]}})
@@ -49,13 +49,13 @@ def test_csp_update():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_update == {"img-src": ["bar.com", NONCE]}
+    assert getattr(response, "_csp_update") == {"img-src": ["bar.com", NONCE]}
     mw.process_request(request)
-    assert request.csp_nonce  # Here to trigger the nonce creation.
+    assert getattr(request, "csp_nonce")  # Here to trigger the nonce creation.
     mw.process_response(request, response)
     assert HEADER_REPORT_ONLY not in response.headers
     policy_list = sorted(response[HEADER].split("; "))
-    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{request.csp_nonce}'"]
+    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{getattr(request, 'csp_nonce')}'"]
 
     response = view_without_decorator(request)
     mw.process_response(request, response)
@@ -82,13 +82,13 @@ def test_csp_update_ro():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_update_ro == {"img-src": ["bar.com", NONCE]}
+    assert getattr(response, "_csp_update_ro") == {"img-src": ["bar.com", NONCE]}
     mw.process_request(request)
-    assert request.csp_nonce  # Here to trigger the nonce creation.
+    assert getattr(request, "csp_nonce")  # Here to trigger the nonce creation.
     mw.process_response(request, response)
     assert HEADER not in response.headers
     policy_list = sorted(response[HEADER_REPORT_ONLY].split("; "))
-    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{request.csp_nonce}'"]
+    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{getattr(request, 'csp_nonce')}'"]
 
     response = view_without_decorator(request)
     mw.process_response(request, response)
@@ -115,7 +115,7 @@ def test_csp_replace():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_replace == {"img-src": ["bar.com"]}
+    assert getattr(response, "_csp_replace") == {"img-src": ["bar.com"]}
     mw.process_response(request, response)
     assert HEADER_REPORT_ONLY not in response.headers
     policy_list = sorted(response[HEADER].split("; "))
@@ -156,7 +156,7 @@ def test_csp_replace_ro():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_replace_ro == {"img-src": ["bar.com"]}
+    assert getattr(response, "_csp_replace_ro") == {"img-src": ["bar.com"]}
     mw.process_response(request, response)
     assert HEADER not in response.headers
     policy_list = sorted(response[HEADER_REPORT_ONLY].split("; "))
@@ -196,7 +196,7 @@ def test_csp():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_config == {"img-src": ["foo.com"], "font-src": ["bar.com"]}
+    assert getattr(response, "_csp_config") == {"img-src": ["foo.com"], "font-src": ["bar.com"]}
     mw.process_response(request, response)
     assert HEADER_REPORT_ONLY not in response.headers
     policy_list = sorted(response[HEADER].split("; "))
@@ -227,7 +227,7 @@ def test_csp_ro():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_config_ro == {"img-src": ["foo.com"], "font-src": ["bar.com"]}
+    assert getattr(response, "_csp_config_ro") == {"img-src": ["foo.com"], "font-src": ["bar.com"]}
     mw.process_response(request, response)
     assert HEADER not in response.headers
     policy_list = sorted(response[HEADER_REPORT_ONLY].split("; "))
@@ -249,7 +249,7 @@ def test_csp_string_values():
         return HttpResponse()
 
     response = view_with_decorator(request)
-    assert response._csp_config == {"img-src": ["foo.com"], "font-src": ["bar.com"]}
+    assert getattr(response, "_csp_config") == {"img-src": ["foo.com"], "font-src": ["bar.com"]}
     mw.process_response(request, response)
     policy_list = sorted(response[HEADER].split("; "))
     assert policy_list == ["font-src bar.com", "img-src foo.com"]

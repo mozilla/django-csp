@@ -23,13 +23,16 @@ class CSPMiddleware(MiddlewareMixin):
 
     def _make_nonce(self, request):
         # Ensure that any subsequent calls to request.csp_nonce return the same value
-        if not getattr(request, "_csp_nonce", None):
-            request._csp_nonce = base64.b64encode(os.urandom(16)).decode("ascii")
-        return request._csp_nonce
+        stored_nonce = getattr(request, "_csp_nonce", None)
+        if isinstance(stored_nonce, str):
+            return stored_nonce
+        nonce = base64.b64encode(os.urandom(16)).decode("ascii")
+        setattr(request, "_csp_nonce", nonce)
+        return nonce
 
     def process_request(self, request):
         nonce = partial(self._make_nonce, request)
-        request.csp_nonce = SimpleLazyObject(nonce)
+        setattr(request, "csp_nonce", SimpleLazyObject(nonce))
 
     def process_response(self, request, response):
         # Check for debug view
@@ -45,7 +48,8 @@ class CSPMiddleware(MiddlewareMixin):
             # Only set header if not already set and not an excluded prefix and not exempted.
             is_not_exempt = getattr(response, "_csp_exempt", False) is False
             no_header = HEADER not in response
-            prefixes = getattr(settings, "CONTENT_SECURITY_POLICY", {}).get("EXCLUDE_URL_PREFIXES", ())
+            policy = getattr(settings, "CONTENT_SECURITY_POLICY", None) or {}
+            prefixes = policy.get("EXCLUDE_URL_PREFIXES", None) or ()
             is_not_excluded = not request.path_info.startswith(prefixes)
             if all((no_header, is_not_exempt, is_not_excluded)):
                 response[HEADER] = csp
@@ -55,7 +59,8 @@ class CSPMiddleware(MiddlewareMixin):
             # Only set header if not already set and not an excluded prefix and not exempted.
             is_not_exempt = getattr(response, "_csp_exempt_ro", False) is False
             no_header = HEADER_REPORT_ONLY not in response
-            prefixes = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", {}).get("EXCLUDE_URL_PREFIXES", ())
+            policy = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", None) or {}
+            prefixes = policy.get("EXCLUDE_URL_PREFIXES", None) or ()
             is_not_excluded = not request.path_info.startswith(prefixes)
             if all((no_header, is_not_exempt, is_not_excluded)):
                 response[HEADER_REPORT_ONLY] = csp_ro

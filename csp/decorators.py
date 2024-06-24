@@ -15,9 +15,9 @@ def csp_exempt(REPORT_ONLY=None):
         def _wrapped(*a, **kw):
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_exempt_ro = True
+                setattr(resp, "_csp_exempt_ro", True)
             else:
-                resp._csp_exempt = True
+                setattr(resp, "_csp_exempt", True)
             return resp
 
         return _wrapped
@@ -41,9 +41,9 @@ def csp_update(config=None, REPORT_ONLY=False, **kwargs):
         def _wrapped(*a, **kw):
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_update_ro = config
+                setattr(resp, "_csp_update_ro", config)
             else:
-                resp._csp_update = config
+                setattr(resp, "_csp_update", config)
             return resp
 
         return _wrapped
@@ -60,9 +60,9 @@ def csp_replace(config=None, REPORT_ONLY=False, **kwargs):
         def _wrapped(*a, **kw):
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_replace_ro = config
+                setattr(resp, "_csp_replace_ro", config)
             else:
-                resp._csp_replace = config
+                setattr(resp, "_csp_replace", config)
             return resp
 
         return _wrapped
@@ -84,9 +84,9 @@ def csp(config=None, REPORT_ONLY=False, **kwargs):
         def _wrapped(*a, **kw):
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_config_ro = processed_config
+                setattr(resp, "_csp_config_ro", processed_config)
             else:
-                resp._csp_config = processed_config
+                setattr(resp, "_csp_config", processed_config)
             return resp
 
         return _wrapped

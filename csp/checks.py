@@ -45,16 +45,16 @@ def migrate_settings():
     config = {
         "DIRECTIVES": {},
     }
-    REPORT_ONLY = False
 
-    if hasattr(settings, "CSP_REPORT_ONLY"):
-        REPORT_ONLY = settings.CSP_REPORT_ONLY
+    REPORT_ONLY = getattr(settings, "CSP_REPORT_ONLY", False)
 
-    if hasattr(settings, "CSP_EXCLUDE_URL_PREFIXES"):
-        config["EXCLUDE_URL_PREFIXES"] = settings.CSP_EXCLUDE_URL_PREFIXES
+    _EXCLUDE_URL_PREFIXES = getattr(settings, "CSP_EXCLUDE_URL_PREFIXES", None)
+    if _EXCLUDE_URL_PREFIXES is not None:
+        config["EXCLUDE_URL_PREFIXES"] = _EXCLUDE_URL_PREFIXES
 
-    if hasattr(settings, "CSP_REPORT_PERCENTAGE"):
-        config["REPORT_PERCENTAGE"] = round(settings.CSP_REPORT_PERCENTAGE * 100)
+    _REPORT_PERCENTAGE = getattr(settings, "CSP_REPORT_PERCENTAGE", None)
+    if _REPORT_PERCENTAGE is not None:
+        config["REPORT_PERCENTAGE"] = round(_REPORT_PERCENTAGE * 100)
 
     include_nonce_in = getattr(settings, "CSP_INCLUDE_NONCE_IN", [])
 

@@ -31,12 +31,14 @@ class NonceScriptNode(template.Node):
             self.script_attrs[k] = self._get_token_value(v)
 
     def _get_token_value(self, t):
-        return _unquote(t.token) if getattr(t, "token", None) else None
+        if hasattr(t, "token") and t.token:
+            return _unquote(t.token)
+        return None
 
     def render(self, context):
         output = self.nodelist.render(context).strip()
         request = context.get("request")
-        nonce = request.csp_nonce if hasattr(request, "csp_nonce") else ""
+        nonce = getattr(request, "csp_nonce", "")
         self.script_attrs.update({"nonce": nonce, "content": output})
 
         return build_script_tag(**self.script_attrs)

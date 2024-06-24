@@ -17,7 +17,7 @@ def test_nonce_context_processor():
     response = HttpResponse()
     mw.process_response(request, response)
 
-    assert context["CSP_NONCE"] == request.csp_nonce
+    assert context["CSP_NONCE"] == getattr(request, "csp_nonce")
 
 
 def test_nonce_context_processor_with_middleware_disabled():
