@@ -52,6 +52,7 @@ optional-dependencies.dev = [
   "Sphinx",
   "sphinx_rtd_theme",
   "tox",
+  "tox-gh-actions",
   "types-setuptools",
 ]
 optional-dependencies.jinja2 = [
