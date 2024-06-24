@@ -1,7 +1,13 @@
 from functools import wraps
+from typing import Callable, Optional, Any, Dict, List
+from django.http import HttpRequest, HttpResponse
+
+# A generic Django view function
+_VIEW_T = Callable[[HttpRequest], HttpResponse]
+_VIEW_DECORATOR_T = Callable[[_VIEW_T], _VIEW_T]
 
 
-def csp_exempt(REPORT_ONLY=None):
+def csp_exempt(REPORT_ONLY: Optional[bool] = None) -> _VIEW_DECORATOR_T:
     if callable(REPORT_ONLY):
         raise RuntimeError(
             "Incompatible `csp_exempt` decorator usage. This decorator now requires arguments, "
@@ -10,9 +16,9 @@ def csp_exempt(REPORT_ONLY=None):
             "information."
         )
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_exempt_ro", True)
@@ -32,13 +38,13 @@ DECORATOR_DEPRECATION_ERROR = (
 )
 
 
-def csp_update(config=None, REPORT_ONLY=False, **kwargs):
+def csp_update(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp_update"))
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_update_ro", config)
@@ -51,13 +57,13 @@ def csp_update(config=None, REPORT_ONLY=False, **kwargs):
     return decorator
 
 
-def csp_replace(config=None, REPORT_ONLY=False, **kwargs):
+def csp_replace(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp_replace"))
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_replace_ro", config)
@@ -70,18 +76,18 @@ def csp_replace(config=None, REPORT_ONLY=False, **kwargs):
     return decorator
 
 
-def csp(config=None, REPORT_ONLY=False, **kwargs):
+def csp(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp"))
 
     if config is None:
-        processed_config = {}
+        processed_config: Dict[str, List[Any]] = {}
     else:
         processed_config = {k: [v] if isinstance(v, str) else v for k, v in config.items()}
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_config_ro", processed_config)

@@ -78,6 +78,7 @@ DJANGO_SETTINGS_MODULE = "csp.tests.settings"
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
 exclude = ['^build/lib']
+strict=true
 
 [tool.django-stubs]
 django_settings_module = "csp.tests.settings"

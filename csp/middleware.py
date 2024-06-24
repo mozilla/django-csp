@@ -1,7 +1,9 @@
+from __future__ import annotations
 import base64
 import http.client as http_client
 import os
 from functools import partial
+from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
@@ -9,6 +11,9 @@ from django.utils.functional import SimpleLazyObject
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY
 from csp.utils import build_policy
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponse
 
 
 class CSPMiddleware(MiddlewareMixin):
@@ -21,7 +26,7 @@ class CSPMiddleware(MiddlewareMixin):
 
     """
 
-    def _make_nonce(self, request):
+    def _make_nonce(self, request: HttpRequest) -> str:
         # Ensure that any subsequent calls to request.csp_nonce return the same value
         stored_nonce = getattr(request, "_csp_nonce", None)
         if isinstance(stored_nonce, str):
@@ -30,11 +35,11 @@ class CSPMiddleware(MiddlewareMixin):
         setattr(request, "_csp_nonce", nonce)
         return nonce
 
-    def process_request(self, request):
+    def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
         setattr(request, "csp_nonce", SimpleLazyObject(nonce))
 
-    def process_response(self, request, response):
+    def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
         # Check for debug view
         exempted_debug_codes = (
             http_client.INTERNAL_SERVER_ERROR,
@@ -67,14 +72,14 @@ class CSPMiddleware(MiddlewareMixin):
 
         return response
 
-    def build_policy(self, request, response):
+    def build_policy(self, request: HttpRequest, response: HttpResponse) -> str:
         config = getattr(response, "_csp_config", None)
         update = getattr(response, "_csp_update", None)
         replace = getattr(response, "_csp_replace", None)
         nonce = getattr(request, "_csp_nonce", None)
         return build_policy(config=config, update=update, replace=replace, nonce=nonce)
 
-    def build_policy_ro(self, request, response):
+    def build_policy_ro(self, request: HttpRequest, response: HttpResponse) -> str:
         config = getattr(response, "_csp_config_ro", None)
         update = getattr(response, "_csp_update_ro", None)
         replace = getattr(response, "_csp_replace_ro", None)

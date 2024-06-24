@@ -1,9 +1,14 @@
+from __future__ import annotations
 import pprint
+from typing import Dict, Tuple, Any, Optional, Sequence, TYPE_CHECKING, List
 
 from django.conf import settings
 from django.core.checks import Error
 
 from csp.constants import NONCE
+
+if TYPE_CHECKING:
+    from django.apps.config import AppConfig
 
 
 OUTDATED_SETTINGS = [
@@ -40,9 +45,9 @@ OUTDATED_SETTINGS = [
 ]
 
 
-def migrate_settings():
+def migrate_settings() -> Tuple[Dict[str, Any], bool]:
     # This function is used to migrate settings from the old format to the new format.
-    config = {
+    config: Dict[str, Any] = {
         "DIRECTIVES": {},
     }
 
@@ -70,7 +75,7 @@ def migrate_settings():
     return config, REPORT_ONLY
 
 
-def check_django_csp_lt_4_0(app_configs, **kwargs):
+def check_django_csp_lt_4_0(app_configs: Optional[Sequence[AppConfig]], **kwargs: Any) -> List[Error]:
     check_settings = OUTDATED_SETTINGS + ["CSP_REPORT_ONLY", "CSP_EXCLUDE_URL_PREFIXES", "CSP_REPORT_PERCENTAGE"]
     if any(hasattr(settings, setting) for setting in check_settings):
         # Try to build the new config.

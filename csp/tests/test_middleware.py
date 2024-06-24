@@ -14,7 +14,7 @@ mw = CSPMiddleware(response())
 rf = RequestFactory()
 
 
-def test_add_header():
+def test_add_header() -> None:
     request = rf.get("/")
     response = HttpResponse()
     mw.process_response(request, response)
@@ -25,7 +25,7 @@ def test_add_header():
     CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": ["example.com"]}},
     CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": [SELF]}},
 )
-def test_both_headers():
+def test_both_headers() -> None:
     request = rf.get("/")
     response = HttpResponse()
     mw.process_response(request, response)
@@ -33,16 +33,16 @@ def test_both_headers():
     assert HEADER_REPORT_ONLY in response
 
 
-def test_exempt():
+def test_exempt() -> None:
     request = rf.get("/")
     response = HttpResponse()
-    response._csp_exempt = True
+    setattr(response, "_csp_exempt", True)
     mw.process_response(request, response)
     assert HEADER not in response
 
 
 @override_settings(CONTENT_SECURITY_POLICY={"EXCLUDE_URL_PREFIXES": ["/inlines-r-us"]})
-def text_exclude():
+def test_exclude() -> None:
     request = rf.get("/inlines-r-us/foo")
     response = HttpResponse()
     mw.process_response(request, response)
@@ -53,7 +53,7 @@ def text_exclude():
     CONTENT_SECURITY_POLICY=None,
     CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": [SELF]}},
 )
-def test_report_only():
+def test_report_only() -> None:
     request = rf.get("/")
     response = HttpResponse()
     mw.process_response(request, response)
@@ -61,7 +61,7 @@ def test_report_only():
     assert HEADER + "-Report-Only" in response
 
 
-def test_dont_replace():
+def test_dont_replace() -> None:
     request = rf.get("/")
     response = HttpResponse()
     response[HEADER] = "default-src example.com"
@@ -69,7 +69,7 @@ def test_dont_replace():
     assert response[HEADER] == "default-src example.com"
 
 
-def test_use_config():
+def test_use_config() -> None:
     request = rf.get("/")
     response = HttpResponse()
     setattr(response, "_csp_config", {"default-src": ["example.com"]})
@@ -77,7 +77,7 @@ def test_use_config():
     assert response[HEADER] == "default-src example.com"
 
 
-def test_use_update():
+def test_use_update() -> None:
     request = rf.get("/")
     response = HttpResponse()
     setattr(response, "_csp_update", {"default-src": ["example.com"]})
@@ -86,7 +86,7 @@ def test_use_update():
 
 
 @override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"img-src": ["foo.com"]}})
-def test_use_replace():
+def test_use_replace() -> None:
     request = rf.get("/")
     response = HttpResponse()
     setattr(response, "_csp_replace", {"img-src": ["bar.com"]})
@@ -96,7 +96,7 @@ def test_use_replace():
 
 
 @override_settings(DEBUG=True)
-def test_debug_errors_exempt():
+def test_debug_errors_exempt() -> None:
     request = rf.get("/")
     response = HttpResponseServerError()
     mw.process_response(request, response)
@@ -104,14 +104,14 @@ def test_debug_errors_exempt():
 
 
 @override_settings(DEBUG=True)
-def test_debug_notfound_exempt():
+def test_debug_notfound_exempt() -> None:
     request = rf.get("/")
     response = HttpResponseNotFound()
     mw.process_response(request, response)
     assert HEADER not in response
 
 
-def test_nonce_created_when_accessed():
+def test_nonce_created_when_accessed() -> None:
     request = rf.get("/")
     mw.process_request(request)
     nonce = str(getattr(request, "csp_nonce"))
@@ -120,7 +120,7 @@ def test_nonce_created_when_accessed():
     assert nonce in response[HEADER]
 
 
-def test_no_nonce_when_not_accessed():
+def test_no_nonce_when_not_accessed() -> None:
     request = rf.get("/")
     mw.process_request(request)
     response = HttpResponse()
@@ -128,7 +128,7 @@ def test_no_nonce_when_not_accessed():
     assert "nonce-" not in response[HEADER]
 
 
-def test_nonce_regenerated_on_new_request():
+def test_nonce_regenerated_on_new_request() -> None:
     request1 = rf.get("/")
     request2 = rf.get("/")
     mw.process_request(request1)

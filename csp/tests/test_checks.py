@@ -10,7 +10,7 @@ from csp.constants import NONCE
     CSP_REPORT_ONLY=False,
     CSP_DEFAULT_SRC=["'self'", "example.com"],
 )
-def test_migrate_settings():
+def test_migrate_settings() -> None:
     config, report_only = migrate_settings()
     assert config == {
         "REPORT_PERCENTAGE": 25,
@@ -26,7 +26,7 @@ def test_migrate_settings():
     CSP_SCRIPT_SRC=["'self'", "example.com", "'unsafe-inline'"],
     CSP_INCLUDE_NONCE_IN=["script-src"],
 )
-def test_migrate_settings_report_only():
+def test_migrate_settings_report_only() -> None:
     config, report_only = migrate_settings()
     assert config == {
         "DIRECTIVES": {
@@ -40,7 +40,7 @@ def test_migrate_settings_report_only():
 @override_settings(
     CSP_DEFAULT_SRC=["'self'", "example.com"],
 )
-def test_check_django_csp_lt_4_0():
+def test_check_django_csp_lt_4_0() -> None:
     errors = check_django_csp_lt_4_0(None)
     assert len(errors) == 1
     error = errors[0]
@@ -48,5 +48,5 @@ def test_check_django_csp_lt_4_0():
     assert "update your settings to use the new format" in error.msg
 
 
-def test_check_django_csp_lt_4_0_no_config():
+def test_check_django_csp_lt_4_0_no_config() -> None:
     assert check_django_csp_lt_4_0(None) == []
