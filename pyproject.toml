@@ -20,7 +20,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
   "Environment :: Web Environment :: Mozilla",
-  "Framework :: Django :: 3.2",
   "Framework :: Django :: 4.2",
   "Framework :: Django :: 5.0",
   "Intended Audience :: Developers",
@@ -38,7 +37,7 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-  "django>=3.2",
+  "django>=4.2",
 ]
 optional-dependencies.dev = [
   "django-stubs[compatible-mypy]",
@@ -93,7 +92,7 @@ DJANGO_SETTINGS_MODULE = "csp.tests.settings"
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]
 exclude = ['^build/lib']
-strict=true
+strict = true
 
 [tool.django-stubs]
 django_settings_module = "csp.tests.settings"
