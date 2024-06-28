@@ -100,7 +100,7 @@ The arguments and values are the same as ``@csp_update``:
 
 
     # Will allow images only from cdn-img2.com in the report-only policy.
-    @csp_replace({"img-src": "imgsrv2.com"}, REPORT_ONLY=True)
+    @csp_replace({"img-src": "cdn-img2.com"}, REPORT_ONLY=True)
     def myview(request):
         return render(...)
 
