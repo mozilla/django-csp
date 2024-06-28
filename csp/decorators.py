@@ -1,10 +1,14 @@
-from functools import wraps
-from typing import Callable, Optional, Any, Dict, List
-from django.http import HttpRequest, HttpResponse
+from __future__ import annotations
 
-# A generic Django view function
-_VIEW_T = Callable[[HttpRequest], HttpResponse]
-_VIEW_DECORATOR_T = Callable[[_VIEW_T], _VIEW_T]
+from functools import wraps
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponseBase
+
+    # A generic Django view function
+    _VIEW_T = Callable[[HttpRequest], HttpResponseBase]
+    _VIEW_DECORATOR_T = Callable[[_VIEW_T], _VIEW_T]
 
 
 def csp_exempt(REPORT_ONLY: Optional[bool] = None) -> _VIEW_DECORATOR_T:
@@ -18,7 +22,7 @@ def csp_exempt(REPORT_ONLY: Optional[bool] = None) -> _VIEW_DECORATOR_T:
 
     def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_exempt_ro", True)
@@ -44,7 +48,7 @@ def csp_update(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = Fals
 
     def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_update_ro", config)
@@ -63,7 +67,7 @@ def csp_replace(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = Fal
 
     def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_replace_ro", config)
@@ -87,7 +91,7 @@ def csp(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kw
 
     def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a: Any, **kw: Any) -> HttpResponse:
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
                 setattr(resp, "_csp_config_ro", processed_config)

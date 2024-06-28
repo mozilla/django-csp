@@ -12,14 +12,14 @@ from csp.middleware import CSPMiddleware
 from csp.tests.utils import response
 
 if TYPE_CHECKING:
-    from django.http import HttpRequest
+    from django.http import HttpRequest, HttpResponseBase
 
 mw = CSPMiddleware(response())
 
 
 def test_csp_exempt() -> None:
     @csp_exempt()
-    def view(request: HttpRequest) -> HttpResponse:
+    def view(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view(RequestFactory().get("/"))
@@ -29,7 +29,7 @@ def test_csp_exempt() -> None:
 
 def test_csp_exempt_ro() -> None:
     @csp_exempt(REPORT_ONLY=True)
-    def view(request: HttpRequest) -> HttpResponse:
+    def view(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view(RequestFactory().get("/"))
@@ -41,7 +41,7 @@ def test_csp_exempt_ro() -> None:
 def test_csp_update() -> None:
     request = RequestFactory().get("/")
 
-    def view_without_decorator(request: HttpRequest) -> HttpResponse:
+    def view_without_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_without_decorator(request)
@@ -51,7 +51,7 @@ def test_csp_update() -> None:
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
     @csp_update({"img-src": ["bar.com", NONCE]})
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -74,7 +74,7 @@ def test_csp_update() -> None:
 def test_csp_update_ro() -> None:
     request = RequestFactory().get("/")
 
-    def view_without_decorator(request: HttpRequest) -> HttpResponse:
+    def view_without_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_without_decorator(request)
@@ -84,7 +84,7 @@ def test_csp_update_ro() -> None:
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
     @csp_update({"img-src": ["bar.com", NONCE]}, REPORT_ONLY=True)
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -107,7 +107,7 @@ def test_csp_update_ro() -> None:
 def test_csp_replace() -> None:
     request = RequestFactory().get("/")
 
-    def view_without_decorator(request: HttpRequest) -> HttpResponse:
+    def view_without_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_without_decorator(request)
@@ -117,7 +117,7 @@ def test_csp_replace() -> None:
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
     @csp_replace({"img-src": ["bar.com"]})
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -134,7 +134,7 @@ def test_csp_replace() -> None:
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
     @csp_replace({"img-src": None})
-    def view_removing_directive(request: HttpRequest) -> HttpResponse:
+    def view_removing_directive(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_removing_directive(request)
@@ -148,7 +148,7 @@ def test_csp_replace() -> None:
 def test_csp_replace_ro() -> None:
     request = RequestFactory().get("/")
 
-    def view_without_decorator(request: HttpRequest) -> HttpResponse:
+    def view_without_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_without_decorator(request)
@@ -158,7 +158,7 @@ def test_csp_replace_ro() -> None:
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
     @csp_replace({"img-src": ["bar.com"]}, REPORT_ONLY=True)
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -175,7 +175,7 @@ def test_csp_replace_ro() -> None:
     assert policy_list == ["default-src 'self'", "img-src foo.com"]
 
     @csp_replace({"img-src": None}, REPORT_ONLY=True)
-    def view_removing_directive(request: HttpRequest) -> HttpResponse:
+    def view_removing_directive(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_removing_directive(request)
@@ -188,7 +188,7 @@ def test_csp_replace_ro() -> None:
 def test_csp() -> None:
     request = RequestFactory().get("/")
 
-    def view_without_decorator(request: HttpRequest) -> HttpResponse:
+    def view_without_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_without_decorator(request)
@@ -198,7 +198,7 @@ def test_csp() -> None:
     assert policy_list == ["default-src 'self'"]
 
     @csp({"img-src": ["foo.com"], "font-src": ["bar.com"]})
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -218,7 +218,7 @@ def test_csp() -> None:
 def test_csp_ro() -> None:
     request = RequestFactory().get("/")
 
-    def view_without_decorator(request: HttpRequest) -> HttpResponse:
+    def view_without_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_without_decorator(request)
@@ -229,7 +229,7 @@ def test_csp_ro() -> None:
 
     @csp({"img-src": ["foo.com"], "font-src": ["bar.com"]}, REPORT_ONLY=True)
     @csp({})  # CSP with no directives effectively removes the header.
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -251,7 +251,7 @@ def test_csp_string_values() -> None:
     request = RequestFactory().get("/")
 
     @csp({"img-src": "foo.com", "font-src": "bar.com"})
-    def view_with_decorator(request: HttpRequest) -> HttpResponse:
+    def view_with_decorator(request: HttpRequest) -> HttpResponseBase:
         return HttpResponse()
 
     response = view_with_decorator(request)
@@ -268,7 +268,7 @@ def test_csp_exempt_error() -> None:
     with pytest.raises(RuntimeError) as excinfo:
         # Ignore type error since we're checking for the exception raised for 3.x syntax
         @csp_exempt  # type: ignore
-        def view(request: HttpRequest) -> HttpResponse:
+        def view(request: HttpRequest) -> HttpResponseBase:
             return HttpResponse()
 
     assert "Incompatible `csp_exempt` decorator usage" in str(excinfo.value)
@@ -278,7 +278,7 @@ def test_csp_update_error() -> None:
     with pytest.raises(RuntimeError) as excinfo:
 
         @csp_update(IMG_SRC="bar.com")
-        def view(request: HttpRequest) -> HttpResponse:
+        def view(request: HttpRequest) -> HttpResponseBase:
             return HttpResponse()
 
     assert "Incompatible `csp_update` decorator arguments" in str(excinfo.value)
@@ -288,7 +288,7 @@ def test_csp_replace_error() -> None:
     with pytest.raises(RuntimeError) as excinfo:
 
         @csp_replace(IMG_SRC="bar.com")
-        def view(request: HttpRequest) -> HttpResponse:
+        def view(request: HttpRequest) -> HttpResponseBase:
             return HttpResponse()
 
     assert "Incompatible `csp_replace` decorator arguments" in str(excinfo.value)
@@ -298,7 +298,7 @@ def test_csp_error() -> None:
     with pytest.raises(RuntimeError) as excinfo:
 
         @csp(IMG_SRC=["bar.com"])
-        def view(request: HttpRequest) -> HttpResponse:
+        def view(request: HttpRequest) -> HttpResponseBase:
             return HttpResponse()
 
     assert "Incompatible `csp` decorator arguments" in str(excinfo.value)

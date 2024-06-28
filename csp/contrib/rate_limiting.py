@@ -8,14 +8,14 @@ from csp.middleware import CSPMiddleware
 from csp.utils import build_policy
 
 if TYPE_CHECKING:
-    from django.http import HttpRequest, HttpResponse
+    from django.http import HttpRequest, HttpResponseBase
 
 
 class RateLimitedCSPMiddleware(CSPMiddleware):
     """A CSP middleware that rate-limits the number of violation reports sent
     to report-uri by excluding it from some requests."""
 
-    def build_policy(self, request: HttpRequest, response: HttpResponse) -> str:
+    def build_policy(self, request: HttpRequest, response: HttpResponseBase) -> str:
         config = getattr(response, "_csp_config", None)
         update = getattr(response, "_csp_update", None)
         replace = getattr(response, "_csp_replace", {})
@@ -33,7 +33,7 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
 
         return build_policy(config=config, update=update, replace=replace, nonce=nonce)
 
-    def build_policy_ro(self, request: HttpRequest, response: HttpResponse) -> str:
+    def build_policy_ro(self, request: HttpRequest, response: HttpResponseBase) -> str:
         config = getattr(response, "_csp_config_ro", None)
         update = getattr(response, "_csp_update_ro", None)
         replace = getattr(response, "_csp_replace_ro", {})
