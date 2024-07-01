@@ -2,7 +2,7 @@ CHANGES
 =======
 
 Unreleased
-===========
+==========
 - Add type hints. ([#228](https://github.com/mozilla/django-csp/pull/228))
 
 4.0b1

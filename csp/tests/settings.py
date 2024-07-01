@@ -1,6 +1,5 @@
 from csp.constants import NONCE, SELF
 
-
 CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
         "default-src": [SELF, NONCE],

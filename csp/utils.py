@@ -2,7 +2,7 @@ import copy
 import re
 from collections import OrderedDict
 from itertools import chain
-from typing import Any, Dict, Optional, Union, Callable
+from typing import Any, Callable, Dict, Optional, Union
 
 from django.conf import settings
 from django.utils.encoding import force_str

@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 import pprint
-from typing import Dict, Tuple, Any, Optional, Sequence, TYPE_CHECKING, List
+from collections.abc import Sequence
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 from django.conf import settings
 from django.core.checks import Error

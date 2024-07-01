@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Dict, Literal, TYPE_CHECKING
+
+from typing import TYPE_CHECKING, Dict, Literal
 
 if TYPE_CHECKING:
     from django.http import HttpRequest

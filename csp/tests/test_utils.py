@@ -2,7 +2,7 @@ from django.test.utils import override_settings
 from django.utils.functional import lazy
 
 from csp.constants import NONCE, NONE, SELF
-from csp.utils import build_policy, default_config, DEFAULT_DIRECTIVES
+from csp.utils import DEFAULT_DIRECTIVES, build_policy, default_config
 
 
 def policy_eq(a: str, b: str) -> None:
