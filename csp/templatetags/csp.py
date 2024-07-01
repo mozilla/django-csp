@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django import template
 from django.template.base import token_kwargs
@@ -38,7 +38,7 @@ class NonceScriptNode(template.Node):
         for k, v in kwargs.items():
             self.script_attrs[k] = self._get_token_value(v)
 
-    def _get_token_value(self, t: FilterExpression) -> Optional[str]:
+    def _get_token_value(self, t: FilterExpression) -> str | None:
         if hasattr(t, "token") and t.token:
             return _unquote(t.token)
         return None

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Callable
 
 from django.http import HttpResponse
 from django.template import Context, Template, engines
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from django.http import HttpRequest
 
 
-def response(*args: Any, headers: Optional[Dict[str, str]] = None, **kwargs: Any) -> Callable[[HttpRequest], HttpResponse]:
+def response(*args: Any, headers: dict[str, str] | None = None, **kwargs: Any) -> Callable[[HttpRequest], HttpResponse]:
     def get_response(req: HttpRequest) -> HttpResponse:
         response = HttpResponse(*args, **kwargs)
         if headers:
@@ -36,7 +36,7 @@ class ScriptTestBase(ABC):
         bbb = tpl2.replace("\n", "").replace("  ", "")
         assert aaa == bbb, f"{aaa} != {bbb}"
 
-    def process_templates(self, tpl: str, expected: str) -> Tuple[str, str]:
+    def process_templates(self, tpl: str, expected: str) -> tuple[str, str]:
         request = rf.get("/")
         mw.process_request(request)
         nonce = getattr(request, "csp_nonce")

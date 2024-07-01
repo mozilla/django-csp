@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import copy
 import re
 from collections import OrderedDict
 from itertools import chain
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict
 
 from django.conf import settings
 from django.utils.encoding import force_str
@@ -53,7 +55,7 @@ DEFAULT_DIRECTIVES = {
 _DIRECTIVES = Dict[str, Any]
 
 
-def default_config(csp: Optional[_DIRECTIVES]) -> Optional[_DIRECTIVES]:
+def default_config(csp: _DIRECTIVES | None) -> _DIRECTIVES | None:
     if csp is None:
         return None
     # Make a copy of the passed in config to avoid mutating it, and also to drop any unknown keys.
@@ -64,10 +66,10 @@ def default_config(csp: Optional[_DIRECTIVES]) -> Optional[_DIRECTIVES]:
 
 
 def build_policy(
-    config: Optional[_DIRECTIVES] = None,
-    update: Optional[_DIRECTIVES] = None,
-    replace: Optional[_DIRECTIVES] = None,
-    nonce: Optional[str] = None,
+    config: _DIRECTIVES | None = None,
+    update: _DIRECTIVES | None = None,
+    replace: _DIRECTIVES | None = None,
+    nonce: str | None = None,
     report_only: bool = False,
 ) -> str:
     """Builds the policy as a string from the settings."""
@@ -151,7 +153,7 @@ def _bool_attr_mapper(attr_name: str, val: bool) -> str:
         return ""
 
 
-def _async_attr_mapper(attr_name: str, val: Union[str, bool]) -> str:
+def _async_attr_mapper(attr_name: str, val: str | bool) -> str:
     """The `async` attribute works slightly different than the other bool
     attributes. It can be set explicitly to `false` with no surrounding quotes
     according to the spec."""
@@ -164,7 +166,7 @@ def _async_attr_mapper(attr_name: str, val: Union[str, bool]) -> str:
 
 
 # Allow per-attribute customization of returned string template
-SCRIPT_ATTRS: Dict[str, Callable[[str, Any], str]] = OrderedDict()
+SCRIPT_ATTRS: dict[str, Callable[[str, Any], str]] = OrderedDict()
 SCRIPT_ATTRS["nonce"] = _default_attr_mapper
 SCRIPT_ATTRS["id"] = _default_attr_mapper
 SCRIPT_ATTRS["src"] = _default_attr_mapper
@@ -197,7 +199,7 @@ def _unwrap_script(text: str) -> str:
     return text
 
 
-def build_script_tag(content: Optional[str] = None, **kwargs: Any) -> str:
+def build_script_tag(content: str | None = None, **kwargs: Any) -> str:
     data = {}
     # Iterate all possible script attrs instead of kwargs to make
     # interpolation as easy as possible below

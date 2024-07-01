@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponseBase
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     _VIEW_DECORATOR_T = Callable[[_VIEW_T], _VIEW_T]
 
 
-def csp_exempt(REPORT_ONLY: Optional[bool] = None) -> _VIEW_DECORATOR_T:
+def csp_exempt(REPORT_ONLY: bool | None = None) -> _VIEW_DECORATOR_T:
     if callable(REPORT_ONLY):
         raise RuntimeError(
             "Incompatible `csp_exempt` decorator usage. This decorator now requires arguments, "
@@ -42,7 +42,7 @@ DECORATOR_DEPRECATION_ERROR = (
 )
 
 
-def csp_update(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
+def csp_update(config: dict[str, Any] | None = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp_update"))
 
@@ -61,7 +61,7 @@ def csp_update(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = Fals
     return decorator
 
 
-def csp_replace(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
+def csp_replace(config: dict[str, Any] | None = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp_replace"))
 
@@ -80,12 +80,12 @@ def csp_replace(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = Fal
     return decorator
 
 
-def csp(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
+def csp(config: dict[str, Any] | None = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp"))
 
     if config is None:
-        processed_config: Dict[str, List[Any]] = {}
+        processed_config: dict[str, list[Any]] = {}
     else:
         processed_config = {k: [v] if isinstance(v, str) else v for k, v in config.items()}
 
