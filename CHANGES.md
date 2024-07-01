@@ -4,6 +4,7 @@ CHANGES
 Unreleased
 ==========
 - Add type hints. ([#228](https://github.com/mozilla/django-csp/pull/228))
+- Expand ruff configuration and move into pyproject.toml [[#234](https://github.com/mozilla/django-csp/pull/234)]
 
 4.0b1
 =====
