@@ -77,7 +77,7 @@ a more slightly strict policy and is used to test the policy without breaking th
     signifies that you do not want any sources for this directive. The ``None`` value is a
     Python keyword that represents the absence of a value and when used as the value of a directive,
     it will remove the directive from the policy.
-    
+
     This is useful when using the ``@csp_replace`` decorator to effectively clear a directive from
     the base configuration as defined in the settings. For example, if the Django settings the
     ``frame-ancestors`` directive is set to a list of sources and you want to remove the
@@ -124,9 +124,9 @@ policy.
 
        The CSP keyword values of ``'self'``, ``'unsafe-inline'``, ``'strict-dynamic'``, etc. must be
        quoted!  e.g.: ``"default-src": ["'self'"]``.  Without quotes they will not work as intended.
-       
+
        New in version 4.0 are CSP keyword constants. Use these to minimize quoting mistakes and typos.
-       
+
        The following CSP keywords are available:
 
            * ``NONE`` = ``"'none'"``
@@ -140,9 +140,9 @@ policy.
            * ``WASM_UNSAFE_EVAL`` = ``"'wasm-unsafe-eval'"``
 
        Example usage:
-       
+
        .. code-block:: python
-       
+
             from csp.constants import SELF, STRICT_DYNAMIC
 
             CONTENT_SECURITY_POLICY = {

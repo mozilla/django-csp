@@ -48,8 +48,8 @@ optional-dependencies.dev = [
   "pytest-cov",
   "pytest-django",
   "pytest-ruff",
-  "Sphinx",
-  "sphinx_rtd_theme",
+  "sphinx",
+  "sphinx-rtd-theme",
   "tox",
   "tox-gh-actions",
   "types-setuptools",
@@ -85,13 +85,59 @@ include-package-data = true
 [tool.setuptools.packages]
 find = { namespaces = false }
 
+[tool.ruff]
+target-version = "py38"
+line-length = 150
+indent-width = 4
+extend-exclude = [
+  "build",
+  "dist",
+  "docs",
+]
+
+# Set what ruff should check for.
+# See https://docs.astral.sh//ruff/rules/ for a list of rules.
+lint.select = [
+  "A",   # flake8-builtin errors
+  "C4",  # flake8-comprehensions errors
+  "DJ",  # flake8-django errors
+  "E",   # pycodestyle errors
+  "F",   # pyflakes errors
+  "I",   # import sorting
+  "Q",   # flake8-quotes errors
+  "T20", # flake8-print errors
+  "UP",  # py-upgrade
+  "W",   # pycodestyle warnings
+  # "B", # bugbear errors - incompatible with our use of `gettattr` and `setattr`.
+]
+# Allow unused variables when underscore-prefixed.
+lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+lint.isort.known-first-party = [
+  "csp",
+]
+lint.isort.section-order = [
+  "future",
+  "standard-library",
+  "django",
+  "third-party",
+  "first-party",
+  "local-folder",
+]
+lint.isort.sections.django = [
+  "django",
+]
+
 [tool.pytest.ini_options]
 addopts = "-vs --tb=short --ruff --ruff-format"
 DJANGO_SETTINGS_MODULE = "csp.tests.settings"
 
 [tool.mypy]
-plugins = ["mypy_django_plugin.main"]
-exclude = ['^build/lib']
+plugins = [
+  "mypy_django_plugin.main",
+]
+exclude = [
+  '^build/lib',
+]
 strict = true
 
 [tool.django-stubs]

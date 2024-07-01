@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
-import pytest
 from django.http import HttpResponse
 from django.test import RequestFactory
 from django.test.utils import override_settings
+
+import pytest
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY, NONCE
 from csp.decorators import csp, csp_exempt, csp_replace, csp_update

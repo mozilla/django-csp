@@ -106,11 +106,11 @@ The new settings would be:
 .. note::
 
     If you were using the ``CSP_INCLUDE_NONCE_IN`` setting, this has been removed in the new settings
-    format. 
-    
+    format.
+
     **Previously:** You could use the ``CSP_INCLUDE_NONCE_IN`` setting to specify which directives in
     your Content Security Policy (CSP) should include a nonce.
-    
+
     **Now:** You can include a nonce in any directive by adding the ``NONCE`` constant from the
     ``csp.constants`` module to the list of sources for that directive.
 

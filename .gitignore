@@ -4,6 +4,7 @@
 *.sw[po]
 .cache
 .coverage
+.python-version
 .tox
 dist
 build

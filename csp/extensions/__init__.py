@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Callable, TYPE_CHECKING, Any
+
+from typing import TYPE_CHECKING, Any, Callable
 
 from jinja2 import nodes
 from jinja2.ext import Extension
