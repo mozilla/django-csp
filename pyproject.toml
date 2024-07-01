@@ -48,8 +48,8 @@ optional-dependencies.dev = [
   "pytest-cov",
   "pytest-django",
   "pytest-ruff",
-  "Sphinx",
-  "sphinx_rtd_theme",
+  "sphinx",
+  "sphinx-rtd-theme",
   "tox",
   "tox-gh-actions",
   "types-setuptools",
@@ -132,8 +132,12 @@ addopts = "-vs --tb=short --ruff --ruff-format"
 DJANGO_SETTINGS_MODULE = "csp.tests.settings"
 
 [tool.mypy]
-plugins = ["mypy_django_plugin.main"]
-exclude = ['^build/lib']
+plugins = [
+  "mypy_django_plugin.main",
+]
+exclude = [
+  '^build/lib',
+]
 strict = true
 
 [tool.django-stubs]
