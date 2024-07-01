@@ -107,8 +107,8 @@ lint.select = [
   "Q",   # flake8-quotes errors
   "T20", # flake8-print errors
   "W",   # pycodestyle warnings
-  # "B", # bugbear errors
-  # "UP", # py-upgrade
+  # "B", # bugbear errors - incompatible with our use of `gettattr` and `setattr`.
+  # "UP",  # py-upgrade - consider adding when we drop support for Python 3.8.
 ]
 # Allow unused variables when underscore-prefixed.
 lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
