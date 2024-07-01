@@ -73,7 +73,7 @@ optional-dependencies.typing = [
   "types-setuptools",
 ]
 urls."Bug Tracker" = "https://github.com/mozilla/django-csp/issues"
-urls.Changelog = "https://github.com/mozilla/django-csp/blob/main/CHANGES"
+urls.Changelog = "https://github.com/mozilla/django-csp/blob/main/CHANGES.md"
 urls.Documentation = "http://django-csp.readthedocs.org/"
 urls.Homepage = "http://github.com/mozilla/django-csp"
 urls."Source Code" = "https://github.com/mozilla/django-csp"
