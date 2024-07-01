@@ -20,7 +20,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
   "Environment :: Web Environment :: Mozilla",
-  "Framework :: Django :: 3.2",
   "Framework :: Django :: 4.2",
   "Framework :: Django :: 5.0",
   "Intended Audience :: Developers",
@@ -38,7 +37,22 @@ classifiers = [
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-  "django>=3.2",
+  "django>=4.2",
+]
+optional-dependencies.dev = [
+  "django-stubs[compatible-mypy]",
+  "jinja2>=2.9.6",
+  "mypy",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-ruff",
+  "Sphinx",
+  "sphinx_rtd_theme",
+  "tox",
+  "tox-gh-actions",
+  "types-setuptools",
 ]
 optional-dependencies.jinja2 = [
   "jinja2>=2.9.6",
@@ -50,8 +64,16 @@ optional-dependencies.tests = [
   "pytest-django",
   "pytest-ruff",
 ]
+optional-dependencies.typing = [
+  "django-stubs[compatible-mypy]",
+  "jinja2>=2.9.6",
+  "mypy",
+  "pytest",
+  "pytest-django",
+  "types-setuptools",
+]
 urls."Bug Tracker" = "https://github.com/mozilla/django-csp/issues"
-urls.Changelog = "https://github.com/mozilla/django-csp/blob/main/CHANGES"
+urls.Changelog = "https://github.com/mozilla/django-csp/blob/main/CHANGES.md"
 urls.Documentation = "http://django-csp.readthedocs.org/"
 urls.Homepage = "http://github.com/mozilla/django-csp"
 urls."Source Code" = "https://github.com/mozilla/django-csp"
@@ -66,3 +88,11 @@ find = { namespaces = false }
 [tool.pytest.ini_options]
 addopts = "-vs --tb=short --ruff --ruff-format"
 DJANGO_SETTINGS_MODULE = "csp.tests.settings"
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+exclude = ['^build/lib']
+strict = true
+
+[tool.django-stubs]
+django_settings_module = "csp.tests.settings"

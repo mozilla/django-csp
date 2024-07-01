@@ -1,7 +1,17 @@
+from __future__ import annotations
+
 from functools import wraps
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+
+if TYPE_CHECKING:
+    from django.http import HttpRequest, HttpResponseBase
+
+    # A generic Django view function
+    _VIEW_T = Callable[[HttpRequest], HttpResponseBase]
+    _VIEW_DECORATOR_T = Callable[[_VIEW_T], _VIEW_T]
 
 
-def csp_exempt(REPORT_ONLY=None):
+def csp_exempt(REPORT_ONLY: Optional[bool] = None) -> _VIEW_DECORATOR_T:
     if callable(REPORT_ONLY):
         raise RuntimeError(
             "Incompatible `csp_exempt` decorator usage. This decorator now requires arguments, "
@@ -10,14 +20,14 @@ def csp_exempt(REPORT_ONLY=None):
             "information."
         )
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_exempt_ro = True
+                setattr(resp, "_csp_exempt_ro", True)
             else:
-                resp._csp_exempt = True
+                setattr(resp, "_csp_exempt", True)
             return resp
 
         return _wrapped
@@ -32,18 +42,18 @@ DECORATOR_DEPRECATION_ERROR = (
 )
 
 
-def csp_update(config=None, REPORT_ONLY=False, **kwargs):
+def csp_update(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp_update"))
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_update_ro = config
+                setattr(resp, "_csp_update_ro", config)
             else:
-                resp._csp_update = config
+                setattr(resp, "_csp_update", config)
             return resp
 
         return _wrapped
@@ -51,18 +61,18 @@ def csp_update(config=None, REPORT_ONLY=False, **kwargs):
     return decorator
 
 
-def csp_replace(config=None, REPORT_ONLY=False, **kwargs):
+def csp_replace(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp_replace"))
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_replace_ro = config
+                setattr(resp, "_csp_replace_ro", config)
             else:
-                resp._csp_replace = config
+                setattr(resp, "_csp_replace", config)
             return resp
 
         return _wrapped
@@ -70,20 +80,23 @@ def csp_replace(config=None, REPORT_ONLY=False, **kwargs):
     return decorator
 
 
-def csp(config=None, REPORT_ONLY=False, **kwargs):
+def csp(config: Optional[Dict[str, Any]] = None, REPORT_ONLY: bool = False, **kwargs: Any) -> _VIEW_DECORATOR_T:
     if config is None and kwargs:
         raise RuntimeError(DECORATOR_DEPRECATION_ERROR.format(fname="csp"))
 
-    config = {k: [v] if isinstance(v, str) else v for k, v in config.items()}
+    if config is None:
+        processed_config: Dict[str, List[Any]] = {}
+    else:
+        processed_config = {k: [v] if isinstance(v, str) else v for k, v in config.items()}
 
-    def decorator(f):
+    def decorator(f: _VIEW_T) -> _VIEW_T:
         @wraps(f)
-        def _wrapped(*a, **kw):
+        def _wrapped(*a: Any, **kw: Any) -> HttpResponseBase:
             resp = f(*a, **kw)
             if REPORT_ONLY:
-                resp._csp_config_ro = config
+                setattr(resp, "_csp_config_ro", processed_config)
             else:
-                resp._csp_config = config
+                setattr(resp, "_csp_config", processed_config)
             return resp
 
         return _wrapped

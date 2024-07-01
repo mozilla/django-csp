@@ -1,10 +1,12 @@
-=======
 CHANGES
 =======
 
-4.x - Unreleased
-================
+Unreleased
+===========
+- Add type hints. ([#228](https://github.com/mozilla/django-csp/pull/228))
 
+4.0b1
+=====
 BACKWARDS INCOMPATIBLE changes:
 - Move to dict-based configuration which allows for setting policies for both enforced and
   report-only. See the migration guide in the docs for migrating your settings.

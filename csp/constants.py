@@ -1,3 +1,5 @@
+from typing import Any, Type
+
 HEADER = "Content-Security-Policy"
 HEADER_REPORT_ONLY = "Content-Security-Policy-Report-Only"
 
@@ -15,12 +17,12 @@ WASM_UNSAFE_EVAL = "'wasm-unsafe-eval'"
 class Nonce:
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls: Type["Nonce"], *args: Any, **kwargs: Any) -> "Nonce":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "csp.constants.NONCE"
 
 
