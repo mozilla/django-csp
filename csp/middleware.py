@@ -57,7 +57,7 @@ class CSPMiddleware(MiddlewareMixin):
             policy = getattr(settings, "CONTENT_SECURITY_POLICY", None) or {}
             prefixes = policy.get("EXCLUDE_URL_PREFIXES", None) or ()
             is_not_excluded = not request.path_info.startswith(tuple(prefixes))
-            if all((no_header, is_not_exempt, is_not_excluded)):
+            if no_header and is_not_exempt and is_not_excluded:
                 response[HEADER] = csp
 
         csp_ro = self.build_policy_ro(request, response)
@@ -68,7 +68,7 @@ class CSPMiddleware(MiddlewareMixin):
             policy = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", None) or {}
             prefixes = policy.get("EXCLUDE_URL_PREFIXES", None) or ()
             is_not_excluded = not request.path_info.startswith(tuple(prefixes))
-            if all((no_header, is_not_exempt, is_not_excluded)):
+            if no_header and is_not_exempt and is_not_excluded:
                 response[HEADER_REPORT_ONLY] = csp_ro
 
         return response
