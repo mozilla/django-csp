@@ -28,9 +28,14 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
             return ""
 
         report_percentage = policy.get("REPORT_PERCENTAGE", 100)
-        include_report_uri = random.randint(0, 100) < report_percentage
-        if not include_report_uri:
-            replace["report-uri"] = None
+        remove_report = random.randint(0, 99) >= report_percentage
+        if remove_report:
+            replace.update(
+                {
+                    "report-uri": None,
+                    "report-to": None,
+                }
+            )
 
         return build_policy(config=config, update=update, replace=replace, nonce=nonce)
 
@@ -46,8 +51,13 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
             return ""
 
         report_percentage = policy.get("REPORT_PERCENTAGE", 100)
-        include_report_uri = random.randint(0, 100) < report_percentage
-        if not include_report_uri:
-            replace["report-uri"] = None
+        remove_report = random.randint(0, 99) >= report_percentage
+        if remove_report:
+            replace.update(
+                {
+                    "report-uri": None,
+                    "report-to": None,
+                }
+            )
 
         return build_policy(config=config, update=update, replace=replace, nonce=nonce, report_only=True)
