@@ -19,8 +19,24 @@ def test_report_percentage() -> None:
         mw.process_response(request, response)
         if "report-uri" in response[HEADER]:
             times_seen += 1
+        if "report-to" in response[HEADER]:
+            times_seen += 1
     # Roughly 10%
     assert 400 <= times_seen <= 600
+
+
+@override_settings(CONTENT_SECURITY_POLICY={"REPORT_PERCENTAGE": 100, "DIRECTIVES": {"report-uri": "x"}})
+def test_report_percentage_100() -> None:
+    times_seen = 0
+    for _ in range(1000):
+        request = rf.get("/")
+        response = HttpResponse()
+        mw.process_response(request, response)
+        if "report-uri" in response[HEADER]:
+            times_seen += 1
+        if "report-to" in response[HEADER]:
+            times_seen += 1
+    assert times_seen == 1000
 
 
 @override_settings(CONTENT_SECURITY_POLICY_REPORT_ONLY={"REPORT_PERCENTAGE": 10, "DIRECTIVES": {"report-uri": "x"}})
