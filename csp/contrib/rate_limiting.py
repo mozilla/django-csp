@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING
 
 from django.conf import settings
 
-from csp.middleware import CSPMiddleware
-from csp.utils import build_policy
+from csp.middleware import CSPMiddleware, PolicyParts
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponseBase
@@ -16,48 +15,27 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
     """A CSP middleware that rate-limits the number of violation reports sent
     to report-uri by excluding it from some requests."""
 
-    def build_policy(self, request: HttpRequest, response: HttpResponseBase) -> str:
-        config = getattr(response, "_csp_config", None)
-        update = getattr(response, "_csp_update", None)
-        replace = getattr(response, "_csp_replace", {})
-        nonce = getattr(request, "_csp_nonce", None)
+    def get_policy_parts(self, request: HttpRequest, response: HttpResponseBase, report_only: bool = False) -> PolicyParts:
+        policy_parts = super().get_policy_parts(request, response, report_only)
 
-        policy = getattr(settings, "CONTENT_SECURITY_POLICY", None)
-
+        csp_setting_name = "CONTENT_SECURITY_POLICY_REPORT_ONLY" if report_only else "CONTENT_SECURITY_POLICY"
+        policy = getattr(settings, csp_setting_name, None)
         if policy is None:
-            return ""
+            return policy_parts
 
-        report_percentage = policy.get("REPORT_PERCENTAGE", 100)
-        remove_report = random.randint(0, 99) >= report_percentage
+        remove_report = random.randint(0, 99) >= policy.get("REPORT_PERCENTAGE", 100)
         if remove_report:
-            replace.update(
-                {
+            if policy_parts.replace is None:
+                policy_parts.replace = {
                     "report-uri": None,
                     "report-to": None,
                 }
-            )
+            else:
+                policy_parts.replace.update(
+                    {
+                        "report-uri": None,
+                        "report-to": None,
+                    }
+                )
 
-        return build_policy(config=config, update=update, replace=replace, nonce=nonce)
-
-    def build_policy_ro(self, request: HttpRequest, response: HttpResponseBase) -> str:
-        config = getattr(response, "_csp_config_ro", None)
-        update = getattr(response, "_csp_update_ro", None)
-        replace = getattr(response, "_csp_replace_ro", {})
-        nonce = getattr(request, "_csp_nonce", None)
-
-        policy = getattr(settings, "CONTENT_SECURITY_POLICY_REPORT_ONLY", None)
-
-        if policy is None:
-            return ""
-
-        report_percentage = policy.get("REPORT_PERCENTAGE", 100)
-        remove_report = random.randint(0, 99) >= report_percentage
-        if remove_report:
-            replace.update(
-                {
-                    "report-uri": None,
-                    "report-to": None,
-                }
-            )
-
-        return build_policy(config=config, update=update, replace=replace, nonce=nonce, report_only=True)
+        return policy_parts
