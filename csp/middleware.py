@@ -3,6 +3,8 @@ from __future__ import annotations
 import base64
 import http.client as http_client
 import os
+import warnings
+from dataclasses import asdict, dataclass
 from functools import partial
 from typing import TYPE_CHECKING
 
@@ -11,10 +13,19 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY
-from csp.utils import build_policy
+from csp.utils import DIRECTIVES_T, build_policy
 
 if TYPE_CHECKING:
     from django.http import HttpRequest, HttpResponseBase
+
+
+@dataclass
+class PolicyParts:
+    # A dataclass is used rather than a namedtuple so that the attributes are mutable
+    config: DIRECTIVES_T | None = None
+    update: DIRECTIVES_T | None = None
+    replace: DIRECTIVES_T | None = None
+    nonce: str | None = None
 
 
 class CSPMiddleware(MiddlewareMixin):
@@ -25,6 +36,7 @@ class CSPMiddleware(MiddlewareMixin):
 
     See http://www.w3.org/TR/CSP/
 
+    Can be customised by subclassing and extending the get_policy_parts method.
     """
 
     def _make_nonce(self, request: HttpRequest) -> str:
@@ -49,7 +61,8 @@ class CSPMiddleware(MiddlewareMixin):
         if response.status_code in exempted_debug_codes and settings.DEBUG:
             return response
 
-        csp = self.build_policy(request, response)
+        policy_parts = self.get_policy_parts(request=request, response=response)
+        csp = build_policy(**asdict(policy_parts))
         if csp:
             # Only set header if not already set and not an excluded prefix and not exempted.
             is_not_exempt = getattr(response, "_csp_exempt", False) is False
@@ -60,7 +73,8 @@ class CSPMiddleware(MiddlewareMixin):
             if no_header and is_not_exempt and is_not_excluded:
                 response[HEADER] = csp
 
-        csp_ro = self.build_policy_ro(request, response)
+        policy_parts_ro = self.get_policy_parts(request=request, response=response, report_only=True)
+        csp_ro = build_policy(**asdict(policy_parts_ro), report_only=True)
         if csp_ro:
             # Only set header if not already set and not an excluded prefix and not exempted.
             is_not_exempt = getattr(response, "_csp_exempt_ro", False) is False
@@ -74,15 +88,25 @@ class CSPMiddleware(MiddlewareMixin):
         return response
 
     def build_policy(self, request: HttpRequest, response: HttpResponseBase) -> str:
-        config = getattr(response, "_csp_config", None)
-        update = getattr(response, "_csp_update", None)
-        replace = getattr(response, "_csp_replace", None)
-        nonce = getattr(request, "_csp_nonce", None)
-        return build_policy(config=config, update=update, replace=replace, nonce=nonce)
+        warnings.warn("deprecated in favor of get_policy_parts", DeprecationWarning)
+        policy_parts = self.get_policy_parts(request=request, response=response, report_only=False)
+        return build_policy(**asdict(policy_parts))
 
     def build_policy_ro(self, request: HttpRequest, response: HttpResponseBase) -> str:
-        config = getattr(response, "_csp_config_ro", None)
-        update = getattr(response, "_csp_update_ro", None)
-        replace = getattr(response, "_csp_replace_ro", None)
+        warnings.warn("deprecated in favor of get_policy_parts", DeprecationWarning)
+        policy_parts_ro = self.get_policy_parts(request=request, response=response, report_only=True)
+        return build_policy(**asdict(policy_parts_ro), report_only=True)
+
+    def get_policy_parts(self, request: HttpRequest, response: HttpResponseBase, report_only: bool = False) -> PolicyParts:
+        if report_only:
+            config = getattr(response, "_csp_config_ro", None)
+            update = getattr(response, "_csp_update_ro", None)
+            replace = getattr(response, "_csp_replace_ro", None)
+        else:
+            config = getattr(response, "_csp_config", None)
+            update = getattr(response, "_csp_update", None)
+            replace = getattr(response, "_csp_replace", None)
+
         nonce = getattr(request, "_csp_nonce", None)
-        return build_policy(config=config, update=update, replace=replace, nonce=nonce, report_only=True)
+
+        return PolicyParts(config, update, replace, nonce)

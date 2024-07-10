@@ -52,10 +52,10 @@ DEFAULT_DIRECTIVES = {
     "block-all-mixed-content": None,  # Deprecated.
 }
 
-_DIRECTIVES = Dict[str, Any]
+DIRECTIVES_T = Dict[str, Any]
 
 
-def default_config(csp: _DIRECTIVES | None) -> _DIRECTIVES | None:
+def default_config(csp: DIRECTIVES_T | None) -> DIRECTIVES_T | None:
     if csp is None:
         return None
     # Make a copy of the passed in config to avoid mutating it, and also to drop any unknown keys.
@@ -66,9 +66,9 @@ def default_config(csp: _DIRECTIVES | None) -> _DIRECTIVES | None:
 
 
 def build_policy(
-    config: _DIRECTIVES | None = None,
-    update: _DIRECTIVES | None = None,
-    replace: _DIRECTIVES | None = None,
+    config: DIRECTIVES_T | None = None,
+    update: DIRECTIVES_T | None = None,
+    replace: DIRECTIVES_T | None = None,
     nonce: str | None = None,
     report_only: bool = False,
 ) -> str:

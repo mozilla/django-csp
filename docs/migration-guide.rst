@@ -191,6 +191,71 @@ decorator now requires parentheses when used with and without arguments. For exa
 Look for uses of the following decorators in your code: ``@csp``, ``@csp_update``, ``@csp_replace``,
 and ``@csp_exempt``.
 
+Migrating Custom Middleware
+===========================
+The `CSPMiddleware` has changed in order to support easier extension via subclassing.
+
+The `CSPMiddleware.build_policy` and `CSPMiddleware.build_policy_ro` methods have been deprecated
+in 4.0 and replaced with a new method `CSPMiddleware.build_policy_parts`.
+
+.. note::
+    The deprecated methods will be removed in 4.1.
+
+Unlike the old methods, which returned the built CSP policy header string, `build_policy_parts`
+returns a dataclass that can be modified and updated before the policy is built. This allows
+custom middleware to modify the policy whilst inheriting behaviour from the base classes.
+
+An existing custom middleware, such as this:
+
+.. code-block:: python
+
+    from django.http import HttpRequest, HttpResponseBase
+
+    from csp.middleware import CSPMiddleware, PolicyParts
+
+    class ACustomMiddleware(CSPMiddleware):
+
+        def build_policy(self, request: HttpRequest, response: HttpResponseBase) -> str:
+            config = getattr(response, "_csp_config", None)
+            update = getattr(response, "_csp_update", None)
+            replace = getattr(response, "_csp_replace", {})
+            nonce = getattr(request, "_csp_nonce", None)
+
+            # ... do custom CSP policy logic ...
+
+            return build_policy(config=config, update=update, replace=replace, nonce=nonce)
+
+        def build_policy_ro(self, request: HttpRequest, response: HttpResponseBase) -> str:
+            config = getattr(response, "_csp_config_ro", None)
+            update = getattr(response, "_csp_update_ro", None)
+            replace = getattr(response, "_csp_replace_ro", {})
+            nonce = getattr(request, "_csp_nonce", None)
+
+            # ... do custom CSP report only policy logic ...
+
+            return build_policy(config=config, update=update, replace=replace, nonce=nonce)
+
+can be replaced with this:
+
+.. code-block:: python
+
+    from django.http import HttpRequest, HttpResponseBase
+
+    from csp.middleware import CSPMiddleware, PolicyParts
+
+
+    class ACustomMiddleware(CSPMiddleware):
+
+        def get_policy_parts(self, request: HttpRequest, response: HttpResponseBase, report_only: bool = False) -> PolicyParts:
+            policy_parts = super().get_policy_parts(request, response, report_only)
+
+            if report_only:
+                # ... do custom CSP report only policy logic ...
+            else:
+                # ... do custom CSP policy logic ...
+
+            return policy_parts
+
 Conclusion
 ==========
 
