@@ -58,7 +58,7 @@ settings. If there is no setting, the value passed to the decorator will be used
     default-src 'self'; img-src imgsrv.com
 
 The arguments to the decorator are the same as the :ref:`settings <configuration-chapter>`. The
-decorator excpects a single dictionary argument, where the keys are the directives and the values
+decorator expects a single dictionary argument, where the keys are the directives and the values
 are either strings, lists or tuples. An optional argument, ``REPORT_ONLY``, can be set to ``True``
 to update the report-only policy instead of the enforced policy.
 

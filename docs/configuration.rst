@@ -30,7 +30,7 @@ All configuration of django-csp is done in your Django settings file with the
 ``CONTENT_SECURITY_POLICY`` setting or the ``CONTENT_SECURITY_POLICY_REPORT_ONLY`` setting. Each of these
 settings expects a dictionary representing a policy.
 
-The ``CONTENT_SECURITY_POLICY`` setting is your enforcable policy.
+The ``CONTENT_SECURITY_POLICY`` setting is your enforceable policy.
 
 The ``CONTENT_SECURITY_POLICY_REPORT_ONLY`` setting is your report-only policy. This policy is
 used to test the policy without breaking the site. It is useful when setting this policy to be
