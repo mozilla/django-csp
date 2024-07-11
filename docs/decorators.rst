@@ -133,14 +133,14 @@ are in use, as shown below.
 
     @csp(
         {
-            "default_src": [SELF],
+            "default-src": [SELF],
             "img-src": ["imgsrv.com"],
             "script-src": ["scriptsrv.com", "googleanalytics.com", UNSAFE_INLINE],
         }
     )
     @csp(
         {
-            "default_src": [SELF],
+            "default-src": [SELF],
             "img-src": ["imgsrv.com"],
             "script-src": ["scriptsrv.com", "googleanalytics.com"],
             "frame-src": [SELF],
