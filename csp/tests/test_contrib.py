@@ -25,6 +25,21 @@ def test_report_percentage() -> None:
     assert 400 <= times_seen <= 600
 
 
+@override_settings(CONTENT_SECURITY_POLICY={"REPORT_PERCENTAGE": 9.9, "DIRECTIVES": {"report-uri": "x"}})
+def test_report_percentage_float() -> None:
+    times_seen = 0
+    for _ in range(5000):
+        request = rf.get("/")
+        response = HttpResponse()
+        mw.process_response(request, response)
+        if "report-uri" in response[HEADER]:
+            times_seen += 1
+        if "report-to" in response[HEADER]:
+            times_seen += 1
+    # Roughly 10%
+    assert 400 <= times_seen <= 600
+
+
 @override_settings(CONTENT_SECURITY_POLICY={"REPORT_PERCENTAGE": 100, "DIRECTIVES": {"report-uri": "x"}})
 def test_report_percentage_100() -> None:
     times_seen = 0

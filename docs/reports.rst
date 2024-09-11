@@ -20,7 +20,7 @@ and set the ``REPORT_PERCENTAGE`` option:
 
 ``REPORT_PERCENTAGE``
     Percentage of requests that should see the ``report-uri`` directive.  Use this to throttle the
-    number of CSP violation reports made to your ``report-uri``. An **integer** between 0 and 100 (0
-    = no reports at all).  Ignored if ``report-uri`` isn't set.
+    number of CSP violation reports made to your ``report-uri``. A **float** between 0.0 and 100.0
+    (0.0 = no reports at all, 100.0 = always report).  Ignored if ``report-uri`` isn't set.
 
 .. _report: http://www.w3.org/TR/CSP/#sample-violation-report

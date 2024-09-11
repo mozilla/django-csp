@@ -23,7 +23,8 @@ class RateLimitedCSPMiddleware(CSPMiddleware):
         if policy is None:
             return policy_parts
 
-        remove_report = random.randint(0, 99) >= policy.get("REPORT_PERCENTAGE", 100)
+        # `random.random` returns a value in the range [0.0, 1.0) so all values will be < 100.0.
+        remove_report = random.random() * 100 >= policy.get("REPORT_PERCENTAGE", 100)
         if remove_report:
             if policy_parts.replace is None:
                 policy_parts.replace = {

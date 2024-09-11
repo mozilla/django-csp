@@ -61,7 +61,7 @@ def migrate_settings() -> tuple[dict[str, Any], bool]:
 
     _REPORT_PERCENTAGE = getattr(settings, "CSP_REPORT_PERCENTAGE", None)
     if _REPORT_PERCENTAGE is not None:
-        config["REPORT_PERCENTAGE"] = round(_REPORT_PERCENTAGE * 100)
+        config["REPORT_PERCENTAGE"] = _REPORT_PERCENTAGE * 100
 
     include_nonce_in = getattr(settings, "CSP_INCLUDE_NONCE_IN", [])
 
