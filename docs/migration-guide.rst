@@ -130,14 +130,14 @@ The new settings would be:
 
 .. note::
 
-    If you were using the ``CSP_REPORT_PERCENTAGE`` setting, this should be updated to be an integer
-    percentage and not a decimal value in the new settings format. For example, if you had
-    ``CSP_REPORT_PERCENTAGE = 0.1``, this should be updated to:
+    If you were using the ``CSP_REPORT_PERCENTAGE`` setting, this should be updated to be a float
+    percentage between 0.0 and 100.0. For example, if you had ``CSP_REPORT_PERCENTAGE = 0.1``, this
+    should be updated to ``10.0`` to represent 10% of CSP errors will be reported:
 
     .. code-block:: python
 
         CONTENT_SECURITY_POLICY = {
-            "REPORT_PERCENTAGE": 10,
+            "REPORT_PERCENTAGE": 10.0,
             "DIRECTIVES": {
                 "report-uri": "/csp-report/",
                 # ...

@@ -13,7 +13,7 @@ from csp.constants import NONCE
 def test_migrate_settings() -> None:
     config, report_only = migrate_settings()
     assert config == {
-        "REPORT_PERCENTAGE": 25,
+        "REPORT_PERCENTAGE": 25.0,
         "EXCLUDE_URL_PREFIXES": ["/admin/"],
         "DIRECTIVES": {"default-src": ["'self'", "example.com"]},
     }
