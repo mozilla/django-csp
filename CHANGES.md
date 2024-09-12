@@ -3,8 +3,17 @@ CHANGES
 
 Unreleased
 ==========
+
+4.0b2
+=====
 - Add type hints. ([#228](https://github.com/mozilla/django-csp/pull/228))
 - Expand ruff configuration and move into pyproject.toml [[#234](https://github.com/mozilla/django-csp/pull/234)]
+- Documentation fixes by jamesbeith and jcari-dev
+- Simplify middleware logic ([#226](https://github.com/mozilla/django-csp/pull/226))
+- Report percentage of 100% should always send CSP report ([#236](https://github.com/mozilla/django-csp/pull/236))
+- Changes to make `CSPMiddleware` easier to subclass ([#237](https://github.com/mozilla/django-csp/pull/237))
+- Change `REPORT_PERCENTAGE` to allow floats (e.g. for values < 1%) ([#242](https://github.com/mozilla/django-csp/pull/242))
+- Add Django 5.1 support ([#243](https://github.com/mozilla/django-csp/pull/243))
 
 4.0b1
 =====
