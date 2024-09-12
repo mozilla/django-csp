@@ -53,7 +53,7 @@ settings. If there is no setting, the value passed to the decorator will be used
 .. note::
 
    To quote the CSP spec: "There's no inheritance; ... the default list is not used for that
-   resource type" if it is set. E.g., the following will not allow images from 'self'::
+   resource type" if it is set. E.g., the following will not allow images from 'self':
 
     default-src 'self'; img-src imgsrv.com
 

@@ -213,6 +213,7 @@ An existing custom middleware, such as this:
 
     from csp.middleware import CSPMiddleware, PolicyParts
 
+
     class ACustomMiddleware(CSPMiddleware):
 
         def build_policy(self, request: HttpRequest, response: HttpResponseBase) -> str:
@@ -231,7 +232,7 @@ An existing custom middleware, such as this:
             replace = getattr(response, "_csp_replace_ro", {})
             nonce = getattr(request, "_csp_nonce", None)
 
-            # ... do custom CSP report only policy logic ...
+            # ... do custom CSP report-only policy logic ...
 
             return build_policy(config=config, update=update, replace=replace, nonce=nonce)
 
@@ -246,13 +247,18 @@ can be replaced with this:
 
     class ACustomMiddleware(CSPMiddleware):
 
-        def get_policy_parts(self, request: HttpRequest, response: HttpResponseBase, report_only: bool = False) -> PolicyParts:
+        def get_policy_parts(
+            self,
+            request: HttpRequest,
+            response: HttpResponseBase,
+            report_only: bool = False,
+        ) -> PolicyParts:
             policy_parts = super().get_policy_parts(request, response, report_only)
 
             if report_only:
-                # ... do custom CSP report only policy logic ...
+                ...  # do custom CSP report-only policy logic
             else:
-                # ... do custom CSP policy logic ...
+                ...  # do custom CSP policy logic
 
             return policy_parts
 
