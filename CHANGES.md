@@ -3,6 +3,7 @@ CHANGES
 
 Unreleased
 ==========
+- Drop support for EOL < Python 3.9 and add Python 3.13
 
 4.0b2
 =====
