@@ -64,8 +64,8 @@ To run the tests like Github Actions does, you'll need pyenv_:
 
 .. code-block:: bash
 
-    pyenv install 3.8 3.9 3.10 3.11 3.12 pypy3.8 pypy3.9 pypy3.10
-    pyenv local 3.8 3.9 3.10. 3.11 3.12 pypy3.8 pypy3.9 pypy3.10
+    pyenv install 3.9 3.10 3.11 3.12 pypy3.9 pypy3.10
+    pyenv local 3.9 3.10. 3.11 3.12 pypy3.9 pypy3.10
     pip install -e ".[dev]"  # installs tox
     tox                # run sequentially
     tox run-parallel   # run in parallel, may cause issues on coverage step
@@ -76,7 +76,7 @@ Type Checking
 =============
 
 New code should have type annotations and pass mypy_ in strict mode. Use the
-typing syntax available in the earliest supported Python version 3.8.
+typing syntax available in the earliest supported Python version 3.9.
 
 To check types:
 
