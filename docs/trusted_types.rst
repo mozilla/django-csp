@@ -129,7 +129,7 @@ Configure django-csp to remove the report-only policy from settings, if no longe
 
 
 .. _DOM-XSS: https://owasp.org/www-community/attacks/xss/
-.. _compatibility: https://developer.mozilla.org/es/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types#Browser_compatibility
+.. _compatibility: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types#browser_compatibility
 .. _DOMPurify: https://github.com/cure53/DOMPurify#what-about-dompurify-and-trusted-types
-.. _spec: https://w3c.github.io/webappsec-trusted-types/dist/spec/
+.. _spec: https://w3c.github.io/trusted-types/dist/spec/
 .. _article: https://web.dev/trusted-types/
