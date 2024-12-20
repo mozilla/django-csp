@@ -130,6 +130,7 @@ def build_policy(
                 # Strip the `NONCE` sentinel value if no nonce is provided.
                 value = [v for v in value if v != NONCE]
 
+        value = list(dict.fromkeys(value))  # Deduplicate value without completely disturbing order
         policy_parts[key] = " ".join(value)
 
     if report_uri:
