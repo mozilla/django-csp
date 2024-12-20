@@ -55,6 +55,11 @@ def test_default_src() -> None:
     policy = build_policy()
     policy_eq("default-src example.com example2.com", policy)
 
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": {"example.com", "example2.com"}}})
+def test_default_src_is_set() -> None:
+    policy = build_policy()
+    policy_eq("default-src example.com example2.com", policy)
+
 
 @override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"script-src": ["example.com"]}})
 def test_script_src() -> None:
@@ -209,6 +214,25 @@ def test_replace_string() -> None:
     Demonstrate that GitHub issue #40 doesn't affect replacements
     """
     policy = build_policy(replace={"img-src": "example2.com"})
+    policy_eq("default-src 'self'; img-src example2.com", policy)
+
+
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"img-src": ("example.com",)}})
+def test_update_set() -> None:
+    """
+    GitHub issue #40 - given project settings as a tuple, and
+    an update/replace with a string, concatenate correctly.
+    """
+    policy = build_policy(update={"img-src": {"example2.com"}})
+    policy_eq("default-src 'self'; img-src example.com example2.com", policy)
+
+
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"img-src": ("example.com",)}})
+def test_replace_set() -> None:
+    """
+    Demonstrate that GitHub issue #40 doesn't affect replacements
+    """
+    policy = build_policy(replace={"img-src": {"example2.com"}})
     policy_eq("default-src 'self'; img-src example2.com", policy)
 
 
