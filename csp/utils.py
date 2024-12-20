@@ -98,13 +98,13 @@ def build_policy(
             v = config[k]
         if v is not None:
             v = copy.copy(v)
-            if not isinstance(v, (list, tuple)):
+            if not isinstance(v, (list, tuple, set)):
                 v = (v,)
             csp[k] = v
 
     for k, v in update.items():
         if v is not None:
-            if not isinstance(v, (list, tuple)):
+            if not isinstance(v, (list, tuple, set)):
                 v = (v,)
             if csp.get(k) is None:
                 csp[k] = v
@@ -117,10 +117,12 @@ def build_policy(
 
     for key, value in csp.items():
         # Check for boolean directives.
-        if len(value) == 1 and isinstance(value[0], bool):
-            if value[0] is True:
-                policy_parts[key] = ""
-            continue
+        if len(value) == 1:
+            val = list(value)[0]
+            if isinstance(val, bool):
+                if value[0] is True:
+                    policy_parts[key] = ""
+                continue
         if NONCE in value:
             if nonce:
                 value = [f"'nonce-{nonce}'" if v == NONCE else v for v in value]

@@ -33,6 +33,18 @@ def test_both_headers() -> None:
     assert HEADER_REPORT_ONLY in response
 
 
+@override_settings(
+    CONTENT_SECURITY_POLICY={"DIRECTIVES": {"default-src": {"example.com"}}},
+    CONTENT_SECURITY_POLICY_REPORT_ONLY={"DIRECTIVES": {"default-src": {SELF}}},
+)
+def test_directives_configured_as_sets() -> None:
+    request = rf.get("/")
+    response = HttpResponse()
+    mw.process_response(request, response)
+    assert HEADER in response
+    assert HEADER_REPORT_ONLY in response
+
+
 def test_exempt() -> None:
     request = rf.get("/")
     response = HttpResponse()
