@@ -2,10 +2,14 @@ from __future__ import annotations
 
 import pprint
 from collections.abc import Sequence
+from importlib.metadata import version
 from typing import TYPE_CHECKING, Any
 
 from django.conf import settings
-from django.core.checks import Error
+from django.core import checks
+from django.core.checks import Error, register
+
+from packaging.version import Version
 
 from csp.constants import NONCE
 
@@ -77,6 +81,7 @@ def migrate_settings() -> tuple[dict[str, Any], bool]:
     return config, REPORT_ONLY
 
 
+@register(checks.Tags.security)
 def check_django_csp_lt_4_0(app_configs: Sequence[AppConfig] | None, **kwargs: Any) -> list[Error]:
     check_settings = OUTDATED_SETTINGS + ["CSP_REPORT_ONLY", "CSP_EXCLUDE_URL_PREFIXES", "CSP_REPORT_PERCENTAGE"]
     if any(hasattr(settings, setting) for setting in check_settings):
@@ -91,3 +96,34 @@ def check_django_csp_lt_4_0(app_configs: Sequence[AppConfig] | None, **kwargs: A
         return [Error(warning, id="csp.E001")]
 
     return []
+
+
+@register(checks.Tags.security)
+def check_exclude_url_prefixes_is_not_string(app_configs: Sequence[AppConfig] | None, **kwargs: Any) -> list[Error]:
+    """
+    Check that EXCLUDE_URL_PREFIXES in settings is not a string.
+
+    If it is a string it can lead to a security issue where the string is treated as a list of
+    characters, resulting in '/' matching all paths excluding the CSP header from all responses.
+
+    """
+    # Skip check for django-csp < 4.0.
+    if Version(version("django-csp")) < Version("4.0a1"):
+        return []
+
+    errors = []
+    keys = (
+        "CONTENT_SECURITY_POLICY",
+        "CONTENT_SECURITY_POLICY_REPORT_ONLY",
+    )
+    for key in keys:
+        config = getattr(settings, key, {})
+        if isinstance(config, dict) and isinstance(config.get("EXCLUDE_URL_PREFIXES"), str):
+            errors.append(
+                Error(
+                    f"EXCLUDE_URL_PREFIXES in {key} settings must be a list or tuple.",
+                    id="csp.E002",
+                )
+            )
+
+    return errors

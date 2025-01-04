@@ -1,6 +1,6 @@
 from django.test.utils import override_settings
 
-from csp.checks import check_django_csp_lt_4_0, migrate_settings
+from csp.checks import check_django_csp_lt_4_0, check_exclude_url_prefixes_is_not_string, migrate_settings
 from csp.constants import NONCE
 
 
@@ -50,3 +50,25 @@ def test_check_django_csp_lt_4_0() -> None:
 
 def test_check_django_csp_lt_4_0_no_config() -> None:
     assert check_django_csp_lt_4_0(None) == []
+
+
+@override_settings(
+    CONTENT_SECURITY_POLICY={"EXCLUDE_URL_PREFIXES": "/admin/"},
+)
+def test_check_exclude_url_prefixes_is_not_string() -> None:
+    errors = check_exclude_url_prefixes_is_not_string(None)
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.id == "csp.E002"
+    assert error.msg == "EXCLUDE_URL_PREFIXES in CONTENT_SECURITY_POLICY settings must be a list or tuple."
+
+
+@override_settings(
+    CONTENT_SECURITY_POLICY_REPORT_ONLY={"EXCLUDE_URL_PREFIXES": "/admin/"},
+)
+def test_check_exclude_url_prefixes_ro_is_not_string() -> None:
+    errors = check_exclude_url_prefixes_is_not_string(None)
+    assert len(errors) == 1
+    error = errors[0]
+    assert error.id == "csp.E002"
+    assert error.msg == "EXCLUDE_URL_PREFIXES in CONTENT_SECURITY_POLICY_REPORT_ONLY settings must be a list or tuple."
