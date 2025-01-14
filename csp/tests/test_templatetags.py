@@ -39,7 +39,7 @@ class TestDjangoTemplateTag(ScriptTagTestBase):
             {% script src="foo.com/bar.js" async=False %}
             {% endscript %}"""
 
-        expected = '<script nonce="{}" src="foo.com/bar.js" async=false>' "</script>"
+        expected = '<script nonce="{}" src="foo.com/bar.js" async=false></script>'
 
         self.assert_template_eq(*self.process_templates(tpl, expected))
 
