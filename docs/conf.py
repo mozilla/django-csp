@@ -44,7 +44,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Django-CSP"
-copyright = "2016-2024 Mozilla"
+copyright = "2016-%Y Mozilla"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
