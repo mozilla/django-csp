@@ -114,6 +114,11 @@ policy.
     number of CSP violation reports made to your ``report-uri``. A **float** between 0.0 and 100.0
     (0.0 = no reports at all, 100.0 = always report).  Ignored if ``report-uri`` isn't set.
 
+    .. note::
+       To allow rate limiting, ``csp.contrib.rate_limiting.RateLimitedCSPMiddleware`` must be used
+       instead of ``csp.middleware.CSPMiddleware``.
+       See :ref:`violation reporting <reports-chapter>` for more details.
+
 ``DIRECTIVES``
     A dictionary of policy directives. Each key in the dictionary is a directive and the value is a
     list of sources for that directive. The following is a list of all the directives that can be
