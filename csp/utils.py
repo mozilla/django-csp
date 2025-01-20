@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import copy
 import re
-from collections import OrderedDict
 from itertools import chain
-from typing import Any, Callable, Dict
+from typing import Any, Callable
 
 from django.conf import settings
 from django.utils.encoding import force_str
@@ -52,7 +51,7 @@ DEFAULT_DIRECTIVES = {
     "block-all-mixed-content": None,  # Deprecated.
 }
 
-DIRECTIVES_T = Dict[str, Any]
+DIRECTIVES_T = dict[str, Any]
 
 
 def default_config(csp: DIRECTIVES_T | None) -> DIRECTIVES_T | None:
@@ -172,15 +171,16 @@ def _async_attr_mapper(attr_name: str, val: str | bool) -> str:
 
 
 # Allow per-attribute customization of returned string template
-SCRIPT_ATTRS: dict[str, Callable[[str, Any], str]] = OrderedDict()
-SCRIPT_ATTRS["nonce"] = _default_attr_mapper
-SCRIPT_ATTRS["id"] = _default_attr_mapper
-SCRIPT_ATTRS["src"] = _default_attr_mapper
-SCRIPT_ATTRS["type"] = _default_attr_mapper
-SCRIPT_ATTRS["async"] = _async_attr_mapper
-SCRIPT_ATTRS["defer"] = _bool_attr_mapper
-SCRIPT_ATTRS["integrity"] = _default_attr_mapper
-SCRIPT_ATTRS["nomodule"] = _bool_attr_mapper
+SCRIPT_ATTRS: dict[str, Callable[[str, Any], str]] = {
+    "nonce": _default_attr_mapper,
+    "id": _default_attr_mapper,
+    "src": _default_attr_mapper,
+    "type": _default_attr_mapper,
+    "async": _async_attr_mapper,
+    "defer": _bool_attr_mapper,
+    "integrity": _default_attr_mapper,
+    "nomodule": _bool_attr_mapper,
+}
 
 # Generates an interpolatable string of valid attrs eg - '{nonce}{id}...'
 ATTR_FORMAT_STR = "".join([f"{{{a}}}" for a in SCRIPT_ATTRS])

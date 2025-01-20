@@ -1,4 +1,4 @@
-from typing import Any, Type
+from typing import Any
 
 HEADER = "Content-Security-Policy"
 HEADER_REPORT_ONLY = "Content-Security-Policy-Report-Only"
@@ -17,7 +17,7 @@ WASM_UNSAFE_EVAL = "'wasm-unsafe-eval'"
 class Nonce:
     _instance = None
 
-    def __new__(cls: Type["Nonce"], *args: Any, **kwargs: Any) -> "Nonce":
+    def __new__(cls: type["Nonce"], *args: Any, **kwargs: Any) -> "Nonce":
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance

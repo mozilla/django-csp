@@ -23,6 +23,7 @@ classifiers = [
   "Framework :: Django :: 4.2",
   "Framework :: Django :: 5.0",
   "Framework :: Django :: 5.1",
+  "Framework :: Django :: 5.2",
   "Intended Audience :: Developers",
   "License :: OSI Approved :: BSD License",
   "Operating System :: OS Independent",
@@ -87,7 +88,7 @@ include-package-data = true
 find = { namespaces = false }
 
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 line-length = 150
 indent-width = 4
 extend-exclude = [
