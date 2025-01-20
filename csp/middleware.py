@@ -13,6 +13,7 @@ from django.utils.deprecation import MiddlewareMixin
 from django.utils.functional import SimpleLazyObject
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY
+from csp.exceptions import CSPNonceError
 from csp.utils import DIRECTIVES_T, build_policy
 
 if TYPE_CHECKING:
@@ -47,6 +48,12 @@ class CSPMiddleware(MiddlewareMixin):
         nonce = base64.b64encode(os.urandom(16)).decode("ascii")
         setattr(request, "_csp_nonce", nonce)
         return nonce
+
+    @staticmethod
+    def _csp_nonce_post_response() -> None:
+        raise CSPNonceError(
+            "The 'csp_nonce' attribute is not available after the CSP header has been written. Consider adjusting your MIDDLEWARE order."
+        )
 
     def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
@@ -84,6 +91,11 @@ class CSPMiddleware(MiddlewareMixin):
             is_not_excluded = not request.path_info.startswith(tuple(prefixes))
             if no_header and is_not_exempt and is_not_excluded:
                 response[HEADER_REPORT_ONLY] = csp_ro
+
+        # Once we've written the header, accessing the `request.csp_nonce` will no longer trigger
+        # the nonce to be added to the header. Instead we throw an error here to catch this since
+        # this has security implications.
+        setattr(request, "csp_nonce", SimpleLazyObject(self._csp_nonce_post_response))
 
         return response
 

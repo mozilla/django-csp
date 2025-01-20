@@ -42,8 +42,19 @@ above script being allowed.
 
 .. Note::
 
-   The nonce will only be added to the CSP headers if it is used.
+   The nonce will only be included in the CSP header if:
 
+     - ``csp.constants.NONCE`` is present in the ``script-src`` or ``style-src`` directives, **and**
+     - ``request.csp_nonce`` is accessed during the request lifecycle, after the middleware
+       processes the request but before it processes the response.
+
+   If ``request.csp_nonce`` is accessed **after** the response has been processed by the middleware,
+   a ``csp.exceptions.CSPNonceError`` will be raised.
+
+   Middleware that accesses ``request.csp_nonce`` **must be placed after**
+   ``csp.middleware.CSPMiddleware`` in the ``MIDDLEWARE`` setting. This ensures that
+   ``CSPMiddleware`` properly processes the response and includes the nonce in the CSP header before
+   other middleware attempts to use it.
 
 ``Context Processor``
 =====================

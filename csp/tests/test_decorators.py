@@ -59,11 +59,11 @@ def test_csp_update() -> None:
     response = view_with_decorator(request)
     assert getattr(response, "_csp_update") == {"img-src": ["bar.com", NONCE]}
     mw.process_request(request)
-    assert getattr(request, "csp_nonce")  # Here to trigger the nonce creation.
+    csp_nonce = str(getattr(request, "csp_nonce"))  # This also triggers the nonce creation.
     mw.process_response(request, response)
     assert HEADER_REPORT_ONLY not in response.headers
     policy_list = sorted(response[HEADER].split("; "))
-    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{getattr(request, 'csp_nonce')}'"]
+    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{csp_nonce}'"]
 
     response = view_without_decorator(request)
     mw.process_response(request, response)
@@ -92,11 +92,11 @@ def test_csp_update_ro() -> None:
     response = view_with_decorator(request)
     assert getattr(response, "_csp_update_ro") == {"img-src": ["bar.com", NONCE]}
     mw.process_request(request)
-    assert getattr(request, "csp_nonce")  # Here to trigger the nonce creation.
+    csp_nonce = str(getattr(request, "csp_nonce"))  # This also triggers the nonce creation.
     mw.process_response(request, response)
     assert HEADER not in response.headers
     policy_list = sorted(response[HEADER_REPORT_ONLY].split("; "))
-    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{getattr(request, 'csp_nonce')}'"]
+    assert policy_list == ["default-src 'self'", f"img-src foo.com bar.com 'nonce-{csp_nonce}'"]
 
     response = view_without_decorator(request)
     mw.process_response(request, response)
