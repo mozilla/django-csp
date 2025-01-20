@@ -147,15 +147,25 @@ policy.
 
        .. code-block:: python
 
-            from csp.constants import SELF, STRICT_DYNAMIC
+            from csp.constants import NONE, SELF, STRICT_DYNAMIC
 
             CONTENT_SECURITY_POLICY = {
                 "DIRECTIVES": {
-                    "default-src": [SELF, "cdn.example.net"],
+                    # No sources allowed for default-src by using `csp.constants.NONE`.
+                    "default-src": [NONE],
                     "script-src": [SELF, STRICT_DYNAMIC],
                     "style-src": [SELF],
+                    # Using Python's `None` will not include the directive in the header. Useful
+                    # to override previous settings or when using the decorators.
+                    "base-uri": None,
                 }
             }
+
+    .. note::
+       The CSP keyword ``csp.constants.NONE`` is distinct from Python's ``None`` value. The CSP
+       keyword ``'none'`` is a special value that signifies that you do not want any sources for
+       the directive. The ``None`` value is a Python keyword that represents the absence of a value
+       and when used as the value of a directive, it will remove the directive from the header.
 
     .. note::
        Deprecated features of CSP in general have been moved to the bottom of this list.
@@ -166,113 +176,111 @@ policy.
 
     ``default-src``
         Set the ``default-src`` directive. A ``tuple`` or ``list`` of values,
-        e.g.: ``("'self'", 'cdn.example.net')``. *["'self'"]*
+        e.g.: ``("'self'", "cdn.example.net")``. *default=["'self'"]*
 
     ``script-src``
-        Set the ``script-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``script-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``script-src-attr``
-        Set the ``script-src-attr`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``script-src-attr`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``script-src-elem``
-        Set the ``script-src-elem`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``script-src-elem`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``img-src``
-        Set the ``img-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``img-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``object-src``
-        Set the ``object-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``object-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``media-src``
-        Set the ``media-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``media-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``frame-src``
-        Set the ``frame-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``frame-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``font-src``
-        Set the ``font-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``font-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``connect-src``
-        Set the ``connect-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``connect-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``style-src``
-        Set the ``style-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``style-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``style-src-attr``
-        Set the ``style-src-attr`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``style-src-attr`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``style-src-elem``
-        Set the ``style-src-elem`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``style-src-elem`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``base-uri``
-        Set the ``base-uri`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``base-uri`` directive. A ``tuple`` or ``list``. *default=None*
 
         Note: This doesn't use ``default-src`` as a fall-back.
 
     ``child-src``
-        Set the ``child-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``child-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``frame-ancestors``
-        Set the ``frame-ancestors`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``frame-ancestors`` directive. A ``tuple`` or ``list``. *default=None*
 
         Note: This doesn't use ``default-src`` as a fall-back.
 
     ``navigate-to``
-        Set the ``navigate-to`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``navigate-to`` directive. A ``tuple`` or ``list``. *default=None*
 
         Note: This doesn't use ``default-src`` as a fall-back.
 
     ``form-action``
-        Set the ``FORM_ACTION`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``form-action`` directive. A ``tuple`` or ``list``. *default=None*
 
         Note: This doesn't use ``default-src`` as a fall-back.
 
     ``sandbox``
-        Set the ``sandbox`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``sandbox`` directive. A ``tuple`` or ``list``. *default=None*
 
         Note: This doesn't use ``default-src`` as a fall-back.
 
     ``report-uri``
         Set the ``report-uri`` directive. A ``tuple`` or ``list`` of URIs.
-        Each URI can be a full or relative URI. *None*
+        Each URI can be a full or relative URI. *default=None*
 
         Note: This doesn't use ``default-src`` as a fall-back.
 
     ``report-to``
         Set the ``report-to`` directive. A ``string`` describing a reporting
-        group. *None*
+        group. *default=None*
 
         See Section 1.2: https://w3c.github.io/reporting/#group
 
         Also `see this MDN note on <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/report-uri>`_ ``report-uri`` and ``report-to``.
 
     ``manifest-src``
-        Set the ``manifest-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``manifest-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``worker-src``
-        Set the ``worker-src`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``worker-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     ``require-sri-for``
-        Set the ``require-sri-for`` directive. A ``tuple`` or ``list``. *None*
+        Set the ``require-sri-for`` directive. A ``tuple`` or ``list``. *default=None*
 
         Valid values: a ``list`` containing ``'script'``, ``'style'``, or both.
 
         Spec: require-sri-for-known-tokens_
 
     ``upgrade-insecure-requests``
-        Include ``upgrade-insecure-requests`` directive. A ``boolean``. *False*
+        Include ``upgrade-insecure-requests`` directive. A ``boolean``. *default=False*
 
         Spec: upgrade-insecure-requests_
 
     ``require-trusted-types-for``
-        Include ``require-trusted-types-for`` directive.
-        A ``tuple`` or ``list``. *None*
+        Include ``require-trusted-types-for`` directive. A ``tuple`` or ``list``. *default=None*
 
         Valid values: ``["'script'"]``
 
     ``trusted-types``
-        Include ``trusted-types`` directive.
-        A ``tuple`` or ``list``. *None*
+        Include ``trusted-types`` directive. A ``tuple`` or ``list``. *default=None*
 
         Valid values: a ``list`` of allowed policy names that may include
         ``default`` and/or ``'allow-duplicates'``
@@ -285,7 +293,7 @@ in terms of the latest implementation of the relevant spec.
 
 
 ``block-all-mixed-content``
-    Include ``block-all-mixed-content`` directive. A ``boolean``. *False*
+    Include ``block-all-mixed-content`` directive. A ``boolean``. *default=False*
 
     Related `note on MDN <block-all-mixed-content_mdn_>`_.
 
@@ -293,7 +301,7 @@ in terms of the latest implementation of the relevant spec.
 
 
 ``plugin-types``
-    Set the ``plugin-types`` directive. A ``tuple`` or ``list``. *None*
+    Set the ``plugin-types`` directive. A ``tuple`` or ``list``. *default=None*
 
     Note: This doesn't use ``default-src`` as a fall-back.
 
@@ -301,7 +309,7 @@ in terms of the latest implementation of the relevant spec.
 
 
 ``prefetch-src``
-    Set the ``prefetch-src`` directive. A ``tuple`` or ``list``. *None*
+    Set the ``prefetch-src`` directive. A ``tuple`` or ``list``. *default=None*
 
     Related `note on MDN <prefetch_src_mdn_>`_.
 
