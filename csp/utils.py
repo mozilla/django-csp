@@ -47,8 +47,8 @@ DEFAULT_DIRECTIVES = {
     "webrtc": None,
     "worker-src": None,
     # Directives Defined in Other Documents
-    "upgrade-insecure-requests": None,
-    "block-all-mixed-content": None,  # Deprecated.
+    "upgrade-insecure-requests": False,
+    "block-all-mixed-content": False,  # Deprecated.
 }
 
 DIRECTIVES_T = dict[str, Any]
