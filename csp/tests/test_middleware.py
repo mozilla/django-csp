@@ -6,7 +6,10 @@ from django.http import (
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
+import pytest
+
 from csp.constants import HEADER, HEADER_REPORT_ONLY, SELF
+from csp.exceptions import CSPNonceError
 from csp.middleware import CSPMiddleware
 from csp.tests.utils import response
 
@@ -155,3 +158,12 @@ def test_nonce_regenerated_on_new_request() -> None:
     mw.process_response(request2, response2)
     assert nonce1 not in response2[HEADER]
     assert nonce2 not in response1[HEADER]
+
+
+def test_nonce_attribute_error() -> None:
+    # Test `CSPNonceError` is raised when accessing the nonce after the response has been processed.
+    request = rf.get("/")
+    mw.process_request(request)
+    mw.process_response(request, HttpResponse())
+    with pytest.raises(CSPNonceError):
+        str(getattr(request, "csp_nonce"))
