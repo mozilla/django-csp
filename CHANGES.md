@@ -1,9 +1,16 @@
 CHANGES
 =======
 
-Unreleased
+4.0b3
 ==========
-- Drop support for EOL < Python 3.9 and add Python 3.13
+- Add Python 3.13, drop EOL Python 3.8 ([#245](https://github.com/mozilla/django-csp/pull/245))
+- docs: Fix trusted_types links ([#250](https://github.com/mozilla/django-csp/pull/250))
+- Add `EXCLUDE_URL_PREFIXES` check ([#252](https://github.com/mozilla/django-csp/pull/252))
+- Support CSP configuration as sets ([#251](https://github.com/mozilla/django-csp/pull/251))
+- docs: Note that reporting percentage needs rate limiting middleware ([#256](https://github.com/mozilla/django-csp/pull/256))
+* Document constant NONE vs Python's None ([#255](https://github.com/mozilla/django-csp/pull/255))
+- Raise error when nonce accessed after response ([#258](https://github.com/mozilla/django-csp/pull/258))
+- Test on Django 5.2 ([#261](https://github.com/mozilla/django-csp/pull/261))
 
 4.0b2
 =====
