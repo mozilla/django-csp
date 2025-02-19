@@ -40,6 +40,7 @@ classifiers = [
 ]
 dependencies = [
   "django>=4.2",
+  "packaging",
 ]
 optional-dependencies.dev = [
   "django-stubs[compatible-mypy]",
