@@ -1,8 +1,12 @@
 CHANGES
 =======
 
+4.0b4
+=====
+- Fix missing packaging dependency ([#266](https://github.com/mozilla/django-csp/pull/266))
+
 4.0b3
-==========
+=====
 - Add Python 3.13, drop EOL Python 3.8 ([#245](https://github.com/mozilla/django-csp/pull/245))
 - docs: Fix trusted_types links ([#250](https://github.com/mozilla/django-csp/pull/250))
 - Add `EXCLUDE_URL_PREFIXES` check ([#252](https://github.com/mozilla/django-csp/pull/252))
