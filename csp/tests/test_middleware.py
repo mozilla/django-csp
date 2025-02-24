@@ -160,10 +160,21 @@ def test_nonce_regenerated_on_new_request() -> None:
     assert nonce2 not in response1[HEADER]
 
 
-def test_nonce_attribute_error() -> None:
-    # Test `CSPNonceError` is raised when accessing the nonce after the response has been processed.
+def test_no_nonce_access_after_middleware_is_attribute_error() -> None:
+    # Test `CSPNonceError` is raised when accessing an unset nonce after the response has been processed.
     request = rf.get("/")
     mw.process_request(request)
     mw.process_response(request, HttpResponse())
+    assert bool(getattr(request, "csp_nonce", True)) is False
     with pytest.raises(CSPNonceError):
         str(getattr(request, "csp_nonce"))
+
+
+def test_set_nonce_access_after_middleware_is_ok() -> None:
+    # Test accessing a set nonce after the response has been processed is OK.
+    request = rf.get("/")
+    mw.process_request(request)
+    nonce = str(getattr(request, "csp_nonce"))
+    mw.process_response(request, HttpResponse())
+    assert bool(getattr(request, "csp_nonce", False)) is True
+    assert str(getattr(request, "csp_nonce")) == nonce
