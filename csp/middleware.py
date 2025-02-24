@@ -29,6 +29,11 @@ class PolicyParts:
     nonce: str | None = None
 
 
+class FalseLazyObject(SimpleLazyObject):
+    def __bool__(self) -> bool:
+        return False
+
+
 class CSPMiddleware(MiddlewareMixin):
     """
     Implements the Content-Security-Policy response header, which
@@ -95,7 +100,8 @@ class CSPMiddleware(MiddlewareMixin):
         # Once we've written the header, accessing the `request.csp_nonce` will no longer trigger
         # the nonce to be added to the header. Instead we throw an error here to catch this since
         # this has security implications.
-        setattr(request, "csp_nonce", SimpleLazyObject(self._csp_nonce_post_response))
+        if getattr(request, "_csp_nonce", None) is None:
+            setattr(request, "csp_nonce", FalseLazyObject(self._csp_nonce_post_response))
 
         return response
 
@@ -109,7 +115,12 @@ class CSPMiddleware(MiddlewareMixin):
         policy_parts_ro = self.get_policy_parts(request=request, response=response, report_only=True)
         return build_policy(**asdict(policy_parts_ro), report_only=True)
 
-    def get_policy_parts(self, request: HttpRequest, response: HttpResponseBase, report_only: bool = False) -> PolicyParts:
+    def get_policy_parts(
+        self,
+        request: HttpRequest,
+        response: HttpResponseBase,
+        report_only: bool = False,
+    ) -> PolicyParts:
         if report_only:
             config = getattr(response, "_csp_config_ro", None)
             update = getattr(response, "_csp_update_ro", None)
