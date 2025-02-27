@@ -10,7 +10,7 @@ import pytest
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY, SELF
 from csp.exceptions import CSPNonceError
-from csp.middleware import CSPMiddleware
+from csp.middleware import CSPMiddleware, CSPMiddlewareAlwaysGenerateNonce
 from csp.tests.utils import response
 
 mw = CSPMiddleware(response())
@@ -176,5 +176,44 @@ def test_set_nonce_access_after_middleware_is_ok() -> None:
     mw.process_request(request)
     nonce = str(getattr(request, "csp_nonce"))
     mw.process_response(request, HttpResponse())
+    assert bool(getattr(request, "csp_nonce", False)) is True
+    assert str(getattr(request, "csp_nonce")) == nonce
+
+
+def test_csp_always_nonce_middleware_has_nonce() -> None:
+    request = rf.get("/")
+    mw_agn = CSPMiddlewareAlwaysGenerateNonce(response())
+    mw_agn.process_request(request)
+    resp = HttpResponse()
+    mw_agn.process_response(request, resp)
+    nonce = str(getattr(request, "csp_nonce"))
+    assert nonce in resp[HEADER]
+
+
+def test_csp_always_nonce_middleware_nonce_regenerated_on_new_request() -> None:
+    mw_agn = CSPMiddlewareAlwaysGenerateNonce(response())
+    request1 = rf.get("/")
+    request2 = rf.get("/")
+    mw_agn.process_request(request1)
+    mw_agn.process_request(request2)
+    nonce1 = str(getattr(request1, "csp_nonce"))
+    nonce2 = str(getattr(request2, "csp_nonce"))
+    assert nonce1 != nonce2
+
+    response1 = HttpResponse()
+    response2 = HttpResponse()
+    mw_agn.process_response(request1, response1)
+    mw_agn.process_response(request2, response2)
+    assert nonce1 not in response2[HEADER]
+    assert nonce2 not in response1[HEADER]
+
+
+def test_csp_always_nonce_middleware_access_after_middleware_is_ok() -> None:
+    # Test accessing a set nonce after the response has been processed is OK.
+    request = rf.get("/")
+    mw_agn = CSPMiddlewareAlwaysGenerateNonce(response())
+    mw_agn.process_request(request)
+    nonce = str(getattr(request, "csp_nonce"))
+    mw_agn.process_response(request, HttpResponse())
     assert bool(getattr(request, "csp_nonce", False)) is True
     assert str(getattr(request, "csp_nonce")) == nonce

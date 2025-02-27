@@ -48,13 +48,44 @@ above script being allowed.
      - ``request.csp_nonce`` is accessed during the request lifecycle, after the middleware
        processes the request but before it processes the response.
 
-   If ``request.csp_nonce`` is accessed **after** the response has been processed by the middleware,
-   a ``csp.exceptions.CSPNonceError`` will be raised.
+   If the nonce was not generated and included in the CSP header, then accessing ``request.csp_nonce``
+   could indicate a programming error. To help identify the error, testing
+   (like ``bool(request.csp_nonce)``) will evaluate to ``False``, and reading
+   (like ``str(request.csp_nonce)``) will raise a
+   ``csp.exceptions.CSPNonceError``.
 
-   Middleware that accesses ``request.csp_nonce`` **must be placed after**
-   ``csp.middleware.CSPMiddleware`` in the ``MIDDLEWARE`` setting. This ensures that
-   ``CSPMiddleware`` properly processes the response and includes the nonce in the CSP header before
-   other middleware attempts to use it.
+   If the nonce was generated and included in the CSP header, then accessing ``request.csp_nonce``
+   is safe. Testing (like ``bool(request.csp_nonce)``) will evaluate to
+   ``True``, and reading (like ``str(request.csp_nonce)``) will return the nonce.
+
+If other middleware or a later process needs to access ``request.csp_nonce``, then there are a few options:
+
+* The middleware can be placed after ``csp.middleware.CSPMiddleware`` in the ``MIDDLEWARE`` setting.
+  This ensures that the middleware generates the nonce before ``CSPMiddleware`` writes the CSP header.
+* Use the alternate ``csp.middleware.CSPMiddlewareAlwaysGenerateNonce`` middleware, which always
+  generates a nonce and includes it in the CSP header.
+* Add a later middleware that accesses the nonce. For example, this function:
+
+.. code-block:: python
+
+    def init_csp_nonce_middleware(get_response):
+        def middleware(request):
+            getattr(request, "csp_nonce", None)
+            return get_response(request)
+
+        return middleware
+
+could be added to the ``MIDDLEWARE`` list:
+
+.. code-block:: python
+
+    MIDDLEWARE = (
+        "my.middleware.ThatUsesCSPNonce",
+        # ...
+        "csp.middleware.CSPMiddleware",
+        # ...
+        "my.middleware.init_csp_nonce_middleware",
+    )
 
 ``Context Processor``
 =====================

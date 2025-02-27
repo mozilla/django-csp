@@ -31,6 +31,11 @@ to ``MIDDLEWARE``, like so:
         # ...
     )
 
-Note: Middleware order does not matter unless you have other middleware modifying the CSP header.
+.. Note::
+
+   Middleware order does not matter unless you have other middleware modifying
+   the CSP header, or requires CSP features like a nonce. See
+   :ref:`Using the generated CSP nonce` for further advice on middleware order.
+
 
 That should do it! Go on to :ref:`configuring CSP <configuration-chapter>`.
