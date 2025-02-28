@@ -146,7 +146,7 @@ class CSPMiddlewareAlwaysGenerateNonce(CSPMiddleware):
     This is useful when a later process needs a nonce, whether or not the wrapped
     request uses a nonce. One example is django-debug-toolbar (DDT). The DDT
     middleware needs to be high in the MIDDLEWARE list, so it can inject its
-    HTML, CSS, and JS describing the request generation. DDT users can use
+    HTML, CSS, and JS describing the response generation. DDT users can use
     this middleware instead of CSPMiddleware.
     """
 
