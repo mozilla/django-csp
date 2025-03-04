@@ -10,11 +10,29 @@ import pytest
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY, SELF
 from csp.exceptions import CSPNonceError
-from csp.middleware import CSPMiddleware, CSPMiddlewareAlwaysGenerateNonce
+from csp.middleware import (
+    CSPMiddleware,
+    CSPMiddlewareAlwaysGenerateNonce,
+    TestableLazyObject,
+)
 from csp.tests.utils import response
 
 mw = CSPMiddleware(response())
 rf = RequestFactory()
+
+
+def test_testable_lazy_object() -> None:
+    def generate_value() -> str:
+        return "generated"
+
+    lazy = TestableLazyObject(generate_value)
+
+    # Before wrapped object is initiated, lazy is falsy
+    assert bool(lazy) is False
+
+    # After str(lazy) calls generate_value, lazy is truthy
+    assert str(lazy) == "generated"
+    assert bool(lazy) is True
 
 
 def test_add_header() -> None:
