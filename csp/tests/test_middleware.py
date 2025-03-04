@@ -73,7 +73,8 @@ def test_report_only() -> None:
     response = HttpResponse()
     mw.process_response(request, response)
     assert HEADER not in response
-    assert HEADER + "-Report-Only" in response
+    assert HEADER_REPORT_ONLY in response
+    assert response[HEADER_REPORT_ONLY] == "default-src 'self'"
 
 
 def test_dont_replace() -> None:
@@ -133,6 +134,7 @@ def test_nonce_created_when_accessed() -> None:
     response = HttpResponse()
     mw.process_response(request, response)
     assert nonce in response[HEADER]
+    assert response[HEADER] == f"default-src 'self' 'nonce-{nonce}'"
 
 
 def test_no_nonce_when_not_accessed() -> None:
@@ -141,6 +143,7 @@ def test_no_nonce_when_not_accessed() -> None:
     response = HttpResponse()
     mw.process_response(request, response)
     assert "nonce-" not in response[HEADER]
+    assert response[HEADER] == "default-src 'self'"
 
 
 def test_nonce_regenerated_on_new_request() -> None:
