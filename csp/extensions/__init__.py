@@ -42,7 +42,7 @@ class NoncedScript(Extension):
     def _render_script(self, caller: Callable[[], str], **kwargs: Any) -> str:
         ctx = kwargs.pop("ctx")
         request = ctx.get("request")
-        kwargs["nonce"] = request.csp_nonce
+        kwargs["nonce"] = str(request.csp_nonce)
         kwargs["content"] = caller().strip()
 
         return build_script_tag(**kwargs)
