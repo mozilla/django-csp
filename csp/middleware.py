@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
-from django.utils.functional import SimpleLazyObject
+from django.utils.functional import SimpleLazyObject, empty
 
 from csp.constants import HEADER, HEADER_REPORT_ONLY
 from csp.exceptions import CSPNonceError
@@ -29,9 +29,15 @@ class PolicyParts:
     nonce: str | None = None
 
 
-class FalseLazyObject(SimpleLazyObject):
+class CheckableLazyObject(SimpleLazyObject):
+    """A SimpleLazyObject where bool(obj) returns True if no longer lazy"""
+
     def __bool__(self) -> bool:
-        return False
+        """
+        If the wrapped function has been evaluated, return True.
+        If the wrapped function has not been evalated, return False.
+        """
+        return getattr(self, "_wrapped") is not empty
 
 
 class CSPMiddleware(MiddlewareMixin):
@@ -64,7 +70,7 @@ class CSPMiddleware(MiddlewareMixin):
 
     def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
-        setattr(request, "csp_nonce", SimpleLazyObject(nonce))
+        setattr(request, "csp_nonce", CheckableLazyObject(nonce))
         if self.always_generate_nonce:
             self._make_nonce(request)
 
@@ -105,7 +111,7 @@ class CSPMiddleware(MiddlewareMixin):
         # the nonce to be added to the header. Instead we throw an error here to catch this since
         # this has security implications.
         if getattr(request, "_csp_nonce", None) is None:
-            setattr(request, "csp_nonce", FalseLazyObject(self._csp_nonce_post_response))
+            setattr(request, "csp_nonce", CheckableLazyObject(self._csp_nonce_post_response))
 
         return response
 

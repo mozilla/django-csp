@@ -46,7 +46,7 @@ class NonceScriptNode(template.Node):
     def render(self, context: Context) -> str:
         output = self.nodelist.render(context).strip()
         request = context.get("request")
-        nonce = getattr(request, "csp_nonce", "")
+        nonce = str(getattr(request, "csp_nonce", ""))
         self.script_attrs.update({"nonce": nonce, "content": output})
 
         return build_script_tag(**self.script_attrs)
