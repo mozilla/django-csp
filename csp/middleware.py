@@ -70,7 +70,7 @@ class CSPMiddleware(MiddlewareMixin):
 
     def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
-        setattr(request, "csp_nonce", SimpleLazyObject(nonce))
+        setattr(request, "csp_nonce", TestableLazyObject(nonce))
         if self.always_generate_nonce:
             self._make_nonce(request)
 
