@@ -3,6 +3,7 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseServerError,
 )
+from django.template import Context, Template
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
@@ -166,6 +167,30 @@ def test_nonce_is_false_before_access_and_true_after() -> None:
     mw.process_response(request, response)
     assert bool(getattr(request, "csp_nonce")) is True
     assert getattr(request, "csp_nonce") == nonce
+
+
+def test_nonce_in_template() -> None:
+    """An unset nonce is Falsy in a template context"""
+
+    template = Template(
+        """
+    {% if request.csp_nonce %}
+      The CSP nonce is {{ request.csp_nonce }}.
+    {% else %}
+      The CSP nonce is not set.
+    {% endif %}
+    """
+    )
+    request = rf.get("/")
+    context = Context({"request": request})
+
+    mw.process_request(request)
+    rendered_unset = template.render(context).strip()
+    assert rendered_unset == "The CSP nonce is not set."
+
+    nonce = str(getattr(request, "csp_nonce"))
+    rendered_set = template.render(context).strip()
+    assert rendered_set == f"The CSP nonce is {nonce}."
 
 
 def test_no_nonce_when_not_accessed() -> None:
