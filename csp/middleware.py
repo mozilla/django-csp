@@ -29,7 +29,7 @@ class PolicyParts:
     nonce: str | None = None
 
 
-class TestableLazyObject(SimpleLazyObject):
+class CheckableLazyObject(SimpleLazyObject):
     """A SimpleLazyObject where bool(obj) returns True if no longer lazy"""
 
     def __bool__(self) -> bool:
@@ -70,7 +70,7 @@ class CSPMiddleware(MiddlewareMixin):
 
     def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
-        setattr(request, "csp_nonce", TestableLazyObject(nonce))
+        setattr(request, "csp_nonce", CheckableLazyObject(nonce))
         if self.always_generate_nonce:
             self._make_nonce(request)
 
@@ -111,7 +111,7 @@ class CSPMiddleware(MiddlewareMixin):
         # the nonce to be added to the header. Instead we throw an error here to catch this since
         # this has security implications.
         if getattr(request, "_csp_nonce", None) is None:
-            setattr(request, "csp_nonce", TestableLazyObject(self._csp_nonce_post_response))
+            setattr(request, "csp_nonce", CheckableLazyObject(self._csp_nonce_post_response))
 
         return response
 
