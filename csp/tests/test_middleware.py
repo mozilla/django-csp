@@ -155,6 +155,19 @@ def test_nonce_created_when_accessed() -> None:
     assert response[HEADER] == f"default-src 'self' 'nonce-{nonce}'"
 
 
+def test_nonce_is_false_before_access_and_true_after() -> None:
+    request = rf.get("/")
+    mw.process_request(request)
+    assert bool(getattr(request, "csp_nonce")) is False
+    nonce = str(getattr(request, "csp_nonce"))
+    assert bool(getattr(request, "csp_nonce")) is True
+
+    response = HttpResponse()
+    mw.process_response(request, response)
+    assert bool(getattr(request, "csp_nonce")) is True
+    assert getattr(request, "csp_nonce") == nonce
+
+
 def test_no_nonce_when_not_accessed() -> None:
     request = rf.get("/")
     mw.process_request(request)
