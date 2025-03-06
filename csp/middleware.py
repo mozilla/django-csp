@@ -72,7 +72,7 @@ class CSPMiddleware(MiddlewareMixin):
         nonce = partial(self._make_nonce, request)
         setattr(request, "csp_nonce", CheckableLazyObject(nonce))
         if self.always_generate_nonce:
-            self._make_nonce(request)
+            str(getattr(request, "csp_nonce"))
 
     def process_response(self, request: HttpRequest, response: HttpResponseBase) -> HttpResponseBase:
         # Check for debug view
