@@ -3,7 +3,7 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponseServerError,
 )
-from django.template import Context, Template
+from django.template import Context, Template, engines
 from django.test import RequestFactory
 from django.test.utils import override_settings
 
@@ -169,16 +169,16 @@ def test_nonce_is_false_before_access_and_true_after() -> None:
     assert getattr(request, "csp_nonce") == nonce
 
 
-def test_nonce_in_template() -> None:
+def test_nonce_conditional_in_django_template() -> None:
     """An unset nonce is Falsy in a template context"""
 
     template = Template(
         """
-    {% if request.csp_nonce %}
-      The CSP nonce is {{ request.csp_nonce }}.
-    {% else %}
-      The CSP nonce is not set.
-    {% endif %}
+        {% if request.csp_nonce %}
+          The CSP nonce is {{ request.csp_nonce }}.
+        {% else %}
+          The CSP nonce is not set.
+        {% endif %}
     """
     )
     request = rf.get("/")
@@ -191,6 +191,60 @@ def test_nonce_in_template() -> None:
     nonce = str(getattr(request, "csp_nonce"))
     rendered_set = template.render(context).strip()
     assert rendered_set == f"The CSP nonce is {nonce}."
+
+
+def test_nonce_usage_in_django_template() -> None:
+    """Reading a nonce in a template context generates the nonce"""
+
+    template = Template("The CSP nonce is {{ request.csp_nonce }}.")
+    request = rf.get("/")
+    context = Context({"request": request})
+
+    mw.process_request(request)
+    nonce = getattr(request, "csp_nonce", None)
+    assert bool(nonce) is False
+    rendered = template.render(context)
+    assert bool(nonce) is True
+    assert rendered == f"The CSP nonce is {nonce}."
+
+
+def test_nonce_conditional_in_jinja2_template() -> None:
+    """An unset nonce is Falsy in a template context"""
+
+    template = engines["jinja2"].from_string(
+        """
+        {% if request.csp_nonce %}
+          The CSP nonce is {{ request.csp_nonce }}.
+        {% else %}
+          The CSP nonce is not set.
+        {% endif %}
+    """
+    )
+    request = rf.get("/")
+    context = {"request": request}
+
+    mw.process_request(request)
+    rendered_unset = template.render(context).strip()
+    assert rendered_unset == "The CSP nonce is not set."
+
+    nonce = str(getattr(request, "csp_nonce"))
+    rendered_set = template.render(context).strip()
+    assert rendered_set == f"The CSP nonce is {nonce}."
+
+
+def test_nonce_usage_in_jinja2_template() -> None:
+    """Reading a nonce in a template context generates the nonce"""
+
+    template = engines["jinja2"].from_string("The CSP nonce is {{ request.csp_nonce }}.")
+    request = rf.get("/")
+    context = {"request": request}
+
+    mw.process_request(request)
+    nonce = getattr(request, "csp_nonce", None)
+    assert bool(nonce) is False
+    rendered = template.render(context)
+    assert bool(nonce) is True
+    assert rendered == f"The CSP nonce is {nonce}."
 
 
 def test_no_nonce_when_not_accessed() -> None:
