@@ -297,10 +297,11 @@ def test_csp_always_nonce_middleware_has_nonce() -> None:
     request = rf.get("/")
     mw_agn = CSPMiddlewareAlwaysGenerateNonce(response())
     mw_agn.process_request(request)
+    nonce = getattr(request, "csp_nonce")
+    assert bool(nonce) is True
     resp = HttpResponse()
     mw_agn.process_response(request, resp)
-    nonce = str(getattr(request, "csp_nonce"))
-    assert nonce in resp[HEADER]
+    assert str(nonce) in resp[HEADER]
 
 
 def test_csp_always_nonce_middleware_nonce_regenerated_on_new_request() -> None:
@@ -326,7 +327,8 @@ def test_csp_always_nonce_middleware_access_after_middleware_is_ok() -> None:
     request = rf.get("/")
     mw_agn = CSPMiddlewareAlwaysGenerateNonce(response())
     mw_agn.process_request(request)
-    nonce = str(getattr(request, "csp_nonce"))
+    nonce = getattr(request, "csp_nonce")
+    assert bool(nonce) is True
     mw_agn.process_response(request, HttpResponse())
-    assert bool(getattr(request, "csp_nonce", False)) is True
+    assert bool(nonce) is True
     assert str(getattr(request, "csp_nonce")) == nonce
