@@ -1,8 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [
-  "setuptools>=61.2",
-]
+requires = [ "setuptools>=61.2" ]
 
 [project]
 name = "django-csp"
@@ -13,9 +11,7 @@ license = { text = "BSD" }
 maintainers = [
   { name = "Mozilla MEAO team", email = "meao-backend@mozilla.com" },
 ]
-authors = [
-  { name = "James Socol", email = "me@jamessocol.com" },
-]
+authors = [ { name = "James Socol", email = "me@jamessocol.com" } ]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Environment :: Web Environment",
@@ -38,10 +34,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = [
-  "django>=4.2",
-  "packaging",
-]
+dependencies = [ "django>=4.2", "packaging" ]
 optional-dependencies.dev = [
   "django-stubs[compatible-mypy]",
   "jinja2>=2.9.6",
@@ -57,9 +50,7 @@ optional-dependencies.dev = [
   "tox-gh-actions",
   "types-setuptools",
 ]
-optional-dependencies.jinja2 = [
-  "jinja2>=2.9.6",
-]
+optional-dependencies.jinja2 = [ "jinja2>=2.9.6" ]
 optional-dependencies.tests = [
   "jinja2>=2.9.6",
   "pytest",
@@ -92,11 +83,7 @@ find = { namespaces = false }
 target-version = "py39"
 line-length = 150
 indent-width = 4
-extend-exclude = [
-  "build",
-  "dist",
-  "docs",
-]
+extend-exclude = [ "build", "dist", "docs" ]
 
 # Set what ruff should check for.
 # See https://docs.astral.sh//ruff/rules/ for a list of rules.
@@ -115,9 +102,7 @@ lint.select = [
 ]
 # Allow unused variables when underscore-prefixed.
 lint.dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
-lint.isort.known-first-party = [
-  "csp",
-]
+lint.isort.known-first-party = [ "csp" ]
 lint.isort.section-order = [
   "future",
   "standard-library",
@@ -126,21 +111,15 @@ lint.isort.section-order = [
   "first-party",
   "local-folder",
 ]
-lint.isort.sections.django = [
-  "django",
-]
+lint.isort.sections.django = [ "django" ]
 
 [tool.pytest.ini_options]
 addopts = "-vs --tb=short --ruff --ruff-format"
 DJANGO_SETTINGS_MODULE = "csp.tests.settings"
 
 [tool.mypy]
-plugins = [
-  "mypy_django_plugin.main",
-]
-exclude = [
-  '^build/lib',
-]
+plugins = [ "mypy_django_plugin.main" ]
+exclude = [ '^build/lib' ]
 strict = true
 
 [tool.django-stubs]
