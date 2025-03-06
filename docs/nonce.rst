@@ -60,7 +60,7 @@ above script being allowed.
 
    It is always safe to test ``request.csp_nonce``, such as
    ``bool(request.csp_nonce)`` or in a conditional like ``if request.csp_nonce:
-   ...``. This will return ``True`` if the nonce was ccessed and generated, and
+   ...``. This will return ``True`` if the nonce was accessed and generated, and
    ``False`` if not acccesed or generated yet.
 
 
