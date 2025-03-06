@@ -1,6 +1,22 @@
 CHANGES
 =======
 
+4.0b5
+=====
+BACKWARDS INCOMPATIBLE change:
+
+- `request.csp_nonce` is now Falsy (`bool(request.csp_nonce)`) until it is read as a
+  string (for example, used in a template, or `str(request.csp_nonce)`). Previously,
+  it always tested as `True`, and testing generated the nonce.
+  ([#270](https://github.com/mozilla/django-csp/pull/270))
+
+Other changes:
+
+- Upgrade ReadTheDocs environment ([#262](https://github.com/mozilla/django-csp/pull/262))
+- Allow reading the nonce after response if it was included in the header. Add
+  ``CSPMiddlewareAlwaysGenerateNonce`` to always generate a nonce.
+  ([#269](https://github.com/mozilla/django-csp/pull/262))
+
 4.0b4
 =====
 - Fix missing packaging dependency ([#266](https://github.com/mozilla/django-csp/pull/266))
@@ -30,12 +46,14 @@ CHANGES
 4.0b1
 =====
 BACKWARDS INCOMPATIBLE changes:
+
 - Move to dict-based configuration which allows for setting policies for both enforced and
   report-only. See the migration guide in the docs for migrating your settings.
 - Switch from specifying which directives should contain the nonce as a separate list, and instead
   use a sentinel `NONCE` in the directive itself.
 
 Other changes:
+
 - Add pyproject-fmt to pre-commit, and update pre-commit versions
 - Fixes #36: Add support for enforced and report-only policies simultaneously
 - Drop support for Django <=3.2, end of extended support
