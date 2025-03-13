@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+4.0b6
+=====
+- Fix ``CSPMiddlewareAlwaysGenerateNonce`` to always generate the nonce.
+  ([#272](https://github.com/mozilla/django-csp/pull/272))
+
 4.0b5
 =====
 BACKWARDS INCOMPATIBLE change:
