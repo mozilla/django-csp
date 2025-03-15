@@ -51,8 +51,6 @@ class CSPMiddleware(MiddlewareMixin):
     Can be customised by subclassing and extending the get_policy_parts method.
     """
 
-    always_generate_nonce = False
-
     def _make_nonce(self, request: HttpRequest) -> str:
         # Ensure that any subsequent calls to request.csp_nonce return the same value
         stored_nonce = getattr(request, "_csp_nonce", None)
@@ -71,8 +69,6 @@ class CSPMiddleware(MiddlewareMixin):
     def process_request(self, request: HttpRequest) -> None:
         nonce = partial(self._make_nonce, request)
         setattr(request, "csp_nonce", CheckableLazyObject(nonce))
-        if self.always_generate_nonce:
-            str(getattr(request, "csp_nonce"))
 
     def process_response(self, request: HttpRequest, response: HttpResponseBase) -> HttpResponseBase:
         # Check for debug view
@@ -143,17 +139,3 @@ class CSPMiddleware(MiddlewareMixin):
         nonce = getattr(request, "_csp_nonce", None)
 
         return PolicyParts(config, update, replace, nonce)
-
-
-class CSPMiddlewareAlwaysGenerateNonce(CSPMiddleware):
-    """
-    A middleware variant that always generates a nonce.
-
-    This is useful when a later process needs a nonce, whether or not the wrapped
-    request uses a nonce. One example is django-debug-toolbar (DDT). The DDT
-    middleware needs to be high in the MIDDLEWARE list, so it can inject its
-    HTML, CSS, and JS describing the response generation. DDT users can use
-    this middleware instead of CSPMiddleware.
-    """
-
-    always_generate_nonce = True

@@ -68,8 +68,6 @@ If other middleware or a later process needs to access ``request.csp_nonce``, th
 
 * The middleware can be placed after ``csp.middleware.CSPMiddleware`` in the ``MIDDLEWARE`` setting.
   This ensures that the middleware generates the nonce before ``CSPMiddleware`` writes the CSP header.
-* Use the alternate ``csp.middleware.CSPMiddlewareAlwaysGenerateNonce`` middleware, which always
-  generates a nonce and includes it in the CSP header.
 * Add a later middleware that accesses the nonce. For example, this function:
 
 .. code-block:: python
