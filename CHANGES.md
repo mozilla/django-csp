@@ -1,6 +1,11 @@
 CHANGES
 =======
 
+4.0b7
+=====
+- Removed ``CSPMiddlewareAlwaysGenerateNonce`` middleware that forced nonce headers when not used in
+  content encouraging better security practices ([#274](https://github.com/mozilla/django-csp/pull/274))
+
 4.0b6
 =====
 - Fix ``CSPMiddlewareAlwaysGenerateNonce`` to always generate the nonce.
