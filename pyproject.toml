@@ -4,7 +4,7 @@ requires = [ "setuptools>=61.2" ]
 
 [project]
 name = "django-csp"
-version = "4.0b6"
+version = "4.0b7"
 description = "Django Content Security Policy support."
 readme = "README.rst"
 license = { text = "BSD" }
