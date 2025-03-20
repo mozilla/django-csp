@@ -99,8 +99,8 @@ At the top level of the policy dictionary, these are the keys that can be used t
 policy.
 
 ``EXCLUDE_URL_PREFIXES``
-    A ``tuple`` of URL prefixes. URLs beginning with any of these will not get the CSP headers.
-    *()*
+    A ``tuple`` or ``list`` of URL prefixes to exclude from CSP protection. URLs beginning with any
+    of these strings will not get the Content-Security-Policy response headers at all.
 
     .. warning::
 
