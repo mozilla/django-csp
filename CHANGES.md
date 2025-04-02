@@ -1,6 +1,172 @@
 CHANGES
 =======
 
+4.0
+===
+
+This release contains several breaking changes. For a complete migration guide, see:
+https://django-csp.readthedocs.io/en/latest/migration-guide.html
+
+## Breaking Changes
+
+- **Configuration Format**: Moved to dict-based configuration which allows for setting policies for
+both enforced and report-only. Instead of using individual settings with `CSP_` prefixes, you now
+use dictionaries called `CONTENT_SECURITY_POLICY` and/or `CONTENT_SECURITY_POLICY_REPORT_ONLY`.
+([#219](https://github.com/mozilla/django-csp/pull/219))
+
+  You can use Django's check command to automatically identify existing CSP settings and generate a
+  template for the new configuration format:
+
+  ```
+  python manage.py check
+  ```
+
+  This will detect your old `CSP_` prefixed settings and output a draft of the new dict-based
+  configuration, giving you a starting point for migration.
+
+  **Example:**
+
+  Change from:
+  ```python
+  CSP_DEFAULT_SRC = ["'self'", "*.example.com"]
+  CSP_SCRIPT_SRC = ["'self'", "js.cdn.com/example/"]
+  CSP_IMG_SRC = ["'self'", "data:", "example.com"]
+  CSP_EXCLUDE_URL_PREFIXES = ["/admin"]
+  ```
+
+  to:
+  ```python
+  from csp.constants import SELF
+
+  CONTENT_SECURITY_POLICY = {
+      "DIRECTIVES": {
+          "default-src": [SELF, "*.example.com"],
+          "script-src": [SELF, "js.cdn.com/example/"],
+          "img-src": [SELF, "data:", "example.com"],
+      },
+      "EXCLUDE_URL_PREFIXES": ["/admin"],
+  }
+  ```
+
+- **Nonce Configuration**: Switched from specifying directives that should contain nonces as a
+separate list to using a sentinel `NONCE` value in the directive itself.
+([#223](https://github.com/mozilla/django-csp/pull/223))
+
+  **Example:**
+
+  Change from:
+  ```python
+  CSP_INCLUDE_NONCE_IN = ['script-src', 'style-src']
+  ```
+
+  to:
+  ```python
+  from csp.constants import NONCE, SELF
+
+  CONTENT_SECURITY_POLICY = {
+      "DIRECTIVES": {
+          "script-src": [SELF, NONCE],
+          "style-src": [SELF, NONCE],
+      }
+  }
+  ```
+
+- **Nonce Behavior**: Changed how `request.csp_nonce` works - it is now Falsy
+(`bool(request.csp_nonce)`) until it is read as a string (e.g., used in a template or with
+`str(request.csp_nonce)`). Previously, it always tested as `True`, and testing generated the nonce.
+([#270](https://github.com/mozilla/django-csp/pull/270))
+
+  **Before:**
+  ```python
+  # The nonce was generated when this was evaluated
+  if request.csp_nonce:
+      # Do something with nonce
+  ```
+
+  **After:**
+  ```python
+  # This won't generate the nonce, and will evaluate to False until nonce is read as a string
+  if request.csp_nonce:
+      # This code won't run until nonce is used as a string
+
+  # To generate and use the nonce
+  nonce_value = str(request.csp_nonce)
+  ```
+
+- Dropped support for Django ≤3.2.
+- Dropped support for Python 3.8.
+
+## New Features and Improvements
+
+- **Dual Policy Support**: Added support for enforced and report-only policies simultaneously using
+the separate `CONTENT_SECURITY_POLICY` and `CONTENT_SECURITY_POLICY_REPORT_ONLY` settings.
+
+  **Example:**
+  ```python
+  from csp.constants import NONE, SELF
+
+  # Enforced policy
+  CONTENT_SECURITY_POLICY = {
+      "DIRECTIVES": {
+          "default-src": [SELF, "cdn.example.net"],
+          "frame-ancestors": [SELF],
+      },
+  }
+
+  # Report-only policy (stricter for testing)
+  CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+      "DIRECTIVES": {
+          "default-src": [NONE],
+          "script-src": [SELF],
+          "style-src": [SELF],
+          "report-uri": "https://example.com/csp-report/",
+      },
+  }
+  ```
+
+- **CSP Constants**: Added CSP keyword constants in `csp.constants` (e.g., `SELF` instead of
+`"'self'"`) to minimize quoting mistakes and typos.
+([#222](https://github.com/mozilla/django-csp/pull/222))
+
+  **Example:**
+
+  Change from:
+  ```python
+  CSP_DEFAULT_SRC = ["'self'", "'none'"]
+  ```
+
+  to:
+  ```python
+  from csp.constants import SELF, NONE
+
+  CONTENT_SECURITY_POLICY = {
+      "DIRECTIVES": {
+          "default-src": [SELF, NONE],  # No need to worry about quoting
+      }
+  }
+  ```
+
+- Added comprehensive type hints. ([#228](https://github.com/mozilla/django-csp/pull/228))
+- Added `EXCLUDE_URL_PREFIXES` check not a string. ([#252](https://github.com/mozilla/django-csp/pull/252))
+- Added support for CSP configuration as sets. ([#251](https://github.com/mozilla/django-csp/pull/251))
+- Changed `REPORT_PERCENTAGE` to be a float between `0.0` and `100.0` and improved behavior for 100%
+report percentage to always send CSP reports.
+- Added ability to read the nonce after response if it was included in the header. This will raise
+an error when nonce is accessed after response if not already generated.
+([#269](https://github.com/mozilla/django-csp/pull/269))
+- Made changes to simplify middleware logic and make `CSPMiddleware` easier to subclass. The updated
+middleware returns a PolicyParts dataclass that can be modified before the policy is built.
+([#237](https://github.com/mozilla/django-csp/pull/237))
+
+## Other Changes
+
+- Added Python 3.13 support.
+- Added support for Django 5.1 and 5.2.
+- Documentation improvements including fixed trusted_types links and clarification on NONE vs Python's None.
+- Documentation note that reporting percentage needs rate limiting middleware.
+- Expanded ruff configuration and moved into pyproject.toml.
+
+
 4.0b7
 =====
 - Removed ``CSPMiddlewareAlwaysGenerateNonce`` middleware that forced nonce headers when not used in
