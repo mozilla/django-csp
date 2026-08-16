@@ -70,6 +70,41 @@ a more slightly strict policy and is used to test the policy without breaking th
         },
     }
 
+Starting with a strict policy
+-----------------------------
+
+A strict policy can provide stronger protection against script injection, but it
+is not a drop-in policy for every Django application. Start in report-only mode,
+review the violations your application produces, and add only the sources your
+application needs before enforcing it.
+
+The following report-only policy blocks fallback sources, disallows plugins,
+and requires trusted scripts to carry a nonce. ``STRICT_DYNAMIC`` lets scripts
+trusted by the nonce load their dependencies in browsers that support it.
+
+.. code-block:: python
+
+    from csp.constants import NONE, NONCE, SELF, STRICT_DYNAMIC
+
+    CONTENT_SECURITY_POLICY_REPORT_ONLY = {
+        "DIRECTIVES": {
+            "base-uri": [SELF],
+            "default-src": [NONE],
+            "object-src": [NONE],
+            "script-src": [NONCE, STRICT_DYNAMIC],
+        },
+    }
+
+For this policy to allow a script, generate and include the request nonce in
+the script tag. See :doc:`using the generated CSP nonce <nonce>`
+for the middleware and template setup. Add ``style-src``, ``img-src``,
+``connect-src``, and other directives deliberately for the resources your site
+uses; do not add ``'unsafe-inline'`` or ``'unsafe-eval'`` merely to silence
+reports.
+
+For more background on designing and rolling out strict policies, see the
+`strict CSP guide <strict-csp_>`_.
+
 .. note::
 
     In the above example, the constant ``NONE`` is converted to the CSP keyword ``"'none'"`` and
