@@ -29,7 +29,8 @@ class PolicyParts:
     nonce: str | None = None
 
 
-class CheckableLazyObject(SimpleLazyObject):
+# Newer django-stubs make SimpleLazyObject generic, but it isn't subscriptable at runtime.
+class CheckableLazyObject(SimpleLazyObject):  # type: ignore[type-arg,unused-ignore]
     """A SimpleLazyObject where bool(obj) returns True if no longer lazy"""
 
     def __bool__(self) -> bool:
