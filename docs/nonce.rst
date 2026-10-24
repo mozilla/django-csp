@@ -64,6 +64,23 @@ above script being allowed.
    ``False`` if not acccesed or generated yet.
 
 
+Streaming responses
+-------------------
+For streaming responses (``StreamingHttpResponse`` and ``FileResponse``) the body is consumed after
+the middleware writes the CSP header, so a lazily generated nonce would be missing from the header.
+To avoid this, ``csp.middleware.CSPMiddleware`` always generates the nonce for streaming responses
+before writing the header. The header will include the nonce even if the body never uses it.
+
+.. Warning::
+
+   Browsers ignore ``'unsafe-inline'`` in ``script-src`` and ``style-src`` directives that contain
+   a nonce. For streaming responses this means ``UNSAFE_INLINE`` has no effect when ``NONCE`` is in
+   the same directive, which may block inline scripts, styles, and event handlers.
+
+   To allow style attributes or inline event handlers while using nonces for ``<style>`` or
+   ``<script>`` elements, configure ``style-src-attr`` or ``script-src-attr``, respectively.
+
+
 If other middleware or a later process needs to access ``request.csp_nonce``, then there are a few options:
 
 * The middleware can be placed after ``csp.middleware.CSPMiddleware`` in the ``MIDDLEWARE`` setting.

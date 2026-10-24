@@ -79,6 +79,11 @@ class CSPMiddleware(MiddlewareMixin):
         if response.status_code in exempted_debug_codes and settings.DEBUG:
             return response
 
+        # Streaming content may first access the lazy nonce after the CSP header is written.
+        # Generate it now so the header includes the nonce used in the body.
+        if getattr(response, "streaming", False):
+            str(getattr(request, "csp_nonce", ""))
+
         policy_parts = self.get_policy_parts(request=request, response=response)
         csp = build_policy(**asdict(policy_parts))
         if csp:

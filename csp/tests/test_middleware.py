@@ -1,7 +1,14 @@
+from collections.abc import Iterator
+from io import BytesIO
+
 from django.http import (
+    FileResponse,
+    HttpRequest,
     HttpResponse,
+    HttpResponseBase,
     HttpResponseNotFound,
     HttpResponseServerError,
+    StreamingHttpResponse,
 )
 from django.template import Context, Template, engines
 from django.test import RequestFactory
@@ -9,7 +16,7 @@ from django.test.utils import override_settings
 
 import pytest
 
-from csp.constants import HEADER, HEADER_REPORT_ONLY, SELF
+from csp.constants import HEADER, HEADER_REPORT_ONLY, NONCE, SELF, UNSAFE_INLINE
 from csp.exceptions import CSPNonceError
 from csp.middleware import CheckableLazyObject, CSPMiddleware
 from csp.tests.utils import response
@@ -287,3 +294,69 @@ def test_set_nonce_access_after_middleware_is_ok() -> None:
     mw.process_response(request, HttpResponse())
     assert bool(getattr(request, "csp_nonce", False)) is True
     assert str(getattr(request, "csp_nonce")) == nonce
+
+
+def test_nonce_accessed_during_streaming_is_in_header() -> None:
+    # A streaming body is consumed after the middleware writes the header, so the nonce must be
+    # generated up front for the header to match the nonce rendered in the body.
+    def view(request: HttpRequest) -> StreamingHttpResponse:
+        nonce = getattr(request, "csp_nonce")
+
+        def content() -> Iterator[str]:
+            yield f'<script nonce="{nonce}"></script>'
+
+        return StreamingHttpResponse(content())
+
+    for header, setting in [
+        (HEADER, "CONTENT_SECURITY_POLICY"),
+        (HEADER_REPORT_ONLY, "CONTENT_SECURITY_POLICY_REPORT_ONLY"),
+    ]:
+        config = {setting: {"DIRECTIVES": {"default-src": [SELF], "script-src": [NONCE]}}}
+        with override_settings(**config):
+            request = rf.get("/")
+            response = CSPMiddleware(view)(request)
+            assert isinstance(response, StreamingHttpResponse)
+            body = b"".join(response.streaming_content).decode()  # type: ignore[arg-type]
+            nonce = str(getattr(request, "csp_nonce"))
+            assert body == f'<script nonce="{nonce}"></script>'
+            assert f"'nonce-{nonce}'" in response[header]
+
+
+def test_nonce_read_from_request_during_streaming_is_ok() -> None:
+    # Reading `request.csp_nonce` inside the streaming body must not raise `CSPNonceError`.
+    request = rf.get("/")
+
+    def view(request: HttpRequest) -> StreamingHttpResponse:
+        def content() -> Iterator[str]:
+            yield str(getattr(request, "csp_nonce"))
+
+        return StreamingHttpResponse(content())
+
+    response = CSPMiddleware(view)(request)
+    assert isinstance(response, StreamingHttpResponse)
+    nonce = b"".join(response.streaming_content).decode()  # type: ignore[arg-type]
+    assert response[HEADER] == f"default-src 'self' 'nonce-{nonce}'"
+
+
+@override_settings(CONTENT_SECURITY_POLICY={"DIRECTIVES": {"style-src": [SELF, UNSAFE_INLINE, NONCE]}})
+def test_unused_nonce_with_unsafe_inline() -> None:
+    # Streaming responses always include the nonce, which causes browsers to ignore 'unsafe-inline'.
+    body = b'<div style="color: red">Hello</div>'
+    responses: list[HttpResponseBase] = [
+        HttpResponse(body),
+        StreamingHttpResponse(iter([body])),
+        FileResponse(BytesIO(body), content_type="text/html"),
+    ]
+    for resp in responses:
+        try:
+            request = rf.get("/")
+            mw.process_request(request)
+            mw.process_response(request, resp)
+            directives = resp[HEADER].split("; ")
+            style_src = next(d for d in directives if d.startswith("style-src"))
+            if getattr(resp, "streaming", False):
+                assert style_src.startswith("style-src 'self' 'unsafe-inline' 'nonce-")
+            else:
+                assert style_src == "style-src 'self' 'unsafe-inline'"
+        finally:
+            resp.close()
