@@ -39,7 +39,7 @@ slightly more strict than the default policy to see what would be blocked if the
 The following is an example of a policy configuration with a default policy and a report-only
 policy. The default policy is considered a "relaxed" policy that allows for the most flexibility
 while still providing a good level of security. The report-only policy is considered a step towards
-a more slightly strict policy and is used to test the policy without breaking the site.
+a strict policy and is used to test the policy without breaking the site.
 
 .. code-block:: python
 
