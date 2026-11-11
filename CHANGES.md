@@ -1,6 +1,14 @@
 CHANGES
 =======
 
+Unreleased
+==========
+- Use SPDX license expression in package metadata (PEP 639); building now requires
+  setuptools>=77. ([#278](https://github.com/mozilla/django-csp/issues/278))
+- Add support for Django 6.0.
+- Fix CSP nonce missing from the header of streaming responses. The nonce is now always generated
+  for streaming responses, which may affect policies combining ``NONCE`` with ``UNSAFE_INLINE``.
+
 4.0
 ===
 
