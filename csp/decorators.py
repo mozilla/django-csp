@@ -4,10 +4,10 @@ from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
-    from django.http import HttpRequest, HttpResponseBase
+    from django.http import HttpResponseBase
 
     # A generic Django view function
-    _VIEW_T = Callable[[HttpRequest], HttpResponseBase]
+    _VIEW_T = Callable[..., HttpResponseBase]
     _VIEW_DECORATOR_T = Callable[[_VIEW_T], _VIEW_T]
 
 
